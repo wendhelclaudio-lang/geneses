@@ -10,7 +10,7 @@ onAuthStateChanged
 const firebaseConfig = {
 apiKey: "SUA_API_KEY",
 authDomain: "SEU_PROJETO.firebaseapp.com",
-projectId: "SEU_PROJETO",
+projectId: "SEU_PROJETO"
 };
 
 const app = initializeApp(firebaseConfig);
