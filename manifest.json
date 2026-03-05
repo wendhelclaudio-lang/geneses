@@ -1,7 +1,7 @@
 {
   "name": "Gêneses Fóton",
   "short_name": "Gêneses",
-  "start_url": "index.html",
+  "start_url": "/geneses/"
   "display": "standalone",
   "background_color": "#0a192f",
   "theme_color": "#0a192f",
