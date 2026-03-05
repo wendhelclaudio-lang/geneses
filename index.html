@@ -91,8 +91,12 @@
         
         #btnVoltar { background: rgba(0, 242, 255, 0.1); color: var(--accent); border: 1px solid var(--accent); padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; }
 
+        /* Submenu de Dívidas */
+        .submenu-divida { display: flex; gap: 10px; margin-bottom: 15px; }
+        .sub-btn { flex: 1; padding: 8px; background: #111827; border: 1px solid #1f2937; border-radius: 8px; font-size: 0.65rem; font-weight: 800; color: #94a3b8; }
+        .sub-btn.active { background: rgba(0, 242, 255, 0.1); border-color: var(--accent); color: var(--accent); }
+
         .search-bar { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid #1f2937; padding: 12px 15px; border-radius: 12px; color: white; margin-bottom: 15px; font-size: 0.9rem; outline: none; }
-        .search-bar:focus { border-color: var(--accent); }
 
         .transaction-item { background: var(--card); padding: 15px; border-radius: 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; border: 1px solid #1f2937; }
         .icon-box { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #1f2937; min-width: 40px; }
@@ -124,11 +128,7 @@
         .label-mini { font-size: 0.65rem; color: var(--accent); font-weight: 800; margin-bottom: 5px; display: block; text-transform: uppercase; }
         .hidden { display: none !important; }
 
-        /* Estilo do Bloco de Parcelamento */
-        .bloco-parcelas {
-            background: rgba(245, 158, 11, 0.05); padding: 15px; border-radius: 12px; 
-            border: 1px dashed var(--warning); margin-bottom: 15px;
-        }
+        .bloco-parcelas { background: rgba(245, 158, 11, 0.05); padding: 15px; border-radius: 12px; border: 1px dashed var(--warning); margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -147,47 +147,20 @@
     </header>
 
     <div class="sidebar" id="profileSidebar">
-        <div style="text-align: right; margin-bottom: 10px;">
-            <i class="fa-solid fa-xmark" style="font-size: 1.5rem; cursor: pointer; color: #94a3b8;" onclick="toggleSidebar()"></i>
-        </div>
-        <div class="sidebar-header">
-            <div class="avatar" style="width: 65px; height: 65px; font-size: 1.5rem; margin: 0 auto 10px;">WC</div>
-            <h2 style="margin:0; font-size: 1.1rem;">Painel de Comando</h2>
-            <span style="color: var(--accent); font-size: 0.75rem;">Operacional</span>
-        </div>
-
+        <div style="text-align: right; margin-bottom: 10px;"><i class="fa-solid fa-xmark" style="font-size: 1.5rem; cursor: pointer; color: #94a3b8;" onclick="toggleSidebar()"></i></div>
+        <div class="sidebar-header"><div class="avatar" style="width: 65px; height: 65px; font-size: 1.5rem; margin: 0 auto 10px;">WC</div><h2 style="margin:0; font-size: 1.1rem;">Painel de Comando</h2><span style="color: var(--accent); font-size: 0.75rem;">Operacional</span></div>
         <div class="status-panel">
-            <div class="status-row">
-                <span class="status-label">Conexão Terminal</span>
-                <strong style="color: var(--success); font-size: 0.75rem;"><i class="fa-solid fa-circle" style="font-size: 0.5rem; vertical-align: middle;"></i> SEGURO</strong>
-            </div>
-            <div class="status-row">
-                <span class="status-label">Volume de Dados</span>
-                <strong id="contadorRegistros" style="color: var(--text);">0 registros</strong>
-            </div>
-            <div class="status-row">
-                <span class="status-label">Saúde do Mês</span>
-                <strong id="statusFluxo" style="color: var(--accent);">ESTÁVEL</strong>
-            </div>
+            <div class="status-row"><span class="status-label">Conexão Terminal</span><strong style="color: var(--success); font-size: 0.75rem;"><i class="fa-solid fa-circle" style="font-size: 0.5rem; vertical-align: middle;"></i> SEGURO</strong></div>
+            <div class="status-row"><span class="status-label">Volume de Dados</span><strong id="contadorRegistros">0 registros</strong></div>
+            <div class="status-row"><span class="status-label">Saúde do Mês</span><strong id="statusFluxo">ESTÁVEL</strong></div>
         </div>
-        
         <div class="sidebar-menu">
-            <div class="menu-item" onclick="toggleFantasma()">
-                <i class="fa-solid fa-ghost"></i> <span>Modo Privacidade</span>
-            </div>
-            <div class="menu-item" onclick="exportarDados()">
-                <i class="fa-solid fa-file-export"></i> <span>Exportar Backup (CSV)</span>
-            </div>
+            <div class="menu-item" onclick="toggleFantasma()"><i class="fa-solid fa-ghost"></i> <span>Modo Privacidade</span></div>
+            <div class="menu-item" onclick="exportarDados()"><i class="fa-solid fa-file-export"></i> <span>Exportar Backup (CSV)</span></div>
             <input type="file" id="fileInput" accept=".csv" style="display: none;" onchange="importarDados(event)">
-            <div class="menu-item" onclick="document.getElementById('fileInput').click()">
-                <i class="fa-solid fa-file-import"></i> <span>Importar Backup</span>
-            </div>
-            <div class="menu-item" onclick="otimizarTerminal()">
-                <i class="fa-solid fa-bolt"></i> <span>Otimizar Performance</span>
-            </div>
-            <div class="menu-item" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.2);" onclick="limparTerminal()">
-                <i class="fa-solid fa-trash" style="color: var(--danger);"></i> <span>Resetar Sistema</span>
-            </div>
+            <div class="menu-item" onclick="document.getElementById('fileInput').click()"><i class="fa-solid fa-file-import"></i> <span>Importar Backup</span></div>
+            <div class="menu-item" onclick="otimizarTerminal()"><i class="fa-solid fa-bolt"></i> <span>Otimizar Performance</span></div>
+            <div class="menu-item" style="color: var(--danger);" onclick="limparTerminal()"><i class="fa-solid fa-trash"></i> <span>Resetar Sistema</span></div>
         </div>
     </div>
 
@@ -206,7 +179,7 @@
         <div class="mini-card" onclick="filtrarExtrato('Receita')"><i class="fa-solid fa-arrow-up" style="color:var(--success)"></i><span>Entradas</span><strong id="totalReceitas">R$ 0,00</strong></div>
         <div class="mini-card" onclick="filtrarExtrato('Gasto')"><i class="fa-solid fa-arrow-down" style="color:var(--warning)"></i><span>Gastos</span><strong id="totalGastos">R$ 0,00</strong></div>
         <div class="mini-card" onclick="filtrarExtrato('Divida')"><i class="fa-solid fa-barcode" style="color:var(--danger)"></i><span>Dívidas</span><strong id="totalDividas">R$ 0,00</strong></div>
-        <div class="mini-card" onclick="filtrarExtrato('Reserva')"><i class="fa-solid fa-vault" style="color:var(--reserve)"></i><span>Patrimônio Salvo</span><strong id="totalReserva">R$ 0,00</strong></div>
+        <div class="mini-card" onclick="filtrarExtrato('Reserva')"><i class="fa-solid fa-vault" style="color:var(--reserve)"></i><span>Patrimônio</span><strong id="totalReserva">R$ 0,00</strong></div>
     </div>
 
     <main>
@@ -215,8 +188,12 @@
             <button id="btnVoltar" class="hidden" onclick="filtrarExtrato('Tudo')"><i class="fa-solid fa-chevron-left"></i> VOLTAR</button>
         </div>
         
-        <input type="text" id="inputPesquisa" class="search-bar" placeholder="🔍 Buscar lançamento (ex: Financiamento)" onkeyup="renderizar()">
+        <div id="subFiltros" class="submenu-divida hidden">
+            <button class="sub-btn active" id="btnPendente" onclick="setSubFiltro('Pendente')">PENDENTES</button>
+            <button class="sub-btn" id="btnPago" onclick="setSubFiltro('Pago')">PAGAS / LIQUIDADAS</button>
+        </div>
         
+        <input type="text" id="inputPesquisa" class="search-bar" placeholder="🔍 Buscar lançamento" onkeyup="renderizar()">
         <div id="tabelaCorpo"></div>
     </main>
 
@@ -236,49 +213,23 @@
     <div class="overlay" id="overlay" onclick="closeAll()"></div>
 
     <div class="modal" id="modalForm">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2 id="modalTitle" style="margin:0; font-size:1.2rem;">Nova Operação</h2>
-            <i class="fa-solid fa-circle-xmark" style="font-size:1.5rem; color:#374151;" onclick="closeModal()"></i>
-        </div>
-        
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2 id="modalTitle" style="margin:0; font-size:1.2rem;">Nova Operação</h2><i class="fa-solid fa-circle-xmark" style="font-size:1.5rem; color:#374151;" onclick="closeModal()"></i></div>
         <span class="label-mini">Tipo</span>
-        <select id="tipo" onchange="atualizarSubmenu()">
-            <option value="Receita">Receita</option>
-            <option value="Fixo">Gasto Fixo</option>
-            <option value="Variavel">Gasto Variável</option>
-            <option value="Divida">Dívida / Boleto</option>
-            <option value="Reserva">Patrimônio</option>
-        </select>
-
-        <span class="label-mini">Categoria</span>
-        <select id="submenu" onchange="definirDescricao()"></select>
+        <select id="tipo" onchange="atualizarSubmenu()"><option value="Receita">Receita</option><option value="Fixo">Gasto Fixo</option><option value="Variavel">Gasto Variável</option><option value="Divida">Dívida / Boleto</option><option value="Reserva">Patrimônio</option></select>
+        <span class="label-mini">Categoria</span><select id="submenu" onchange="definirDescricao()"></select>
         <input type="text" id="desc" placeholder="Descrição Personalizada">
-        
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
             <div><span class="label-mini">Valor Total</span><input type="number" id="valor" placeholder="0,00" step="0.01" inputmode="decimal"></div>
-            <div id="campoPago"><span class="label-mini">Valor Pago (Opcional)</span><input type="number" id="pago" placeholder="0,00" step="0.01" inputmode="decimal"></div>
+            <div id="campoPago"><span class="label-mini">Já Pagou?</span><input type="number" id="pago" placeholder="0,00" step="0.01" inputmode="decimal"></div>
         </div>
-
         <div id="blocoParcelamento" class="bloco-parcelas hidden">
-            <span class="label-mini" style="color:var(--warning); text-align:center; display:block; margin-bottom:10px;">Opções de Parcelamento / Financiamento</span>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <div>
-                    <span class="label-mini" style="color:#94a3b8">Total de Parcelas</span>
-                    <input type="number" id="parcelas" value="1" min="1" inputmode="numeric" placeholder="Ex: 48" style="margin-bottom:0;">
-                </div>
-                <div>
-                    <span class="label-mini" style="color:var(--success)">Quantas já pagou?</span>
-                    <input type="number" id="parcelasPagas" value="0" min="0" inputmode="numeric" placeholder="Ex: 5" style="margin-bottom:0;">
-                </div>
+                <div><span class="label-mini">Nº Parcelas</span><input type="number" id="parcelas" value="1" min="1" inputmode="numeric"></div>
+                <div><span class="label-mini">Parcelas Pagas</span><input type="number" id="parcelasPagas" value="0" min="0" inputmode="numeric"></div>
             </div>
-            <p style="font-size: 0.65rem; color: #94a3b8; margin: 10px 0 0 0; text-align: center;">O sistema gerará as parcelas e dará baixa nas já pagas.</p>
         </div>
-
-        <span class="label-mini">Data (Referência / 1ª Parcela)</span>
-        <input type="date" id="data">
-        
-        <input type="hidden" id="editIndex">
-        <button class="btn-confirm" onclick="salvar()">SALVAR OPERAÇÃO</button>
+        <span class="label-mini">Data Referência</span><input type="date" id="data">
+        <input type="hidden" id="editIndex"><button class="btn-confirm" onclick="salvar()">SALVAR OPERAÇÃO</button>
         <button id="btnExcluir" class="btn-delete hidden" onclick="excluirRegistro()">EXCLUIR REGISTRO</button>
     </div>
 
@@ -286,50 +237,37 @@
         let registros = JSON.parse(localStorage.getItem('foton_db')) || [];
         let modoFantasma = false;
         let filtroAtual = "Tudo";
+        let subFiltro = "Pendente";
         let dataVisualizacao = new Date();
 
-        // 1. Atualização das opções: Adicionado Financiamento em "Divida"
         const opcoesSubmenu = {
             "Receita": ["💰 Salário", "🚀 Freelance", "✨ Outros"],
             "Fixo": ["🏠 Aluguel", "⚡ Energia", "🌐 Internet", "🎬 Streamings"],
             "Variavel": ["🛒 Mercado", "🍕 Alimentação", "⛽ Combustível", "🚗 Transporte"],
-            "Divida": ["💳 Cartão", "🤝 Empréstimo", "🏢 Financiamento", "🧾 Boleto"],
+            "Divida": ["💳 Cartão", "🏢 Financiamento", "🤝 Empréstimo", "🧾 Boleto"],
             "Reserva": ["🏦 Investimentos", "📦 Caixinha", "🛡️ Reserva Emergência"]
         };
 
-        function mudarMes(delta) {
-            dataVisualizacao.setMonth(dataVisualizacao.getMonth() + delta);
+        function mudarMes(delta) { dataVisualizacao.setMonth(dataVisualizacao.getMonth() + delta); renderizar(); }
+        function formatarMesAno(d) { const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']; return `${meses[d.getMonth()]} ${d.getFullYear()}`; }
+        function toggleSidebar() { const s = document.getElementById('profileSidebar'); s.classList.toggle('open'); document.getElementById('overlay').style.display = s.classList.contains('open') ? 'block' : 'none'; }
+        function closeAll() { closeModal(); document.getElementById('profileSidebar').classList.remove('open'); document.getElementById('overlay').style.display = 'none'; }
+        
+        function filtrarExtrato(c) {
+            filtroAtual = c;
+            const btn = document.getElementById('btnVoltar');
+            const txt = document.getElementById('txtExtrato');
+            const sub = document.getElementById('subFiltros');
+            
+            if(c === 'Tudo') { btn.classList.add('hidden'); txt.innerText = "Operações do Mês"; sub.classList.add('hidden'); } 
+            else { btn.classList.remove('hidden'); txt.innerText = c === 'Gasto' ? "Filtro: Gastos" : "Filtro: " + c; sub.classList.remove('hidden'); }
             renderizar();
         }
 
-        function formatarMesAno(dataObj) {
-            const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-            return `${meses[dataObj.getMonth()]} ${dataObj.getFullYear()}`;
-        }
-
-        function toggleSidebar() {
-            const sidebar = document.getElementById('profileSidebar');
-            sidebar.classList.toggle('open');
-            document.getElementById('overlay').style.display = sidebar.classList.contains('open') ? 'block' : 'none';
-        }
-
-        function closeAll() {
-            closeModal();
-            document.getElementById('profileSidebar').classList.remove('open');
-            document.getElementById('overlay').style.display = 'none';
-        }
-
-        function filtrarExtrato(categoria) {
-            filtroAtual = categoria;
-            const btn = document.getElementById('btnVoltar');
-            const txt = document.getElementById('txtExtrato');
-            if(categoria === 'Tudo') {
-                btn.classList.add('hidden');
-                txt.innerText = "Operações do Mês";
-            } else {
-                btn.classList.remove('hidden');
-                txt.innerText = categoria === 'Gasto' ? "Filtro: Gastos" : "Filtro: " + categoria;
-            }
+        function setSubFiltro(s) {
+            subFiltro = s;
+            document.getElementById('btnPendente').classList.toggle('active', s === 'Pendente');
+            document.getElementById('btnPago').classList.toggle('active', s === 'Pago');
             renderizar();
         }
 
@@ -337,49 +275,32 @@
             document.getElementById('mesDisplay').innerText = formatarMesAno(dataVisualizacao);
             const prefixoMes = `${dataVisualizacao.getFullYear()}-${String(dataVisualizacao.getMonth() + 1).padStart(2, '0')}`;
             const termoBusca = document.getElementById('inputPesquisa').value.toLowerCase();
-
-            const corpo = document.getElementById('tabelaCorpo');
-            corpo.innerHTML = '';
-            let sRec = 0, sGas = 0, sDiv = 0, sRes = 0;
+            const corpo = document.getElementById('tabelaCorpo'); corpo.innerHTML = '';
+            let sRec=0, sGas=0, sDiv=0, sRes=0;
             
             const ordenados = [...registros].sort((a, b) => new Date(b.data) - new Date(a.data));
             const registrosDoMes = ordenados.filter(r => r.data.startsWith(prefixoMes));
 
-            if(registrosDoMes.length === 0) {
-                corpo.innerHTML = '<div style="text-align:center; padding: 20px; color:#6b7280; font-size:0.8rem;">Nenhum registro encontrado neste mês.</div>';
-            }
-
             registrosDoMes.forEach(r => {
-                const idxOriginal = registros.indexOf(r);
-                const vTotal = parseFloat(r.valor), vPago = parseFloat(r.pago), falta = vTotal - vPago;
-                
-                if(r.tipo === 'Receita') sRec += vTotal;
-                else if(r.tipo === 'Divida') sDiv += falta;
-                else if(r.tipo === 'Reserva') sRes += vTotal;
-                else sGas += vPago;
+                const idxO = registros.indexOf(r);
+                const vT = parseFloat(r.valor), vP = parseFloat(r.pago), falta = vT - vP;
+                const isPago = vP >= vT;
 
-                let exibir = (filtroAtual === "Tudo") || 
-                             (filtroAtual === r.tipo) || 
-                             (filtroAtual === "Gasto" && (r.tipo === "Fixo" || r.tipo === "Variavel"));
-                
+                if(r.tipo === 'Receita') sRec += vT; else if(r.tipo === 'Divida') sDiv += falta; else if(r.tipo === 'Reserva') sRes += vT; else sGas += vP;
+
+                let exibir = (filtroAtual === "Tudo") || (filtroAtual === r.tipo) || (filtroAtual === "Gasto" && (r.tipo === "Fixo" || r.tipo === "Variavel"));
                 if (termoBusca !== "" && !r.desc.toLowerCase().includes(termoBusca)) exibir = false;
+                
+                // Lógica de Submenu (Pendente/Pago)
+                if (filtroAtual !== "Tudo") {
+                    if (subFiltro === "Pendente" && isPago) exibir = false;
+                    if (subFiltro === "Pago" && !isPago) exibir = false;
+                }
 
                 if(exibir) {
                     let icon = r.tipo === 'Receita' ? 'fa-arrow-up' : (r.tipo === 'Divida' ? 'fa-barcode' : (r.tipo === 'Reserva' ? 'fa-vault' : 'fa-cart-shopping'));
                     let color = r.tipo === 'Receita' ? 'var(--success)' : (r.tipo === 'Divida' ? 'var(--danger)' : (r.tipo === 'Reserva' ? 'var(--reserve)' : 'var(--warning)'));
-                    
-                    corpo.innerHTML += `
-                        <div class="transaction-item" onclick="openModal(${idxOriginal})">
-                            <div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div>
-                            <div class="details">
-                                <strong>${r.desc}</strong>
-                                <span>${r.data.split('-').reverse().join('/')} • ${r.tipo}</span>
-                            </div>
-                            <div class="amount">
-                                <strong>${ocultarBits(vTotal)}</strong>
-                                <span class="status-debt" style="color:${vPago >= vTotal ? 'var(--success)' : 'var(--danger)'}">${vPago >= vTotal ? 'LIQUIDADO' : 'FALTA: '+ocultarBits(falta)}</span>
-                            </div>
-                        </div>`;
+                    corpo.innerHTML += `<div class="transaction-item" onclick="openModal(${idxO})"><div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div><div class="details"><strong>${r.desc}</strong><span>${r.data.split('-').reverse().join('/')} • ${r.tipo}</span></div><div class="amount"><strong>${ocultarBits(vT)}</strong><span class="status-debt" style="color:${isPago ? 'var(--success)' : 'var(--danger)'}">${isPago ? 'LIQUIDADO' : 'FALTA: '+ocultarBits(falta)}</span></div></div>`;
                 }
             });
 
@@ -396,12 +317,7 @@
             document.getElementById('labelPercSaida').innerText = pSaida.toFixed(1) + '%';
             document.getElementById('fillRes').style.width = pRes + '%';
             document.getElementById('labelPercRes').innerText = pRes.toFixed(1) + '%';
-
             document.getElementById('contadorRegistros').innerText = registros.length + " no total";
-            const statusFluxoEl = document.getElementById('statusFluxo');
-            if (saldoLivre > 0) { statusFluxoEl.innerText = "POSITIVO"; statusFluxoEl.style.color = "var(--success)"; } 
-            else if (saldoLivre < 0) { statusFluxoEl.innerText = "ALERTA"; statusFluxoEl.style.color = "var(--danger)"; } 
-            else { statusFluxoEl.innerText = "ZERADO"; statusFluxoEl.style.color = "var(--text)"; }
         }
 
         function openModal(idx = null) {
@@ -409,7 +325,7 @@
             document.getElementById('overlay').style.display = 'block';
             if(idx !== null) {
                 const r = registros[idx];
-                document.getElementById('modalTitle').innerText = "Editar Parcela";
+                document.getElementById('modalTitle').innerText = "Editar Operação";
                 document.getElementById('editIndex').value = idx;
                 document.getElementById('tipo').value = r.tipo;
                 atualizarSubmenu();
@@ -418,147 +334,47 @@
                 document.getElementById('pago').value = r.pago;
                 document.getElementById('data').value = r.data;
                 document.getElementById('btnExcluir').classList.remove('hidden');
-                document.getElementById('blocoParcelamento').classList.add('hidden'); // Esconde parcelamento na edição
+                document.getElementById('blocoParcelamento').classList.add('hidden');
             } else {
                 document.getElementById('modalTitle').innerText = "Nova Operação";
                 document.getElementById('btnExcluir').classList.add('hidden');
-                resetForm();
-                atualizarSubmenu();
+                resetForm(); atualizarSubmenu();
             }
         }
 
         function closeModal() { document.getElementById('modalForm').classList.remove('open'); document.getElementById('overlay').style.display = 'none'; }
-        
         function atualizarSubmenu() {
-            const tipo = document.getElementById('tipo').value;
-            const sub = document.getElementById('submenu');
-            sub.innerHTML = '';
-            opcoesSubmenu[tipo].forEach(opt => sub.innerHTML += `<option value="${opt}">${opt}</option>`);
-            
-            const fieldPago = document.getElementById('campoPago');
-            const blocoParcela = document.getElementById('blocoParcelamento');
-            
-            // O Bloco de parcelamento APENAS aparece para Dívidas
-            if(tipo === 'Receita' || tipo === 'Reserva') {
-                fieldPago.classList.add('hidden');
-                blocoParcela.classList.add('hidden');
-            } else if (tipo === 'Divida') {
-                fieldPago.classList.remove('hidden');
-                blocoParcela.classList.remove('hidden');
-            } else {
-                fieldPago.classList.remove('hidden');
-                blocoParcela.classList.add('hidden');
-            }
+            const t = document.getElementById('tipo').value;
+            const sub = document.getElementById('submenu'); sub.innerHTML = '';
+            opcoesSubmenu[t].forEach(opt => sub.innerHTML += `<option value="${opt}">${opt}</option>`);
+            document.getElementById('blocoParcelamento').classList.toggle('hidden', t !== 'Divida');
             definirDescricao();
         }
-
         function definirDescricao() { document.getElementById('desc').value = document.getElementById('submenu').value.split(' ').slice(1).join(' '); }
-        
         function salvar() {
-            const tipo = document.getElementById('tipo').value;
-            const desc = document.getElementById('desc').value;
-            const valorTotal = parseFloat(document.getElementById('valor').value) || 0;
-            const dataBase = document.getElementById('data').value;
-            let pago = parseFloat(document.getElementById('pago').value) || 0;
-            const editIdx = document.getElementById('editIndex').value;
-            
-            // Variáveis de Parcelamento
-            let parcelas = parseInt(document.getElementById('parcelas').value) || 1;
-            let parcelasPagas = parseInt(document.getElementById('parcelasPagas').value) || 0;
-
-            if(!desc || valorTotal <= 0 || !dataBase) return alert("Preencha o valor e a data!");
-            if(tipo === 'Receita' || tipo === 'Reserva') pago = valorTotal;
-
-            if (editIdx !== "") {
-                // Modo Edição: Altera apenas 1 lançamento
-                registros[editIdx] = { tipo, desc, valor: valorTotal, pago, data: dataBase };
-            } else {
-                // Modo Criação
-                if (tipo === 'Divida' && parcelas > 1) {
-                    // Lógica de Parcelamento Inteligente
-                    const valorParcela = valorTotal / parcelas;
-                    let dataObj = new Date(dataBase + "T12:00:00"); // T12 para evitar bug de fuso horário
-                    
-                    for (let i = 1; i <= parcelas; i++) {
-                        let novaData = new Date(dataObj.getFullYear(), dataObj.getMonth() + (i - 1), dataObj.getDate());
-                        let dataFormatada = novaData.toISOString().split('T')[0];
-                        let descParcela = `${desc} (${i}/${parcelas})`;
-                        
-                        // Se a parcela atual for menor ou igual à quantidade já paga, dá baixa automática
-                        let pagoParcela = (i <= parcelasPagas) ? valorParcela : 0; 
-                        
-                        registros.push({ tipo, desc: descParcela, valor: valorParcela, pago: pagoParcela, data: dataFormatada });
+            const t = document.getElementById('tipo').value, desc = document.getElementById('desc').value, vT = parseFloat(document.getElementById('valor').value) || 0, dBase = document.getElementById('data').value, p = parseInt(document.getElementById('parcelas').value) || 1, pP = parseInt(document.getElementById('parcelasPagas').value) || 0, editIdx = document.getElementById('editIndex').value;
+            if(!desc || vT <= 0 || !dBase) return alert("Preencha tudo!");
+            if(editIdx !== "") { registros[editIdx] = { tipo: t, desc, valor: vT, pago: parseFloat(document.getElementById('pago').value)||0, data: dBase }; } 
+            else {
+                if (t === 'Divida' && p > 1) {
+                    const vParc = vT / p; let dObj = new Date(dBase + "T12:00:00");
+                    for (let i = 1; i <= p; i++) {
+                        let nD = new Date(dObj.getFullYear(), dObj.getMonth() + (i - 1), dObj.getDate()).toISOString().split('T')[0];
+                        registros.push({ tipo: t, desc: `${desc} (${i}/${p})`, valor: vParc, pago: (i <= pP) ? vParc : 0, data: nD });
                     }
-                } else {
-                    // Inserção normal
-                    registros.push({ tipo, desc, valor: valorTotal, pago, data: dataBase });
-                }
+                } else { registros.push({ tipo: t, desc, valor: vT, pago: (t==='Receita'||t==='Reserva') ? vT : (parseFloat(document.getElementById('pago').value)||0), data: dBase }); }
             }
-            
-            localStorage.setItem('foton_db', JSON.stringify(registros));
-            closeAll(); renderizar();
+            localStorage.setItem('foton_db', JSON.stringify(registros)); closeAll(); renderizar();
         }
-
-        function excluirRegistro() { 
-            if(confirm("Confirma a exclusão deste registro?")) { 
-                registros.splice(document.getElementById('editIndex').value, 1); 
-                localStorage.setItem('foton_db', JSON.stringify(registros)); 
-                closeAll(); renderizar(); 
-            } 
-        }
-
-        function exportarDados() {
-            if(registros.length === 0) return alert("Nenhum dado para exportar.");
-            let csvContent = "data:text/csv;charset=utf-8,Tipo,Descricao,Valor Total,Valor Pago,Data\n";
-            registros.forEach(r => { csvContent += `${r.tipo},${r.desc.replace(/,/g, '')},${r.valor},${r.pago},${r.data}\n`; });
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "Backup_Gêneses.csv");
-            document.body.appendChild(link);
-            link.click(); document.body.removeChild(link); closeAll();
-        }
-
-        function importarDados(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const lines = e.target.result.split('\n');
-                let novosRegistros = [];
-                for (let i = 1; i < lines.length; i++) {
-                    if (lines[i].trim() === '') continue;
-                    const cols = lines[i].split(',');
-                    if (cols.length >= 5) {
-                        novosRegistros.push({ tipo: cols[0], desc: cols[1], valor: parseFloat(cols[2]), pago: parseFloat(cols[3]), data: cols[4].trim() });
-                    }
-                }
-                if (novosRegistros.length > 0) {
-                    if(confirm(`Encontrados ${novosRegistros.length} registros. Deseja substituir os atuais?`)) {
-                        registros = novosRegistros; localStorage.setItem('foton_db', JSON.stringify(registros));
-                        renderizar(); closeAll(); alert("Restaurado com Sucesso!");
-                    }
-                } else { alert("Arquivo corrompido."); }
-            };
-            reader.readAsText(file); event.target.value = '';
-        }
-
+        function excluirRegistro() { if(confirm("Confirma exclusão?")) { registros.splice(document.getElementById('editIndex').value, 1); localStorage.setItem('foton_db', JSON.stringify(registros)); closeAll(); renderizar(); } }
+        function exportarDados() { if(registros.length === 0) return; let csv = "Tipo,Descricao,Valor Total,Valor Pago,Data\n"; registros.forEach(r => { csv += `${r.tipo},${r.desc.replace(/,/g, '')},${r.valor},${r.pago},${r.data}\n`; }); const blob = new Blob([csv], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.setAttribute('href', url); a.setAttribute('download', 'Backup_Genesas.csv'); a.click(); closeAll(); }
+        function importarDados(e) { const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = function(ev) { const lines = ev.target.result.split('\n'); let novos = []; for(let i=1; i<lines.length; i++){ const c = lines[i].split(','); if(c.length>=5) novos.push({ tipo: c[0], desc: c[1], valor: parseFloat(c[2]), pago: parseFloat(c[3]), data: c[4].trim() }); } if(novos.length > 0){ registros = novos; localStorage.setItem('foton_db', JSON.stringify(registros)); renderizar(); closeAll(); } }; r.readAsText(f); }
         function toggleFantasma() { modoFantasma = !modoFantasma; document.getElementById('eyeIcon').className = modoFantasma ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'; renderizar(); }
         function ocultarBits(v) { return modoFantasma ? "R$ ••••" : "R$ " + v.toLocaleString('pt-BR', {minimumFractionDigits: 2}); }
-        function otimizarTerminal() { alert("Processamento Otimizado."); closeAll(); }
-        function limparTerminal() { if(confirm("ATENÇÃO: Apagar TODOS os dados salvos?")) { localStorage.removeItem('foton_db'); location.reload(); } }
-        
-        function resetForm() { 
-            document.getElementById('editIndex').value = ""; 
-            document.getElementById('valor').value = ""; 
-            document.getElementById('pago').value = ""; 
-            document.getElementById('parcelas').value = "1";
-            document.getElementById('parcelasPagas').value = "0";
-            document.getElementById('desc').value = ""; 
-            document.getElementById('data').value = new Date().toISOString().split('T')[0]; 
-        }
-
-        window.onload = () => { renderizar(); };
+        function otimizarTerminal() { closeAll(); }
+        function limparTerminal() { if(confirm("Resetar tudo?")) { localStorage.removeItem('foton_db'); location.reload(); } }
+        function resetForm() { document.getElementById('editIndex').value = ""; document.getElementById('valor').value = ""; document.getElementById('pago').value = ""; document.getElementById('parcelas').value = "1"; document.getElementById('parcelasPagas').value = "0"; document.getElementById('desc').value = ""; document.getElementById('data').value = new Date().toISOString().split('T')[0]; }
+        window.onload = renderizar;
     </script>
 </body>
 </html>
