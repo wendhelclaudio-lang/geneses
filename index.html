@@ -27,62 +27,49 @@
         * { box-sizing: border-box; outline: none; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
 
-        /* --- SPLASH SCREEN: DINHEIRO CAINDO (PIX) --- */
+        /* --- SPLASH SCREEN: GRÁFICO DE PIZZA DINÂMICO --- */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #030712; display: flex; flex-direction: column;
             justify-content: center; align-items: center; z-index: 9999;
-            overflow: hidden; transition: all 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+            transition: all 0.8s cubic-bezier(0.65, 0, 0.35, 1);
         }
 
-        .money-rain { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; }
-        
-        .coin {
-            position: absolute; color: var(--success); font-size: 1.5rem;
-            opacity: 0; animation: fall 2s linear infinite;
-        }
-
-        .pix-notif {
-            position: relative; width: 120px; height: 120px;
-            background: rgba(16, 185, 129, 0.1); border-radius: 50%;
+        .chart-container {
+            position: relative; width: 150px; height: 150px;
             display: flex; justify-content: center; align-items: center;
-            border: 2px solid var(--success); box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
-            animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .pix-notif i { font-size: 3rem; color: var(--success); text-shadow: 0 0 15px var(--success); }
+        .svg-chart { transform: rotate(-90deg); }
 
-        .wave {
-            position: absolute; width: 100%; height: 100%;
-            border: 2px solid var(--success); border-radius: 50%;
-            animation: ripple 1.5s ease-out infinite;
+        .circle-bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 12; }
+
+        .circle-progress {
+            fill: none; stroke: var(--accent); stroke-width: 12;
+            stroke-linecap: round; stroke-dasharray: 440;
+            stroke-dashoffset: 440; /* Começa vazio */
+            filter: drop-shadow(0 0 8px var(--accent));
+            animation: chartFill 2s ease-out forwards;
+        }
+
+        .chart-info {
+            position: absolute; display: flex; flex-direction: column; align-items: center;
+        }
+
+        .percentage {
+            font-family: monospace; font-size: 1.5rem; font-weight: bold; color: var(--accent);
         }
 
         .status-msg {
-            margin-top: 30px; font-weight: 800; font-size: 0.8rem;
-            color: var(--success); letter-spacing: 2px; text-transform: uppercase;
-            animation: blink 1s infinite;
+            margin-top: 40px; font-weight: 800; font-size: 0.7rem;
+            color: #94a3b8; letter-spacing: 2px; text-transform: uppercase;
         }
 
-        @keyframes fall {
-            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
-            20% { opacity: 1; }
-            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        @keyframes chartFill {
+            to { stroke-dashoffset: 80; } /* Simula uma fatia de 80% do gráfico */
         }
 
-        @keyframes ripple {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(2.5); opacity: 0; }
-        }
-
-        @keyframes bounceIn {
-            0% { transform: scale(0.3); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-        #splash-screen.fade-out { opacity: 0; visibility: hidden; transform: translateY(-100%); }
+        #splash-screen.fade-out { opacity: 0; visibility: hidden; transform: scale(1.1); }
         /* ------------------------------------------- */
 
         header {
@@ -153,12 +140,6 @@
         .amount strong { display: block; font-size: 0.85rem; }
         .amount .status-debt { font-size: 0.6rem; font-weight: 800; display: block; margin-top: 2px; }
 
-        .bottom-charts { padding: 20px; background: #070b14; border-top: 1px solid #1f2937; margin-bottom: 100px; }
-        .chart-bar-group { margin-bottom: 15px; }
-        .chart-label { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 5px; color: #94a3b8; }
-        .chart-track { background: #1f2937; height: 6px; border-radius: 10px; overflow: hidden; }
-        .chart-fill { height: 100%; width: 0%; transition: 1s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
-
         .fab { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; border-radius: 20px; background: var(--accent); color: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 10px 20px rgba(0, 242, 255, 0.3); border: none; z-index: 1000; }
 
         .modal { position: fixed; bottom: -100%; left: 0; width: 100%; height: 92%; background: var(--card); border-radius: 30px 30px 0 0; z-index: 2000; padding: 25px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; }
@@ -182,12 +163,16 @@
 <body>
 
     <div id="splash-screen">
-        <div class="money-rain" id="rain-container"></div>
-        <div class="pix-notif">
-            <div class="wave"></div>
-            <i class="fa-solid fa-hand-holding-dollar"></i>
+        <div class="chart-container">
+            <svg class="svg-chart" width="150" height="150">
+                <circle class="circle-bg" cx="75" cy="75" r="70"></circle>
+                <circle id="progress-circle" class="circle-progress" cx="75" cy="75" r="70"></circle>
+            </svg>
+            <div class="chart-info">
+                <span class="percentage" id="count-percentage">0%</span>
+            </div>
         </div>
-        <div class="status-msg" id="status-text">Transferência Recebida</div>
+        <div class="status-msg" id="status-text">Consolidando Carteira</div>
     </div>
 
     <header>
@@ -308,35 +293,21 @@
             "Reserva": ["🏦 Investimentos", "📦 Caixinha", "🛡️ Reserva Emergência"]
         };
 
-        // LÓGICA DE ABERTURA: CHUVA DE DINHEIRO PIX
+        // LÓGICA DE ABERTURA: GRÁFICO DE PIZZA
         window.addEventListener('load', () => {
-            const container = document.getElementById('rain-container');
-            const statusText = document.getElementById('status-text');
-            const icons = ['fa-dollar-sign', 'fa-coins', 'fa-money-bill-1'];
+            const countEl = document.getElementById('count-percentage');
+            let count = 0;
             
-            // Criar chuva de moedas
-            for(let i=0; i<30; i++) {
-                const coin = document.createElement('i');
-                coin.className = `fa-solid ${icons[Math.floor(Math.random()*icons.length)]} coin`;
-                coin.style.left = Math.random() * 100 + 'vw';
-                coin.style.animationDelay = Math.random() * 2 + 's';
-                coin.style.fontSize = (Math.random() * 1 + 1) + 'rem';
-                container.appendChild(coin);
-            }
-
-            const steps = ["Validando Chave...", "Processando Valor...", "Saldo Atualizado!"];
-            let step = 0;
-            const stepInterval = setInterval(() => {
-                if(step < steps.length) {
-                    statusText.innerText = steps[step];
-                    step++;
-                } else {
-                    clearInterval(stepInterval);
+            const counterInterval = setInterval(() => {
+                count++;
+                countEl.innerText = count + "%";
+                if(count >= 100) {
+                    clearInterval(counterInterval);
                     setTimeout(() => {
                         document.getElementById('splash-screen').classList.add('fade-out');
-                    }, 800);
+                    }, 500);
                 }
-            }, 700);
+            }, 20); // Velocidade do contador
         });
 
         function mudarMes(delta) { dataVisualizacao.setMonth(dataVisualizacao.getMonth() + delta); renderizar(); }
@@ -437,7 +408,7 @@
             const t = document.getElementById('tipo').value, desc = document.getElementById('desc').value, vT = parseFloat(document.getElementById('valor').value) || 0, dBase = document.getElementById('data').value, editIdx = document.getElementById('editIndex').value;
             const isP = document.getElementById('selectPago').value === "1";
             if(!desc || vT <= 0 || !dBase) return alert("Preencha tudo!");
-            if(editIdx !== "") { registros[editIdx] = { ...registros[editIdx], tipo: t, desc, valor: vT, pago: isP ? vT : 0, data: dBase }; } 
+            if(editIdx !== "") { registros[editIdx] = { ...registros[editIdx], tipo: t, desc, valor: vT, pago: (isP || t === 'Receita') ? vT : 0, data: dBase }; } 
             else {
                 const p = parseInt(document.getElementById('parcelas').value), pP = parseInt(document.getElementById('parcelasPagas').value);
                 if (t === 'Divida' && p > 1) {
