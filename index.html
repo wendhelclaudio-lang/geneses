@@ -3,167 +3,328 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gêneses Mobile</title>
+    <title>Gêneses Mobile - Operacional</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        :root { --bg: #030712; --card: #111827; --accent: #00f2ff; --text: #f3f4f6; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; }
-        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
-        header { padding: 15px; border-bottom: 1px solid #1f2937; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--bg); z-index: 10; }
-        .balance-card { padding: 20px; text-align: center; }
-        .month-selector { display: flex; justify-content: space-around; align-items: center; padding: 10px; background: #070b14; }
-        .quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; }
-        .mini-card { background: var(--card); padding: 12px; border-radius: 12px; border: 1px solid #1f2937; }
-        .transaction-item { background: var(--card); padding: 12px; border-radius: 12px; margin: 8px 15px; display: flex; align-items: center; gap: 10px; border: 1px solid #1f2937; }
-        .details { flex: 1; }
-        .amount { text-align: right; }
-        .fab { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 15px; background: var(--accent); border: none; font-size: 1.5rem; z-index: 20; }
-        .modal { position: fixed; bottom: -100%; left: 0; width: 100%; height: 85%; background: var(--card); border-radius: 20px 20px 0 0; padding: 20px; transition: 0.3s; z-index: 30; overflow-y: auto; }
+        :root {
+            --bg: #030712;
+            --card: #111827;
+            --accent: #00f2ff;
+            --text: #f3f4f6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --reserve: #8b5cf6;
+        }
+
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
+
+        header {
+            background: var(--bg); padding: 15px 20px; display: flex; justify-content: space-between;
+            align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #1f2937;
+        }
+        .user-info span { font-size: 0.7rem; color: #94a3b8; letter-spacing: 1px; display: block; text-transform: uppercase; }
+        .user-info strong { font-size: 0.9rem; color: var(--accent); }
+
+        .balance-card { padding: 25px 20px; text-align: center; }
+        .balance-card small { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; }
+        .balance-card h1 { font-size: 2.2rem; margin: 10px 0; font-weight: 800; }
+
+        .quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 20px; }
+        .mini-card { 
+            background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid #1f2937; 
+            cursor: pointer; transition: 0.2s;
+        }
+        .mini-card:active { transform: scale(0.95); background: #1f2937; }
+        .mini-card i { font-size: 0.8rem; margin-bottom: 5px; }
+        .mini-card span { display: block; font-size: 0.65rem; color: #94a3b8; }
+        .mini-card strong { font-size: 0.9rem; }
+
+        main { padding: 0 20px 100px; }
+        .section-header h3 { font-size: 0.9rem; color: #94a3b8; text-transform: uppercase; margin: 20px 0 15px; }
+
+        .transaction-item {
+            background: var(--card); padding: 15px; border-radius: 18px; margin-bottom: 10px;
+            display: flex; align-items: center; gap: 12px; border: 1px solid #1f2937;
+        }
+        .icon-box { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #1f2937; }
+        .details { flex: 1; overflow: hidden; }
+        .details strong { display: block; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .details span { font-size: 0.7rem; color: #6b7280; }
+        
+        .amount { text-align: right; min-width: 90px; }
+        .amount strong { display: block; font-size: 0.85rem; }
+        .amount .status-debt { font-size: 0.6rem; font-weight: 800; display: block; margin-top: 2px; }
+
+        .fab {
+            position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; border-radius: 20px;
+            background: var(--accent); color: var(--bg); display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; box-shadow: 0 10px 20px rgba(0, 242, 255, 0.3); border: none; z-index: 1000;
+        }
+
+        .modal {
+            position: fixed; bottom: -100%; left: 0; width: 100%; height: 92%;
+            background: var(--card); border-radius: 30px 30px 0 0; z-index: 2000;
+            padding: 25px; box-sizing: border-box; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
         .modal.open { bottom: 0; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; z-index: 25; }
-        input, select { width: 100%; background: #1f2937; border: 1px solid #374151; padding: 12px; border-radius: 10px; color: white; margin-bottom: 10px; }
-        .btn-save { width: 100%; padding: 15px; background: var(--accent); border: none; border-radius: 10px; font-weight: bold; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; }
+
+        input, select {
+            width: 100%; background: #1f2937; border: 1px solid #374151; padding: 14px;
+            border-radius: 12px; color: white; margin-bottom: 12px; font-size: 1rem; box-sizing: border-box;
+        }
+        
+        .btn-confirm { background: var(--accent); color: var(--bg); width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; }
+        .btn-delete { background: none; color: var(--danger); width: 100%; padding: 12px; border: 1px solid var(--danger); border-radius: 12px; margin-top: 15px; font-weight: 700; }
+
+        .label-mini { font-size: 0.65rem; color: var(--accent); font-weight: 800; margin-bottom: 5px; display: block; text-transform: uppercase; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<header onclick="toggleSidebar()">
-    <div><small>PROTOCOLO FÓTON</small><br><strong>WENDEL CARNEIRO</strong></div>
-    <i id="eyeIcon" class="fa-solid fa-eye" onclick="event.stopPropagation(); toggleFantasma()"></i>
-</header>
+    <header>
+        <div class="user-info">
+            <span>PROTOCOLO FÓTON</span>
+            <strong>WENDEL C. R. CARNEIRO</strong>
+        </div>
+        <button id="btnFantasma" onclick="toggleFantasma()" style="background:none; border:1px solid #1f2937; color:white; padding:8px; border-radius:10px;">
+            <i id="eyeIcon" class="fa-solid fa-eye"></i>
+        </button>
+    </header>
 
-<div class="month-selector">
-    <button onclick="mudarMes(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-    <strong id="mesDisplay">Mês Ano</strong>
-    <button onclick="mudarMes(1)"><i class="fa-solid fa-chevron-right"></i></button>
-</div>
-
-<div class="balance-card">
-    <small>SALDO DO MÊS</small>
-    <h1 id="totalSaldo">R$ 0,00</h1>
-</div>
-
-<div class="quick-stats">
-    <div class="mini-card" onclick="setFiltro('Receita')"><span>Entradas</span><br><strong id="totalReceitas">R$ 0,00</strong></div>
-    <div class="mini-card" onclick="setFiltro('Gasto')"><span>Gastos</span><br><strong id="totalGastos">R$ 0,00</strong></div>
-    <div class="mini-card" onclick="setFiltro('Divida')"><span>Dívidas</span><br><strong id="totalDividas">R$ 0,00</strong></div>
-    <div class="mini-card" onclick="setFiltro('Reserva')"><span>Patrimônio</span><br><strong id="totalReserva">R$ 0,00</strong></div>
-</div>
-
-<main id="tabelaCorpo"></main>
-
-<button class="fab" onclick="openModal()"><i class="fa-solid fa-plus"></i></button>
-<div class="overlay" id="overlay" onclick="closeModal()"></div>
-
-<div class="modal" id="modalForm">
-    <h2 id="modalTitle">Nova Operação</h2>
-    <select id="tipo" onchange="toggleParcelas()">
-        <option value="Receita">Receita</option>
-        <option value="Fixo">Gasto Fixo</option>
-        <option value="Variavel">Variável</option>
-        <option value="Divida">Dívida / Boleto</option>
-        <option value="Reserva">Patrimônio</option>
-    </select>
-    <input type="text" id="desc" placeholder="Descrição">
-    <input type="number" id="valor" placeholder="Valor Total" step="0.01">
-    
-    <div id="blocoDivida" class="hidden">
-        <label><small>Parcelar em quantas vezes?</small></label>
-        <input type="number" id="parcelas" value="1">
-        <label><small>Quantas parcelas já pagou?</small></label>
-        <input type="number" id="parcelasPagas" value="0">
+    <div class="balance-card">
+        <small>Saldo Disponível do Mês</small>
+        <h1 id="totalSaldo">R$ 0,00</h1>
     </div>
 
-    <input type="date" id="data">
-    <input type="hidden" id="editIdx">
-    <button class="btn-save" onclick="salvar()">SALVAR</button>
-    <button id="btnDel" class="hidden" onclick="excluir()" style="width:100%; margin-top:10px; background:none; border:1px solid var(--danger); color:var(--danger); padding:10px; border-radius:10px;">EXCLUIR</button>
-</div>
+    <div class="quick-stats">
+        <div class="mini-card"><i class="fa-solid fa-arrow-up" style="color:var(--success)"></i><span>Entradas</span><strong id="totalReceitas">R$ 0,00</strong></div>
+        <div class="mini-card"><i class="fa-solid fa-arrow-down" style="color:var(--warning)"></i><span>Gastos</span><strong id="totalGastos">R$ 0,00</strong></div>
+        <div class="mini-card"><i class="fa-solid fa-barcode" style="color:var(--danger)"></i><span>Dívidas</span><strong id="totalDividas">R$ 0,00</strong></div>
+        <div class="mini-card"><i class="fa-solid fa-vault" style="color:var(--reserve)"></i><span>Patrimônio Salvo</span><strong id="totalReserva">R$ 0,00</strong></div>
+    </div>
 
-<script>
-    let registros = JSON.parse(localStorage.getItem('foton_db')) || [];
-    let dataVis = new Date();
-    let modoF = false, filtro = "Tudo";
+    <main>
+        <div class="section-header"><h3>Extrato Biótico</h3></div>
+        <div id="tabelaCorpo"></div>
+    </main>
 
-    function toggleParcelas() {
-        document.getElementById('blocoDivida').classList.toggle('hidden', document.getElementById('tipo').value !== 'Divida');
-    }
+    <button class="fab" onclick="openModal()"><i class="fa-solid fa-plus"></i></button>
+    <div class="overlay" id="overlay" onclick="closeModal()"></div>
 
-    function salvar() {
-        const t = document.getElementById('tipo').value, d = document.getElementById('desc').value;
-        const v = parseFloat(document.getElementById('valor').value), dt = document.getElementById('data').value;
-        const p = parseInt(document.getElementById('parcelas').value) || 1, pp = parseInt(document.getElementById('parcelasPagas').value) || 0;
-        const idx = document.getElementById('editIdx').value;
-
-        if(!d || !v || !dt) return alert("Preencha tudo!");
-
-        if(idx !== "") {
-            registros[idx] = { t, d, v, dt, p: 1, pp: 0 };
-        } else if(t === 'Divida' && p > 1) {
-            const vP = v / p;
-            let dObj = new Date(dt + "T12:00:00");
-            for(let i=1; i<=p; i++) {
-                let nD = new Date(dObj.getFullYear(), dObj.getMonth()+(i-1), dObj.getDate()).toISOString().split('T')[0];
-                registros.push({ t, d: `${d} (${i}/${p})`, v: vP, dt: nD, pago: (i <= pp) });
-            }
-        } else {
-            registros.push({ t, d, v, dt, pago: (t==='Receita' || t==='Reserva') });
-        }
-        localStorage.setItem('foton_db', JSON.stringify(registros));
-        closeModal(); renderizar();
-    }
-
-    function renderizar() {
-        const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-        document.getElementById('mesDisplay').innerText = `${meses[dataVis.getMonth()]} ${dataVis.getFullYear()}`;
-        const prefix = `${dataVis.getFullYear()}-${String(dataVis.getMonth()+1).padStart(2,'0')}`;
+    <div class="modal" id="modalForm">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 id="modalTitle" style="margin:0; font-size:1.2rem;">Nova Operação</h2>
+            <i class="fa-solid fa-circle-xmark" style="font-size:1.5rem; color:#374151;" onclick="closeModal()"></i>
+        </div>
         
-        const corpo = document.getElementById('tabelaCorpo'); corpo.innerHTML = '';
-        let sRec=0, sGas=0, sDiv=0, sRes=0;
+        <span class="label-mini">Tipo</span>
+        <select id="tipo" onchange="atualizarSubmenu()">
+            <option value="Receita">Receita</option>
+            <option value="Fixo">Gasto Fixo</option>
+            <option value="Variavel">Gasto Variável</option>
+            <option value="Divida">Dívida / Boleto</option>
+            <option value="Reserva">Patrimônio</option>
+        </select>
 
-        registros.sort((a,b) => new Date(b.dt) - new Date(a.dt)).forEach((r, idx) => {
-            const v = parseFloat(r.v);
-            if(r.dt.startsWith(prefix)) {
-                if(r.t==='Receita') sRec+=v; else if(r.t==='Divida') sDiv+=(r.pago?0:v); else if(r.t==='Reserva') sRes+=v; else sGas+=v;
-                
-                if(filtro === "Tudo" || filtro === r.t || (filtro === "Gasto" && (r.t==='Fixo'||r.t==='Variavel'))) {
-                    corpo.innerHTML += `<div class="transaction-item" onclick="openModal(${registros.indexOf(r)})">
-                        <div class="details"><strong>${r.d}</strong><br><small>${r.dt.split('-').reverse().join('/')}</small></div>
-                        <div class="amount"><strong>${modoF?'R$ •••':v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</strong><br>
-                        <small style="color:${r.pago? 'var(--success)':'var(--danger)'}">${r.pago?'PAGO':'PENDENTE'}</small></div>
+        <span class="label-mini">Categoria</span>
+        <select id="submenu" onchange="definirDescricao()"></select>
+        <input type="text" id="desc" placeholder="Descrição Personalizada">
+        
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div><span class="label-mini">Valor Total</span><input type="number" id="valor" placeholder="0,00" step="0.01" inputmode="decimal"></div>
+            <div id="campoPago"><span class="label-mini">Valor Pago (Opcional)</span><input type="number" id="pago" placeholder="0,00" step="0.01" inputmode="decimal"></div>
+        </div>
+
+        <div id="campoParcelas" class="hidden" style="margin-bottom: 12px; padding: 10px; background: rgba(245, 158, 11, 0.05); border-radius: 10px; border: 1px dashed var(--warning);">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div>
+                    <span class="label-mini" style="color:#94a3b8">Total de Parcelas</span>
+                    <input type="number" id="parcelas" value="1" min="1" inputmode="numeric" placeholder="Ex: 48" style="margin-bottom:0;">
+                </div>
+                <div>
+                    <span class="label-mini" style="color:var(--success)">Quantas já pagou?</span>
+                    <input type="number" id="parcelasPagas" value="0" min="0" inputmode="numeric" placeholder="Ex: 5" style="margin-bottom:0;">
+                </div>
+            </div>
+            <p style="font-size: 0.6rem; color: #94a3b8; margin: 8px 0 0 0; text-align: center;">O sistema dará baixa nas parcelas já pagas.</p>
+        </div>
+
+        <span class="label-mini">Data (Vencimento / 1ª Parcela)</span>
+        <input type="date" id="data">
+        
+        <input type="hidden" id="editIndex">
+        <button class="btn-confirm" onclick="salvar()">SALVAR OPERAÇÃO</button>
+        <button id="btnExcluir" class="btn-delete hidden" onclick="excluirRegistro()">EXCLUIR REGISTRO</button>
+    </div>
+
+    <script>
+        let registros = JSON.parse(localStorage.getItem('foton_db')) || [];
+        let modoFantasma = false;
+
+        // 1. Atualização das opções: Adicionado Financiamento em "Divida"
+        const opcoesSubmenu = {
+            "Receita": ["💰 Salário", "🚀 Freelance", "✨ Outros"],
+            "Fixo": ["🏠 Aluguel", "⚡ Energia", "🌐 Internet", "🎬 Streamings"],
+            "Variavel": ["🛒 Mercado", "🍕 Alimentação", "⛽ Combustível", "🚗 Transporte"],
+            "Divida": ["🏢 Financiamento", "💳 Cartão", "🤝 Empréstimo", "🧾 Boleto"],
+            "Reserva": ["🏦 Investimentos", "📦 Caixinha", "🛡️ Reserva Emergência"]
+        };
+
+        function renderizar() {
+            const corpo = document.getElementById('tabelaCorpo');
+            corpo.innerHTML = '';
+            let sRec = 0, sGas = 0, sDiv = 0, sRes = 0;
+
+            const ordenados = [...registros].sort((a, b) => new Date(b.data) - new Date(a.data));
+
+            ordenados.forEach(r => {
+                const idxOriginal = registros.indexOf(r);
+                const vTotal = parseFloat(r.valor), vPago = parseFloat(r.pago), falta = vTotal - vPago;
+                let icon = 'fa-receipt', color = '#00f2ff';
+
+                if(r.tipo === 'Receita') { sRec += vTotal; icon='fa-arrow-up'; color='var(--success)'; }
+                else if(r.tipo === 'Divida') { sDiv += falta; icon='fa-barcode'; color='var(--danger)'; }
+                else if(r.tipo === 'Reserva') { sRes += vTotal; icon='fa-vault'; color='var(--reserve)'; }
+                else { sGas += vPago; icon='fa-cart-shopping'; color='var(--warning)'; }
+
+                const statusColor = vPago >= vTotal ? 'var(--success)' : 'var(--danger)';
+                const statusText = vPago >= vTotal ? 'LIQUIDADO' : `FALTA: ${ocultarBits(falta)}`;
+
+                corpo.innerHTML += `
+                    <div class="transaction-item" onclick="openModal(${idxOriginal})">
+                        <div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div>
+                        <div class="details">
+                            <strong>${r.desc}</strong>
+                            <span>${r.data.split('-').reverse().join('/')} • ${r.tipo}</span>
+                        </div>
+                        <div class="amount">
+                            <strong>${ocultarBits(vTotal)}</strong>
+                            <span class="status-debt" style="color:${statusColor}">${statusText}</span>
+                        </div>
                     </div>`;
+            });
+
+            document.getElementById('totalReceitas').innerText = ocultarBits(sRec);
+            document.getElementById('totalGastos').innerText = ocultarBits(sGas);
+            document.getElementById('totalDividas').innerText = ocultarBits(sDiv);
+            document.getElementById('totalReserva').innerText = ocultarBits(sRes);
+            document.getElementById('totalSaldo').innerText = ocultarBits(sRec - (sGas + sDiv));
+        }
+
+        function openModal(idx = null) {
+            document.getElementById('modalForm').classList.add('open');
+            document.getElementById('overlay').style.display = 'block';
+            if(idx !== null) {
+                const r = registros[idx];
+                document.getElementById('modalTitle').innerText = "Editar Parcela";
+                document.getElementById('editIndex').value = idx;
+                document.getElementById('tipo').value = r.tipo;
+                atualizarSubmenu();
+                document.getElementById('desc').value = r.desc;
+                document.getElementById('valor').value = r.valor;
+                document.getElementById('pago').value = r.pago;
+                document.getElementById('data').value = r.data;
+                document.getElementById('btnExcluir').classList.remove('hidden');
+                document.getElementById('campoParcelas').classList.add('hidden'); // Oculta parcelamento na edição
+            } else {
+                document.getElementById('modalTitle').innerText = "Nova Operação";
+                document.getElementById('btnExcluir').classList.add('hidden');
+                resetForm();
+                atualizarSubmenu();
+            }
+        }
+
+        function closeModal() { document.getElementById('modalForm').classList.remove('open'); document.getElementById('overlay').style.display = 'none'; }
+        
+        function atualizarSubmenu() {
+            const tipo = document.getElementById('tipo').value;
+            const sub = document.getElementById('submenu');
+            sub.innerHTML = '';
+            opcoesSubmenu[tipo].forEach(opt => sub.innerHTML += `<option value="${opt}">${opt}</option>`);
+            
+            const fieldPago = document.getElementById('campoPago');
+            const fieldParcela = document.getElementById('campoParcelas');
+            
+            // O campo de parcelamento APENAS aparece para Dívidas
+            if(tipo === 'Receita' || tipo === 'Reserva') {
+                fieldPago.classList.add('hidden');
+                fieldParcela.classList.add('hidden');
+            } else if (tipo === 'Divida') {
+                fieldPago.classList.remove('hidden');
+                fieldParcela.classList.remove('hidden');
+            } else {
+                fieldPago.classList.remove('hidden');
+                fieldParcela.classList.add('hidden');
+            }
+            definirDescricao();
+        }
+
+        function definirDescricao() { document.getElementById('desc').value = document.getElementById('submenu').value.split(' ').slice(1).join(' '); }
+        
+        function salvar() {
+            const tipo = document.getElementById('tipo').value;
+            const desc = document.getElementById('desc').value;
+            const valorTotal = parseFloat(document.getElementById('valor').value) || 0;
+            const dataBase = document.getElementById('data').value;
+            let pago = parseFloat(document.getElementById('pago').value) || 0;
+            const editIdx = document.getElementById('editIndex').value;
+            
+            // Variáveis de Parcelamento
+            let parcelas = parseInt(document.getElementById('parcelas').value) || 1;
+            let parcelasPagas = parseInt(document.getElementById('parcelasPagas').value) || 0;
+
+            if(!desc || valorTotal <= 0 || !dataBase) return alert("Preencha o valor e a data!");
+            if(tipo === 'Receita' || tipo === 'Reserva') pago = valorTotal;
+
+            if (editIdx !== "") {
+                // Modo Edição: Altera apenas 1 lançamento
+                registros[editIdx] = { tipo, desc, valor: valorTotal, pago, data: dataBase };
+            } else {
+                // Modo Criação
+                if (tipo === 'Divida' && parcelas > 1) {
+                    // Lógica de Parcelamento Inteligente com Baixa Automática
+                    const valorParcela = valorTotal / parcelas;
+                    let dataObj = new Date(dataBase + "T12:00:00"); // T12 para evitar bug de fuso horário
+                    
+                    for (let i = 1; i <= parcelas; i++) {
+                        let novaData = new Date(dataObj.getFullYear(), dataObj.getMonth() + (i - 1), dataObj.getDate());
+                        let dataFormatada = novaData.toISOString().split('T')[0];
+                        let descParcela = `${desc} (${i}/${parcelas})`;
+                        
+                        // Se a parcela atual for menor ou igual à quantidade já paga, dá baixa automática
+                        let pagoParcela = (i <= parcelasPagas) ? valorParcela : 0; 
+                        
+                        registros.push({ tipo, desc: descParcela, valor: valorParcela, pago: pagoParcela, data: dataFormatada });
+                    }
+                } else {
+                    // Inserção normal
+                    registros.push({ tipo, desc, valor: valorTotal, pago, data: dataBase });
                 }
             }
-        });
-        document.getElementById('totalReceitas').innerText = sRec.toLocaleString('pt-BR');
-        document.getElementById('totalGastos').innerText = sGas.toLocaleString('pt-BR');
-        document.getElementById('totalDividas').innerText = sDiv.toLocaleString('pt-BR');
-        document.getElementById('totalReserva').innerText = sRes.toLocaleString('pt-BR');
-        document.getElementById('totalSaldo').innerText = (sRec - (sGas + sDiv)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    }
-
-    function mudarMes(n) { dataVis.setMonth(dataVis.getMonth() + n); renderizar(); }
-    function openModal(idx=null) {
-        document.getElementById('modalForm').classList.add('open');
-        document.getElementById('overlay').style.display='block';
-        if(idx!==null) {
-            const r = registros[idx];
-            document.getElementById('editIdx').value = idx;
-            document.getElementById('desc').value = r.d;
-            document.getElementById('valor').value = r.v;
-            document.getElementById('tipo').value = r.t;
-            document.getElementById('data').value = r.dt;
-            document.getElementById('btnDel').classList.remove('hidden');
-        } else {
-            document.getElementById('editIdx').value = "";
-            document.getElementById('btnDel').classList.add('hidden');
-            document.getElementById('data').value = new Date().toISOString().split('T')[0];
+            
+            localStorage.setItem('foton_db', JSON.stringify(registros));
+            closeModal(); renderizar();
         }
-    }
-    function closeModal() { document.getElementById('modalForm').classList.remove('open'); document.getElementById('overlay').style.display='none'; }
-    function excluir() { registros.splice(document.getElementById('editIdx').value, 1); localStorage.setItem('foton_db', JSON.stringify(registros)); closeModal(); renderizar(); }
-    function toggleFantasma() { modoF = !modoF; renderizar(); }
-    window.onload = renderizar;
-</script>
+
+        function excluirRegistro() { 
+            if(confirm("Confirma a exclusão deste registro?")) { 
+                registros.splice(document.getElementById('editIndex').value, 1); 
+                localStorage.setItem('foton_db', JSON.stringify(registros)); 
+                closeModal(); renderizar(); 
+            } 
+        }
+
+        function toggleFantasma() { modoFantasma = !modoFantasma; document.getElementById('eyeIcon').className = modoFantasma ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'; renderizar(); }
+        function ocultarBits(v) { return modoFantasma ? "R$ ••••" : "R$ " + v.toLocaleString('pt-BR', {minimumFractionDigits: 2}); }
+        function resetForm() { document.getElementById('editIndex').value = ""; document.getElementById('valor').value = ""; document.getElementById('pago').value = ""; document.getElementById('parcelas').value = "1"; document.getElementById('parcelasPagas').value = "0"; document.getElementById('desc').value = ""; document.getElementById('data').value = new Date().toISOString().split('T')[0]; }
+
+        window.onload = () => { renderizar(); };
+    </script>
 </body>
 </html>
