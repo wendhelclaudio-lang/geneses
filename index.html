@@ -11,6 +11,9 @@
     <meta name="theme-color" content="#0a192f">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
         /* VARIÁVEIS DO TEMA ESCURO (PADRÃO) */
@@ -22,8 +25,7 @@
             --text-muted: #94a3b8;
             --border: #1f2937;
             --input-bg: #1f2937;
-            --input-border: #374151;
-            
+            --hover-bg: rgba(255,255,255,0.05);
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
@@ -34,21 +36,20 @@
         [data-theme="light"] {
             --bg: #f8fafc;
             --card: #ffffff;
-            --accent: #0284c7; 
+            --accent: #0284c7;
             --text: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
             --input-bg: #f1f5f9;
-            --input-border: #cbd5e1;
-            
+            --hover-bg: rgba(0,0,0,0.05);
             --success: #059669;
             --danger: #dc2626;
             --warning: #d97706;
             --reserve: #7c3aed;
         }
 
-        * { box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
+        * { box-sizing: border-box; outline: none; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
+        body { font-family: 'Ubuntu', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
 
         header {
             background: var(--bg); padding: 15px 20px; display: flex; justify-content: space-between;
@@ -61,10 +62,11 @@
             background: linear-gradient(135deg, var(--accent), #0a192f);
             display: flex; align-items: center; justify-content: center;
             font-weight: bold; color: #ffffff; border: 2px solid var(--border);
-            font-size: 1.2rem;
         }
-        [data-theme="light"] .avatar { background: linear-gradient(135deg, var(--accent), #e0f2fe); border-color: var(--border); }
         
+        /* Ajuste do avatar no tema claro */
+        [data-theme="light"] .avatar { background: linear-gradient(135deg, var(--accent), #bae6fd); }
+
         .user-info span { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; display: block; text-transform: uppercase; }
         .user-info strong { font-size: 0.9rem; color: var(--text); }
 
@@ -78,19 +80,18 @@
         .sidebar.open { right: 0; }
         .sidebar-header { margin-bottom: 25px; text-align: center; position: relative; }
         
-        .status-panel { background: rgba(125, 125, 125, 0.05); padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid var(--border); }
+        .status-panel { background: var(--hover-bg); padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid var(--border); }
         .status-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 10px; align-items: center; }
         .status-row:last-child { margin-bottom: 0; }
         .status-label { color: var(--text-muted); }
 
         .sidebar-menu { display: flex; flex-direction: column; gap: 10px; flex: 1; }
-        .menu-item { padding: 15px; border-radius: 12px; background: rgba(125, 125, 125, 0.05); display: flex; align-items: center; gap: 15px; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent; color: var(--text); justify-content: space-between; }
+        .menu-item { padding: 15px; border-radius: 12px; background: var(--hover-bg); display: flex; align-items: center; gap: 15px; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent; color: var(--text); }
         .menu-item:active { background: var(--border); }
-        .menu-item div { display: flex; align-items: center; gap: 15px; }
         .menu-item i { color: var(--accent); font-size: 1.1rem; width: 25px; text-align: center; }
 
         .month-selector { display: flex; justify-content: space-between; align-items: center; padding: 20px 20px 0; }
-        .month-selector button { background: rgba(125, 125, 125, 0.05); border: 1px solid var(--border); color: var(--text); width: 35px; height: 35px; border-radius: 10px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .month-selector button { background: var(--hover-bg); border: 1px solid var(--border); color: var(--text); width: 35px; height: 35px; border-radius: 10px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .month-selector span { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; }
 
         .balance-card { padding: 15px 20px 25px; text-align: center; }
@@ -131,21 +132,21 @@
         .chart-track { background: var(--bg); height: 6px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
         .chart-fill { height: 100%; width: 0%; transition: 1s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
 
-        .fab { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; border-radius: 20px; background: var(--accent); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); border: none; z-index: 1000; cursor: pointer; }
+        .fab { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; border-radius: 20px; background: var(--accent); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); border: none; z-index: 1000; cursor: pointer; }
 
         .modal { position: fixed; bottom: -100%; left: 0; width: 100%; height: 92%; background: var(--card); border-radius: 30px 30px 0 0; z-index: 2000; padding: 25px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; border-top: 1px solid var(--border); }
         .modal.open { bottom: 0; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; backdrop-filter: blur(3px); }
 
-        input, select { width: 100%; background: var(--input-bg); border: 1px solid var(--input-border); padding: 14px; border-radius: 12px; color: var(--text); margin-bottom: 12px; font-size: 1rem; outline: none; }
+        input, select { width: 100%; background: var(--input-bg); border: 1px solid var(--border); padding: 14px; border-radius: 12px; color: var(--text); margin-bottom: 12px; font-family: 'Ubuntu', sans-serif; font-size: 1rem; }
         
-        .btn-confirm { background: var(--accent); color: #ffffff; width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; margin-top: 10px; cursor: pointer; }
-        .btn-delete { background: none; color: var(--danger); width: 100%; padding: 12px; border: 1px solid var(--danger); border-radius: 12px; margin-top: 15px; font-weight: 700; cursor: pointer; }
+        .btn-confirm { background: var(--accent); color: #ffffff; width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; font-family: 'Ubuntu', sans-serif; margin-top: 10px; cursor: pointer; }
+        .btn-delete { background: none; color: var(--danger); width: 100%; padding: 12px; border: 1px solid var(--danger); border-radius: 12px; margin-top: 15px; font-weight: 700; font-family: 'Ubuntu', sans-serif; cursor: pointer; }
 
         .label-mini { font-size: 0.65rem; color: var(--accent); font-weight: 800; margin-bottom: 5px; display: block; text-transform: uppercase; }
         .hidden { display: none !important; }
 
-        .bloco-parcelas, .resumo-quitacao { background: rgba(125, 125, 125, 0.05); padding: 15px; border-radius: 12px; border: 1px dashed var(--accent); margin-bottom: 15px; }
+        .bloco-parcelas, .resumo-quitacao { background: var(--hover-bg); padding: 15px; border-radius: 12px; border: 1px dashed var(--accent); margin-bottom: 15px; }
         .resumo-quitacao h4 { margin: 0 0 10px 0; font-size: 0.75rem; color: var(--accent); text-transform: uppercase; }
         .resumo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .resumo-item { font-size: 0.7rem; color: var(--text-muted); }
@@ -180,32 +181,14 @@
             <div class="status-row"><span class="status-label">Saúde</span><strong id="statusFluxo" style="color: var(--text);">ESTÁVEL</strong></div>
         </div>
         <div class="sidebar-menu">
-            <div class="menu-item" onclick="mudarNome()">
-                <div><i class="fa-solid fa-user-pen"></i> <span>Configurar Nome</span></div>
-            </div>
+            <div class="menu-item" onclick="mudarNome()"><i class="fa-solid fa-user-pen"></i> <span>Mudar Nome</span></div>
+            <div class="menu-item" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i> <span>Alternar Tema</span></div>
             
-            <div class="menu-item" onclick="toggleTheme()">
-                <div><i class="fa-solid fa-circle-half-stroke"></i> <span>Alternar Tema</span></div>
-            </div>
-
-            <div class="menu-item" onclick="mudarMoeda()">
-                <div><i class="fa-solid fa-money-bill-transfer" style="color: var(--warning)"></i> <span>Símbolo da Moeda</span></div>
-                <span id="currentCurrencyDisplay" style="font-size: 0.8rem; font-weight: bold; color: var(--text)">R$</span>
-            </div>
-            
-            <div class="menu-item" onclick="toggleFantasma()">
-                <div><i class="fa-solid fa-ghost"></i> <span>Privacidade</span></div>
-            </div>
-            <div class="menu-item" onclick="exportarDados()">
-                <div><i class="fa-solid fa-file-export"></i> <span>Exportar Relatório</span></div>
-            </div>
+            <div class="menu-item" onclick="toggleFantasma()"><i class="fa-solid fa-ghost"></i> <span>Privacidade</span></div>
+            <div class="menu-item" onclick="exportarDados()"><i class="fa-solid fa-file-export"></i> <span>Exportar CSV</span></div>
             <input type="file" id="fileInput" accept=".csv" style="display: none;" onchange="importarDados(event)">
-            <div class="menu-item" onclick="document.getElementById('fileInput').click()">
-                <div><i class="fa-solid fa-file-import"></i> <span>Importar Backup</span></div>
-            </div>
-            <div class="menu-item" style="border-color: rgba(239, 68, 68, 0.2);" onclick="limparTerminal()">
-                <div><i class="fa-solid fa-trash" style="color: var(--danger);"></i> <span style="color: var(--danger);">Zerar Banco</span></div>
-            </div>
+            <div class="menu-item" onclick="document.getElementById('fileInput').click()"><i class="fa-solid fa-file-import"></i> <span>Importar Backup</span></div>
+            <div class="menu-item" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.2);" onclick="limparTerminal()"><i class="fa-solid fa-trash" style="color: var(--danger);"></i> <span>Resetar Banco</span></div>
         </div>
     </div>
 
@@ -289,6 +272,7 @@
         </div>
 
         <input type="text" id="desc" placeholder="Descrição Personalizada">
+        
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
             <div>
                 <span class="label-mini">Valor</span>
@@ -309,7 +293,9 @@
                 <div><span class="label-mini">Pagas</span><input type="number" id="parcelasPagas" value="0" min="0"></div>
             </div>
         </div>
-        <span class="label-mini">Data</span><input type="date" id="data">
+
+        <span class="label-mini">Data</span>
+        <input type="date" id="data">
         
         <input type="hidden" id="editIndex">
         <button class="btn-confirm" onclick="salvar()">SALVAR</button>
@@ -320,55 +306,39 @@
         let registros = JSON.parse(localStorage.getItem('foton_db')) || [];
         let modoFantasma = false, filtroAtual = "Tudo", subFiltro = "Pendente", dataVisualizacao = new Date();
 
-        // SEGURANÇA: Garantir que appConfig sempre tenha a moeda salva corretamente.
-        let savedConfig = JSON.parse(localStorage.getItem('meucaixa_config')) || {};
-        let appConfig = {
-            nome: savedConfig.nome || "WENDEL CARNEIRO",
-            moeda: savedConfig.moeda || "R$"
-        };
-
-        // LÓGICA DO NOME E MOEDA
-        function salvarConfig() {
-            localStorage.setItem('meucaixa_config', JSON.stringify(appConfig));
-            carregarConfig();
-            renderizar();
-        }
-
-        function carregarConfig() {
-            document.getElementById('userNameDisplay').innerText = appConfig.nome;
-            document.getElementById('currentCurrencyDisplay').innerText = appConfig.moeda;
-        }
-
-        function mudarNome() {
-            let novoNome = prompt("Digite o nome que deseja exibir no painel:", appConfig.nome);
-            if (novoNome && novoNome.trim() !== "") {
-                appConfig.nome = novoNome.trim().toUpperCase();
-                salvarConfig();
-                closeAll();
-            }
-        }
-
-        function mudarMoeda() {
-            let moedas = ["R$", "$", "€"];
-            let idx = moedas.indexOf(appConfig.moeda);
-            if (idx === -1) idx = 0; // Se houver erro antigo, volta pro R$
-            appConfig.moeda = moedas[(idx + 1) % moedas.length];
-            salvarConfig();
-        }
-
-        // LÓGICA DE TEMA CLARO/ESCURO
+        // 1. CHECAR TEMA AO INICIAR
         function checkTheme() {
             const savedTheme = localStorage.getItem('meucaixa_theme');
-            if (savedTheme) { document.documentElement.setAttribute('data-theme', savedTheme); }
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
         }
         checkTheme();
 
+        // 2. FUNÇÃO DE ALTERNAR TEMA
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('meucaixa_theme', newTheme);
-            closeAll();
+            closeAll(); // Fecha o menu para ver a mudança
+        }
+
+        // 3. FUNÇÃO DE CONFIGURAR NOME
+        function carregarNome() {
+            let nomeSalvo = localStorage.getItem('meucaixa_username');
+            if(nomeSalvo) {
+                document.getElementById('userNameDisplay').innerText = nomeSalvo;
+            }
+        }
+
+        function mudarNome() {
+            let novoNome = prompt("Como deseja ser chamado no MeuCaixa?");
+            if (novoNome && novoNome.trim() !== "") {
+                localStorage.setItem('meucaixa_username', novoNome.trim().toUpperCase());
+                carregarNome();
+                closeAll();
+            }
         }
 
         const opcoesSubmenu = {
@@ -379,10 +349,27 @@
             "Reserva": ["🏦 Investimentos", "📦 Caixinha", "🛡️ Reserva Emergência"]
         };
 
-        function mudarMes(delta) { dataVisualizacao.setMonth(dataVisualizacao.getMonth() + delta); renderizar(); }
-        function formatarMesAno(d) { const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']; return `${meses[d.getMonth()]} ${d.getFullYear()}`; }
-        function toggleSidebar() { const s = document.getElementById('profileSidebar'); s.classList.toggle('open'); document.getElementById('overlay').style.display = s.classList.contains('open') ? 'block' : 'none'; }
-        function closeAll() { document.getElementById('modalForm').classList.remove('open'); document.getElementById('profileSidebar').classList.remove('open'); document.getElementById('overlay').style.display = 'none'; }
+        function mudarMes(delta) { 
+            dataVisualizacao.setMonth(dataVisualizacao.getMonth() + delta); 
+            renderizar(); 
+        }
+
+        function formatarMesAno(d) { 
+            const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']; 
+            return `${meses[d.getMonth()]} ${d.getFullYear()}`; 
+        }
+
+        function toggleSidebar() { 
+            const s = document.getElementById('profileSidebar'); 
+            s.classList.toggle('open'); 
+            document.getElementById('overlay').style.display = s.classList.contains('open') ? 'block' : 'none'; 
+        }
+
+        function closeAll() { 
+            document.getElementById('modalForm').classList.remove('open'); 
+            document.getElementById('profileSidebar').classList.remove('open'); 
+            document.getElementById('overlay').style.display = 'none'; 
+        }
         
         function filtrarExtrato(c) {
             filtroAtual = c;
@@ -414,7 +401,7 @@
                 const vT = parseFloat(r.valor) || 0;
                 const vP = parseFloat(r.pago) || 0;
                 const falta = vT - vP;
-                const isPago = (vP >= vT && vT > 0); // REGRA DE STATUS CORRIGIDA
+                const isPago = vP >= vT && vT > 0;
 
                 if(r.tipo === 'Receita') {
                     if(isPago) sRec += vT; 
@@ -434,21 +421,19 @@
                 }
 
                 if(exibir) {
-                    // MUDANÇA DE ÍCONE CONFORME SOLICITADO (PATRIMÔNIO = FA-VAULT)
                     let icon = '';
                     if (r.tipo === 'Receita') icon = 'fa-arrow-up';
                     else if (r.tipo === 'Divida') icon = 'fa-barcode';
-                    else if (r.tipo === 'Reserva') icon = 'fa-vault'; 
+                    else if (r.tipo === 'Reserva') icon = 'fa-vault';
                     else icon = 'fa-arrow-down';
 
                     let color = r.tipo === 'Receita' ? 'var(--success)' : (r.tipo === 'Divida' ? 'var(--danger)' : (r.tipo === 'Reserva' ? 'var(--reserve)' : 'var(--warning)'));
                     let extraInfo = r.forma ? ` • ${r.forma}` : '';
-                    
                     let statusLabel = isPago ? (r.tipo === 'Receita' ? 'RECEBIDO' : 'LIQUIDADO') : 'PENDENTE';
                     
                     corpo.innerHTML += `
                         <div class="transaction-item" onclick="openModal(${idxO})">
-                            <div class="icon-box" style="color:${color}; border: 1px solid var(--border);">
+                            <div class="icon-box" style="color:${color};">
                                 <i class="fa-solid ${icon}"></i>
                             </div>
                             <div class="details">
@@ -562,7 +547,7 @@
             
             let valorPago = isP ? vT : 0;
 
-            if(!desc || vT <= 0 || !dBase) return alert("Preencha todos os campos corretamente!");
+            if(!desc || vT <= 0 || !dBase) return alert("Preencha todos os campos!");
 
             if(editIdx !== "") { 
                 registros[editIdx] = { ...registros[editIdx], tipo: t, desc, valor: vT, pago: valorPago, data: dBase, forma: t==='Receita' ? forma : null }; 
@@ -646,12 +631,8 @@
             renderizar(); 
         }
 
-        function formatarMoeda(valor) {
-            return appConfig.moeda + " " + valor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        }
-
         function ocultarBits(v) { 
-            return modoFantasma ? appConfig.moeda + " ••••" : formatarMoeda(v); 
+            return modoFantasma ? "R$ ••••" : "R$ " + v.toLocaleString('pt-BR', {minimumFractionDigits: 2}); 
         }
 
         function limparTerminal() { 
@@ -672,7 +653,7 @@
         }
         
         window.onload = () => {
-            carregarConfig();
+            carregarNome();
             renderizar();
         };
     </script>
