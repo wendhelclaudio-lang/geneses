@@ -164,7 +164,7 @@
     </div>
 
     <div class="balance-card">
-        <small>Saldo Disponível do Mês</small>
+        <small>Saldo do Mês</small>
         <h1 id="totalSaldo">R$ 0,00</h1>
     </div>
 
@@ -214,14 +214,21 @@
 
         <span class="label-mini">Tipo</span>
         <select id="tipo" onchange="atualizarSubmenu()"><option value="Receita">Receita</option><option value="Fixo">Gasto Fixo</option><option value="Variavel">Gasto Variável</option><option value="Divida">Dívida / Boleto</option><option value="Reserva">Patrimônio</option></select>
+        
         <span class="label-mini">Categoria</span><select id="submenu" onchange="definirDescricao()"></select>
         
         <div id="blocoRecebimento" class="hidden">
-            <span class="label-mini">Forma de Recebimento</span>
-            <select id="formaRecebimento"><option value="Pix">Pix</option><option value="Dinheiro">Dinheiro</option><option value="Cartão">Cartão</option><option value="Outros">Outros</option></select>
+            <span class="label-mini">Como você recebeu?</span>
+            <select id="formaRecebimento">
+                <option value="Pix">Pix</option>
+                <option value="Dinheiro">Dinheiro</option>
+                <option value="Cartão">Cartão</option>
+                <option value="Outros">Outros</option>
+            </select>
         </div>
 
         <input type="text" id="desc" placeholder="Descrição Personalizada">
+        
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
             <div><span class="label-mini">Valor</span><input type="number" id="valor" placeholder="0,00" step="0.01" inputmode="decimal"></div>
             <div id="campoPago"><span class="label-mini">Confirmado?</span><select id="selectPago"><option value="0">Não</option><option value="1">Sim</option></select></div>
@@ -233,6 +240,7 @@
                 <div><span class="label-mini">Pagas</span><input type="number" id="parcelasPagas" value="0" min="0"></div>
             </div>
         </div>
+
         <span class="label-mini">Data</span><input type="date" id="data">
         <input type="hidden" id="editIndex"><button class="btn-confirm" onclick="salvar()">SALVAR</button>
         <button id="btnExcluir" class="btn-delete hidden" onclick="excluirRegistro()">EXCLUIR</button>
@@ -284,16 +292,7 @@
                 const vT = parseFloat(r.valor), vP = parseFloat(r.pago), falta = vT - vP;
                 const isPago = vP >= vT;
 
-                // NOVA REGRA: Receita só entra no saldo se isPago (Confirmado) for verdadeiro
-                if(r.tipo === 'Receita') {
-                    if(isPago) sRec += vT; 
-                } else if(r.tipo === 'Divida') {
-                    sDiv += falta;
-                } else if(r.tipo === 'Reserva') {
-                    sRes += vT;
-                } else {
-                    sGas += vP;
-                }
+                if(r.tipo === 'Receita') sRec += vT; else if(r.tipo === 'Divida') sDiv += falta; else if(r.tipo === 'Reserva') sRes += vT; else sGas += vP;
 
                 let exibir = (filtroAtual === "Tudo") || (filtroAtual === r.tipo) || (filtroAtual === "Gasto" && (r.tipo === "Fixo" || r.tipo === "Variavel"));
                 if (termoBusca !== "" && !r.desc.toLowerCase().includes(termoBusca)) exibir = false;
@@ -306,11 +305,7 @@
                     let icon = r.tipo === 'Receita' ? 'fa-money-bill-trend-up' : (r.tipo === 'Divida' ? 'fa-barcode' : (r.tipo === 'Reserva' ? 'fa-vault' : 'fa-cart-shopping'));
                     let color = r.tipo === 'Receita' ? 'var(--success)' : (r.tipo === 'Divida' ? 'var(--danger)' : (r.tipo === 'Reserva' ? 'var(--reserve)' : 'var(--warning)'));
                     let extraInfo = r.forma ? ` • ${r.forma}` : '';
-                    
-                    // STATUS TEXT CORRIGIDO
-                    let statusLabel = isPago ? (r.tipo === 'Receita' ? 'RECEBIDO' : 'LIQUIDADO') : 'PENDENTE';
-                    
-                    corpo.innerHTML += `<div class="transaction-item" onclick="openModal(${idxO})"><div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div><div class="details"><strong>${r.desc}</strong><span>${r.data.split('-').reverse().join('/')} • ${r.tipo}${extraInfo}</span></div><div class="amount"><strong>${ocultarBits(vT)}</strong><span class="status-debt" style="color:${isPago ? 'var(--success)' : 'var(--danger)'}">${statusLabel}</span></div></div>`;
+                    corpo.innerHTML += `<div class="transaction-item" onclick="openModal(${idxO})"><div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div><div class="details"><strong>${r.desc}</strong><span>${r.data.split('-').reverse().join('/')} • ${r.tipo}${extraInfo}</span></div><div class="amount"><strong>${ocultarBits(vT)}</strong><span class="status-debt" style="color:${isPago ? 'var(--success)' : 'var(--danger)'}">${isPago ? (r.tipo === 'Receita' ? 'RECEBIDO' : 'LIQUIDADO') : 'PENDENTE'}</span></div></div>`;
                 }
             });
 
@@ -350,16 +345,24 @@
                 if (r.tipo === 'Receita') {
                     resumo.classList.remove('hidden');
                     document.getElementById('resumoTitulo').innerText = "Resumo Receitas (Mês)";
-                    const recs = registros.filter(reg => reg.tipo === 'Receita' && reg.data.startsWith(prefixoMes) && reg.pago >= reg.valor);
+                    const recs = registros.filter(reg => reg.tipo === 'Receita' && reg.data.startsWith(prefixoMes));
                     const porForma = (f) => recs.filter(x => x.forma === f).reduce((a,b) => a+b.valor, 0);
-                    document.getElementById('resumoConteudo').innerHTML = `<div class="resumo-item">Pix<strong>${ocultarBits(porForma('Pix'))}</strong></div><div class="resumo-item">Dinheiro<strong>${ocultarBits(porForma('Dinheiro'))}</strong></div><div class="resumo-item">Cartão<strong>${ocultarBits(porForma('Cartão'))}</strong></div><div class="resumo-item">Total Recebido<strong>${ocultarBits(recs.reduce((a,b)=>a+b.valor,0))}</strong></div>`;
+                    document.getElementById('resumoConteudo').innerHTML = `
+                        <div class="resumo-item">Via Pix<strong>${ocultarBits(porForma('Pix'))}</strong></div>
+                        <div class="resumo-item">Dinheiro<strong>${ocultarBits(porForma('Dinheiro'))}</strong></div>
+                        <div class="resumo-item">Cartão<strong>${ocultarBits(porForma('Cartão'))}</strong></div>
+                        <div class="resumo-item">Total Mês<strong>${ocultarBits(recs.reduce((a,b)=>a+b.valor,0))}</strong></div>`;
                 } else if (r.desc.includes('(')) {
                     resumo.classList.remove('hidden');
                     document.getElementById('resumoTitulo').innerText = "Resumo do Contrato";
                     const base = r.desc.split('(')[0].trim();
                     const vinc = registros.filter(reg => reg.desc.startsWith(base));
                     const tV = vinc.reduce((a,c)=>a+c.valor, 0), tP = vinc.reduce((a,c)=>a+c.pago, 0);
-                    document.getElementById('resumoConteudo').innerHTML = `<div class="resumo-item">Total Contrato<strong>${ocultarBits(tV)}</strong></div><div class="resumo-item">Total Pago<strong>${ocultarBits(tP)}</strong></div><div class="resumo-item">Restante<strong>${ocultarBits(tV-tP)}</strong></div><div class="resumo-item">Faltam<strong>${vinc.filter(x=>x.pago<x.valor).length} parc.</strong></div>`;
+                    document.getElementById('resumoConteudo').innerHTML = `
+                        <div class="resumo-item">Total Original<strong>${ocultarBits(tV)}</strong></div>
+                        <div class="resumo-item">Total Pago<strong>${ocultarBits(tP)}</strong></div>
+                        <div class="resumo-item">Restante<strong>${ocultarBits(tV-tP)}</strong></div>
+                        <div class="resumo-item">Parcelas Falta<strong>${vinc.filter(x=>x.pago<x.valor).length}</strong></div>`;
                 } else { resumo.classList.add('hidden'); }
             } else {
                 document.getElementById('btnExcluir').classList.add('hidden');
@@ -389,7 +392,7 @@
             if(!desc || vT <= 0 || !dBase) return alert("Preencha tudo!");
 
             if(editIdx !== "") { 
-                registros[editIdx] = { ...registros[editIdx], tipo: t, desc, valor: vT, pago: isP ? vT : 0, data: dBase, forma: t==='Receita' ? forma : null }; 
+                registros[editIdx] = { ...registros[editIdx], tipo: t, desc, valor: vT, pago: (isP||t==='Receita') ? vT : 0, data: dBase, forma: t==='Receita' ? forma : null }; 
             } else {
                 if (t === 'Divida' && parseInt(document.getElementById('parcelas').value) > 1) {
                     const p = parseInt(document.getElementById('parcelas').value), pP = parseInt(document.getElementById('parcelasPagas').value);
@@ -399,7 +402,7 @@
                         registros.push({ tipo: t, desc: `${desc} (${i}/${p})`, valor: vParc, pago: (i <= pP) ? vParc : 0, data: nD });
                     }
                 } else { 
-                    registros.push({ tipo: t, desc, valor: vT, pago: isP ? vT : 0, data: dBase, forma: t==='Receita' ? forma : null }); 
+                    registros.push({ tipo: t, desc, valor: vT, pago: (isP||t==='Receita') ? vT : 0, data: dBase, forma: t==='Receita' ? forma : null }); 
                 }
             }
             localStorage.setItem('foton_db', JSON.stringify(registros)); closeAll(); renderizar();
