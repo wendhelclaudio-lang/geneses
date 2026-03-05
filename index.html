@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gêneses - Comando de Ativos</title>
     
     <link rel="manifest" href="manifest.json">
@@ -19,194 +19,242 @@
         :root {
             --bank-blue: #0a192f;
             --accent: #00f2ff;
-            --bg: #0f172a;
-            --card: #1e293b;
-            --text: #f8fafc;
+            --bg: #f4f7fa;
+            --card: #ffffff;
+            --text: #1e293b;
             --success: #10b981;
             --danger: #f84b4b;
             --warning: #f59e0b;
             --reserve: #8b5cf6;
         }
 
-        * { -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; padding-bottom: 80px; }
-        
-        /* Header Mobile */
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .container { max-width: 1400px; margin: auto; }
+
         header {
-            background: var(--bank-blue); padding: 20px; border-radius: 0 0 24px 24px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3); text-align: center;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 25px; padding: 20px 30px; background: var(--bank-blue);
+            border-radius: 24px; color: white; box-shadow: 0 10px 25px rgba(10, 25, 47, 0.2);
         }
-        .brand h1 { font-size: 1.5rem; letter-spacing: 2px; margin: 0; color: var(--accent); }
-        .brand span { font-size: 0.7rem; color: #94a3b8; opacity: 0.8; }
 
-        /* Status Cards Roláveis */
-        .stats { 
-            display: flex; overflow-x: auto; gap: 12px; padding: 20px;
-            scroll-snap-type: x mandatory; scrollbar-width: none;
+        #btnFantasma { 
+            background: rgba(0, 242, 255, 0.1); 
+            border: 1px solid var(--accent); 
+            border-radius: 12px;
+            cursor: pointer; 
+            color: var(--accent); 
+            font-size: 1.1rem; 
+            margin-left: 15px;
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
-        .stats::-webkit-scrollbar { display: none; }
+        #btnFantasma:hover { background: rgba(0, 242, 255, 0.2); transform: scale(1.05); }
+        #btnFantasma.ativo { 
+            background: var(--accent); 
+            color: var(--bank-blue); 
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+        }
+
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .stat-box {
-            min-width: 160px; background: var(--card); padding: 15px; border-radius: 18px;
-            scroll-snap-align: center; border-bottom: 3px solid transparent;
+            background: var(--card); padding: 20px; border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03); border-left: 5px solid transparent;
         }
-        .stat-box small { font-size: 0.6rem; color: #94a3b8; display: block; margin-bottom: 5px; }
-        .stat-box h2 { font-size: 1.1rem; margin: 0; }
+        .stat-box i { font-size: 1.1rem; margin-bottom: 8px; display: block; }
+        .stat-box h2 { margin: 5px 0 0 0; font-size: 1.2rem; font-weight: 700; color: var(--bank-blue); }
+        .stat-box small { text-transform: uppercase; font-weight: 800; color: #64748b; font-size: 0.6rem; }
 
-        /* Sistema de Abas */
-        .tabs { display: flex; background: var(--card); margin: 0 20px; border-radius: 12px; padding: 5px; }
-        .tab { flex: 1; padding: 10px; text-align: center; font-size: 0.8rem; font-weight: 700; border-radius: 8px; cursor: pointer; }
-        .tab.active { background: var(--accent); color: var(--bank-blue); }
+        .grid { display: grid; grid-template-columns: 350px 1fr; gap: 30px; }
+        @media (max-width: 1000px) { .grid { grid-template-columns: 1fr; } }
 
-        .content-section { padding: 20px; display: none; }
-        .content-section.active { display: block; }
-
-        /* Formulário Ajustado */
-        .glass-card { background: var(--card); padding: 20px; border-radius: 20px; }
-        label { font-size: 0.65rem; color: var(--accent); font-weight: 800; margin-bottom: 5px; display: block; }
-        input, select { 
-            width: 100%; padding: 14px; background: #334155; border: 1px solid #475569; 
-            border-radius: 12px; color: white; margin-bottom: 15px; font-size: 1rem;
+        .glass-card { background: var(--card); padding: 25px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); height: fit-content; position: sticky; top: 20px; }
+        
+        .chart-wrapper { 
+            margin-top: 25px; 
+            padding-top: 20px; 
+            border-top: 1px solid #f1f5f9; 
+            height: 200px; 
+            position: relative; 
         }
+        .chart-wrapper .total-center {
+            position: absolute; top: 60%; left: 50%;
+            transform: translate(-50%, -50%); text-align: center; z-index: 0; margin-top: 20px;
+        }
+        .total-center small { font-size: 0.6rem; text-transform: uppercase; font-weight: 800; color: #64748b; }
+        .total-center h4 { margin: 0; font-size: 1rem; font-weight: 800; color: var(--bank-blue); }
 
-        /* Lista de Itens Mobile */
+        label { display: block; margin-bottom: 5px; font-weight: 700; font-size: 0.7rem; color: #64748b; text-transform: uppercase; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1.5px solid #e2e8f0; border-radius: 12px; background: #f8fafc; box-sizing: border-box; font-size: 0.9rem; }
+        
+        .btn-main { width: 100%; padding: 14px; background: var(--bank-blue); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+        .section-divider { 
+            margin: 25px 0 15px 10px; 
+            font-size: 0.75rem; 
+            font-weight: 900; 
+            color: #64748b; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-divider::after { content: ""; flex: 1; height: 1px; background: #e2e8f0; }
+
         .item-card {
-            background: var(--card); margin-bottom: 12px; padding: 15px; border-radius: 18px;
-            display: flex; align-items: center; gap: 15px; position: relative;
+            background: white; padding: 18px 25px; border-radius: 20px;
+            display: grid; grid-template-columns: 55px 100px 1fr 140px 160px 80px;
+            align-items: center; border: 1px solid #f1f5f9; margin-bottom: 12px;
         }
-        .icon-circle { width: 45px; height: 45px; min-width: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-        .item-info { flex: 1; }
-        .item-info strong { display: block; font-size: 0.95rem; }
-        .item-info small { color: #94a3b8; font-size: 0.75rem; }
-        .item-values { text-align: right; }
-        .item-values span { display: block; font-weight: 800; font-size: 0.9rem; }
+        @media (max-width: 1100px) { .item-card { grid-template-columns: 1fr 1fr; gap: 10px; } }
 
-        /* Floating Buttons */
-        .fab-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .fab { width: 56px; height: 56px; border-radius: 28px; background: var(--accent); color: var(--bank-blue); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0,242,255,0.4); border: none; }
+        .icon-circle { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .badge { padding: 6px 12px; border-radius: 8px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; }
+        
+        .bg-rec { background: #e8fdf0; color: #10b981; } 
+        .bg-div { background: #fff1f0; color: #f84b4b; } 
+        .bg-fix { background: #f0f7ff; color: #3b82f6; } 
+        .bg-res { background: #f5f3ff; color: #8b5cf6; }
 
-        #btnFantasma { background: none; border: 1px solid var(--accent); color: var(--accent); padding: 5px 10px; border-radius: 8px; font-size: 0.7rem; margin-top: 10px; }
-        #btnFantasma.ativo { background: var(--accent); color: var(--bank-blue); }
+        .status-area { font-size: 0.75rem; font-weight: 800; }
+        .pending-text { color: var(--danger); }
+        .liquid-text { color: var(--success); }
 
+        .action-btns button { background: none; border: none; padding: 8px; cursor: pointer; color: #cbd5e1; transition: 0.2s; }
+        .action-btns button:hover { color: var(--bank-blue); }
         .hidden { display: none; }
-        .section-divider { color: var(--accent); font-size: 0.7rem; font-weight: 900; margin: 20px 0 10px 5px; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="brand">
-        <h1>GÊNESES</h1>
-        <span>Protocolo Fóton | Wendel C. R. Carneiro</span><br>
-        <button id="btnFantasma" onclick="toggleFantasma()">
-            <i id="eyeIcon" class="fa-solid fa-eye"></i> <span id="txtFantasma">PRIVACIDADE</span>
-        </button>
-    </div>
-</header>
-
-<div class="stats">
-    <div class="stat-box" style="border-color: var(--success)"><small>RECEITAS</small><h2 id="totalReceitas">R$ 0,00</h2></div>
-    <div class="stat-box" style="border-color: var(--warning)"><small>GASTOS</small><h2 id="totalGastos">R$ 0,00</h2></div>
-    <div class="stat-box" style="border-color: var(--danger)"><small>DÍVIDAS</small><h2 id="totalDividas">R$ 0,00</h2></div>
-    <div class="stat-box" style="border-color: var(--reserve)"><small>PATRIMÔNIO</small><h2 id="totalReserva">R$ 0,00</h2></div>
-    <div class="stat-box" style="background: var(--accent); color: var(--bank-blue)"><small style="color:rgba(0,0,0,0.5)">SALDO LIVRE</small><h2 id="totalSaldo">R$ 0,00</h2></div>
-</div>
-
-<div class="tabs">
-    <div class="tab active" onclick="switchTab('extrato')">EXTRATO</div>
-    <div class="tab" onclick="switchTab('nova')">NOVA OPERAÇÃO</div>
-</div>
-
-<section id="sec-extrato" class="content-section active">
-    <div id="tabelaCorpo"></div>
-</section>
-
-<section id="sec-nova" class="content-section">
-    <div class="glass-card">
-        <h3 id="formTitle" style="margin-top:0; font-size: 1rem;"><i class="fa-solid fa-circle-plus"></i> COMANDO DE ATIVO</h3>
-        <input type="hidden" id="editIndex" value="">
-        
-        <label>CATEGORIA</label>
-        <select id="tipo" onchange="atualizarSubmenu()">
-            <option value="Receita">Receita</option>
-            <option value="Fixo">Gasto Fixo</option>
-            <option value="Variavel">Gasto Variável</option>
-            <option value="Divida">Dívida / Boleto</option>
-            <option value="Reserva">Patrimônio</option>
-        </select>
-
-        <label>SUBMENU</label>
-        <select id="submenu" onchange="definirDescricao()"></select>
-
-        <label>DESCRIÇÃO</label>
-        <input type="text" id="desc" placeholder="Nome da operação">
-
-        <label>VALOR TOTAL</label>
-        <input type="number" id="valor" step="0.01" inputmode="decimal">
-
-        <div id="campoPago" class="hidden">
-            <label>VALOR PAGO (ATÉ AGORA)</label>
-            <input type="number" id="pago" value="0" step="0.01" inputmode="decimal">
+<div class="container" id="app">
+    <header>
+        <div class="brand">
+            <h1 style="display:flex; align-items:center; margin:0;">
+                GÊNESES 
+                <button id="btnFantasma" onclick="toggleFantasma()">
+                    <i id="eyeIcon" class="fa-solid fa-eye"></i>
+                    <span id="txtFantasma" style="font-size:0.7rem; font-weight:800;">PRIVACIDADE</span>
+                </button>
+            </h1>
+            <span><i class="fa-solid fa-fingerprint"></i> Protocolo Fóton | Wendel C. R. Carneiro</span>
         </div>
+        <button class="btn-main" style="width:auto; padding:10px 25px; background:var(--accent); color:var(--bank-blue)" onclick="gerarPDF()">
+            <i class="fa-solid fa-file-invoice-dollar"></i> EXPORTAR EXTRATO
+        </button>
+    </header>
 
-        <label>DATA</label>
-        <input type="date" id="data">
-
-        <button class="btn-main" onclick="salvar()" style="background:var(--accent); color:var(--bank-blue); border:none; border-radius:12px; width:100%; padding:15px; font-weight:800;">CONFIRMAR REGISTRO</button>
+    <div class="stats">
+        <div class="stat-box" style="border-left-color: var(--success)"><i class="fa-solid fa-money-bill-transfer" style="color: var(--success)"></i><small>Receitas</small><h2 id="totalReceitas">R$ 0,00</h2></div>
+        <div class="stat-box" style="border-left-color: var(--warning)"><i class="fa-solid fa-credit-card" style="color: var(--warning)"></i><small>Fluxo Saída</small><h2 id="totalGastos">R$ 0,00</h2></div>
+        <div class="stat-box" style="border-left-color: var(--danger)"><i class="fa-solid fa-barcode" style="color: var(--danger)"></i><small>Dívidas Abertas</small><h2 id="totalDividas">R$ 0,00</h2></div>
+        <div class="stat-box" style="border-left-color: var(--reserve)"><i class="fa-solid fa-vault" style="color: var(--reserve)"></i><small>Patrimônio</small><h2 id="totalReserva">R$ 0,00</h2></div>
+        <div class="stat-box" style="background:var(--bank-blue); color:white;"><i class="fa-solid fa-wallet" style="color: var(--accent)"></i><small style="color:#94a3b8">Saldo Livre</small><h2 id="totalSaldo" style="color:white">R$ 0,00</h2></div>
     </div>
-</section>
 
-<div class="fab-container">
-    <button class="fab" onclick="gerarPDF()"><i class="fa-solid fa-file-pdf"></i></button>
+    <div class="grid">
+        <aside class="glass-card">
+            <h3 id="formTitle" style="margin-top:0"><i class="fa-solid fa-circle-plus"></i> NOVA OPERAÇÃO</h3>
+            <input type="hidden" id="editIndex" value="">
+            
+            <label>Categoria principal</label>
+            <select id="tipo" onchange="atualizarSubmenu()">
+                <option value="Receita">Receita (Entrada)</option>
+                <option value="Fixo">Gasto Fixo</option>
+                <option value="Variavel">Gasto Variável</option>
+                <option value="Divida">Dívida / Boleto</option>
+                <option value="Reserva">Reserva / Patrimônio</option>
+            </select>
+
+            <label>Submenu (Atalhos)</label>
+            <select id="submenu" onchange="definirDescricao()"></select>
+
+            <label>Descrição</label>
+            <input type="text" id="desc" placeholder="Ex: Israel, Aluguel...">
+
+            <label>Valor Total</label>
+            <input type="number" id="valor" step="0.01">
+
+            <div id="campoPago" class="hidden">
+                <label>Valor Pago</label>
+                <input type="number" id="pago" value="0" step="0.01">
+            </div>
+
+            <label>Data</label>
+            <input type="date" id="data">
+
+            <button class="btn-main" onclick="salvar()">CONFIRMAR OPERAÇÃO</button>
+            <div class="chart-wrapper">
+                <div class="total-center">
+                    <small>SALDO LIVRE</small>
+                    <h4 id="chartTotalDisplay">R$ 0,00</h4>
+                </div>
+                <canvas id="miniChart"></canvas>
+            </div>
+        </aside>
+
+        <section>
+            <h3 style="margin:0 0 15px 10px"><i class="fa-solid fa-clock-rotate-left"></i> EXTRATO POR CATEGORIAS</h3>
+            <div id="tabelaCorpo"></div>
+        </section>
+    </div>
 </div>
 
 <script>
     let registros = JSON.parse(localStorage.getItem('foton_db')) || [];
+    let chartInstance = null;
     let modoFantasma = false;
 
     const opcoesSubmenu = {
         "Receita": ["💰 Salário", "🚀 Freelance", "📈 Venda Ativos", "🏦 Rendimentos", "✨ Outros"],
-        "Fixo": ["🏠 Aluguel", "⚡ Energia", "💧 Água", "🌐 Internet", "🎬 Streamings", "🎓 Educação", "⚙️ Outros"],
-        "Variavel": ["🛒 Mercado", "🍕 Alimentação", "⛽ Combustível", "🚗 Transporte", "💊 Farmácia", "🛍️ Compras"],
-        "Divida": ["💳 Cartão Crédito", "🤝 Empréstimo", "📄 Parcelamento", "🧾 Boleto", "⚠️ Outros"],
-        "Reserva": ["₿ Cripto", "📊 Investimentos", "📦 Reserva Emerg.", "🛡️ Proteção", "💎 Meta"]
+        "Fixo": ["🏠 Aluguel", "⚡ Energia", "💧 Água", "🌐 Internet", "🎬 Netflix/Spotify", "🎓 Faculdade", "⚙️ Outros"],
+        "Variavel": ["🛒 Mercado", "🍕 Restaurante/Ifood", "⛽ Combustível", "🚗 Uber", "💊 Farmácia", "🛍️ Outros"],
+        "Divida": ["💳 Cartão de Crédito", "🤝 Empréstimo", "📄 Parcelamento", "🧾 Boleto", "⚠️ Outros"],
+        "Reserva": ["₿ Cripto", "🐷 Poupança", "📊 Investimentos", "📦 Caixinha", "🛡️ Outros"]
     };
-
-    function switchTab(aba) {
-        document.querySelectorAll('.tab, .content-section').forEach(el => el.classList.remove('active'));
-        if(aba === 'extrato') {
-            document.querySelectorAll('.tab')[0].classList.add('active');
-            document.getElementById('sec-extrato').classList.add('active');
-        } else {
-            document.querySelectorAll('.tab')[1].classList.add('active');
-            document.getElementById('sec-nova').classList.add('active');
-        }
-    }
 
     function atualizarSubmenu() {
         const tipo = document.getElementById('tipo').value;
         const sub = document.getElementById('submenu');
         sub.innerHTML = '';
-        opcoesSubmenu[tipo].forEach(opt => { sub.innerHTML += `<option value="${opt}">${opt}</option>`; });
-        document.getElementById('campoPago').classList.toggle('hidden', tipo === 'Receita' || tipo === 'Reserva');
+        opcoesSubmenu[tipo].forEach(opt => {
+            sub.innerHTML += `<option value="${opt}">${opt}</option>`;
+        });
+        toggleCampos();
         definirDescricao();
     }
 
     function definirDescricao() {
         const subValue = document.getElementById('submenu').value;
-        document.getElementById('desc').value = subValue.split(' ').slice(1).join(' ');
+        const descInput = document.getElementById('desc');
+        if(!subValue.includes("Outros")) descInput.value = subValue;
+        else { descInput.value = ''; descInput.focus(); }
     }
 
     function toggleFantasma() {
         modoFantasma = !modoFantasma;
-        document.getElementById('btnFantasma').classList.toggle('ativo');
-        document.getElementById('eyeIcon').className = modoFantasma ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
-        document.getElementById('txtFantasma').innerText = modoFantasma ? "FANTASMA ON" : "PRIVACIDADE";
+        const btn = document.getElementById('btnFantasma');
+        const icon = document.getElementById('eyeIcon');
+        const txt = document.getElementById('txtFantasma');
+        if (modoFantasma) {
+            btn.classList.add('ativo'); icon.className = 'fa-solid fa-eye-slash'; txt.innerText = "FANTASMA ON";
+        } else {
+            btn.classList.remove('ativo'); icon.className = 'fa-solid fa-eye'; txt.innerText = "PRIVACIDADE";
+        }
         renderizar();
     }
 
     function ocultarBits(valor) {
-        if (modoFantasma) return "R$ •••••";
+        if (modoFantasma) return "R$ ❋❋❋❋❋";
         return "R$ " + valor.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+    }
+
+    function toggleCampos() {
+        const tipo = document.getElementById('tipo').value;
+        document.getElementById('campoPago').classList.toggle('hidden', tipo === 'Receita' || tipo === 'Reserva');
     }
 
     function salvar() {
@@ -214,22 +262,19 @@
         const valor = parseFloat(document.getElementById('valor').value) || 0, data = document.getElementById('data').value;
         let pago = parseFloat(document.getElementById('pago').value) || 0;
         const editIndex = document.getElementById('editIndex').value;
-        
         if(tipo === 'Receita' || tipo === 'Reserva') pago = valor;
-        if(!desc || valor <= 0 || !data) return alert("⚠️ Preencha os dados!");
-
+        if(!desc || valor <= 0 || !data) return alert("⚠️ Dados incompletos.");
         const obj = { tipo, desc, valor, pago, data };
         if(editIndex === "") registros.push(obj);
         else { registros[editIndex] = obj; document.getElementById('editIndex').value = ""; }
-        
         localStorage.setItem('foton_db', JSON.stringify(registros));
-        resetForm(); renderizar(); switchTab('extrato');
+        resetForm(); renderizar();
     }
 
     function resetForm() {
         document.getElementById('desc').value = ''; document.getElementById('valor').value = '';
         document.getElementById('pago').value = '0'; document.getElementById('data').value = '';
-        document.getElementById('formTitle').innerHTML = '<i class="fa-solid fa-circle-plus"></i> COMANDO DE ATIVO';
+        document.getElementById('formTitle').innerHTML = '<i class="fa-solid fa-circle-plus"></i> NOVA OPERAÇÃO';
         atualizarSubmenu();
     }
 
@@ -240,47 +285,71 @@
 
         const ordenados = [...registros].sort((a, b) => new Date(b.data) - new Date(a.data));
         const categorias = ["Receita", "Fixo", "Variavel", "Divida", "Reserva"];
+        const nomesBonitos = { "Receita": "Entradas / Salários", "Fixo": "Custos Fixos", "Variavel": "Fluxo Variável", "Divida": "Dívidas e Boletos", "Reserva": "Patrimônio / Reservas" };
 
         categorias.forEach(cat => {
-            const itens = ordenados.filter(r => r.tipo === cat);
-            if(itens.length > 0) {
-                corpo.innerHTML += `<div class="section-divider">${cat}</div>`;
-                itens.forEach(r => {
+            const itensDaCat = ordenados.filter(r => r.tipo === cat);
+            if(itensDaCat.length > 0) {
+                corpo.innerHTML += `<div class="section-divider">${nomesBonitos[cat]}</div>`;
+                itensDaCat.forEach(r => {
                     const i = registros.indexOf(r);
                     const vTotal = parseFloat(r.valor), vPago = parseFloat(r.pago), falta = vTotal - vPago;
                     let icon = 'fa-receipt', color = '#3b82f6', bClass = 'bg-fix';
                     
-                    if(r.tipo === 'Receita') { sRec += vTotal; icon='fa-arrow-up'; color='#10b981'; } 
-                    else if(r.tipo === 'Divida') { sDiv += falta; icon='fa-barcode'; color='#f84b4b'; } 
-                    else if(r.tipo === 'Reserva') { sRes += vTotal; icon='fa-vault'; color='#8b5cf6'; } 
-                    else { sGas += vTotal; icon='fa-arrow-down'; color='#f59e0b'; }
+                    if(r.tipo === 'Receita') { sRec += vTotal; icon='fa-money-bill-trend-up'; color='#10b981'; bClass='bg-rec'; } 
+                    else if(r.tipo === 'Divida') { sDiv += falta; icon='fa-barcode'; color='#f84b4b'; bClass='bg-div'; } 
+                    else if(r.tipo === 'Reserva') { sRes += vTotal; icon='fa-vault'; color='#8b5cf6'; bClass='bg-res'; } 
+                    else { sGas += vTotal; }
+
+                    const statusHTML = (vPago >= vTotal) ? 
+                        `<span class="liquid-text"><i class="fa-solid fa-check-circle"></i> LIQUIDADO</span>` : 
+                        `<span class="pending-text"><i class="fa-solid fa-circle-exclamation"></i> PENDENTE</span><br><small style="color:#64748b">Falta: ${ocultarBits(falta)}</small>`;
 
                     corpo.innerHTML += `
-                        <div class="item-card" onclick="editar(${i})">
-                            <div class="icon-circle" style="background:rgba(255,255,255,0.05); color:${color}"><i class="fa-solid ${icon}"></i></div>
-                            <div class="item-info">
-                                <strong>${r.desc}</strong>
-                                <small>${r.data.split('-').reverse().join('/')}</small>
-                            </div>
-                            <div class="item-values">
-                                <span style="color:${vPago >= vTotal ? 'var(--success)' : 'white'}">${ocultarBits(vTotal)}</span>
-                                <small style="font-size:0.6rem; color:#94a3b8">${vPago >= vTotal ? 'LIQUIDADO' : 'FALTA ' + ocultarBits(falta)}</small>
+                        <div class="item-card">
+                            <div class="icon-circle" style="background:#f8fafc"><i class="fa-solid ${icon}" style="color:${color}"></i></div>
+                            <span style="font-size:0.8rem; font-weight:700; color:#94a3b8">${r.data.split('-').reverse().join('/')}</span>
+                            <div><span class="badge ${bClass}">${r.tipo}</span><br><strong style="color:var(--bank-blue)">${r.desc}</strong></div>
+                            <div style="font-weight:800; color:var(--bank-blue)">${ocultarBits(vTotal)}</div>
+                            <div class="status-area">${statusHTML}</div>
+                            <div class="action-btns">
+                                <button onclick="editar(${i})"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="if(confirm('Excluir?')){registros.splice(${i},1); localStorage.setItem('foton_db',JSON.stringify(registros)); renderizar();}"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </div>`;
                 });
             }
         });
 
+        const saldoLivre = sRec - (sGas + sDiv);
         document.getElementById('totalReceitas').innerText = ocultarBits(sRec);
         document.getElementById('totalGastos').innerText = ocultarBits(sGas);
         document.getElementById('totalDividas').innerText = ocultarBits(sDiv);
         document.getElementById('totalReserva').innerText = ocultarBits(sRes);
-        document.getElementById('totalSaldo').innerText = ocultarBits(sRec - (sGas + sDiv));
+        document.getElementById('totalSaldo').innerText = ocultarBits(saldoLivre);
+        document.getElementById('chartTotalDisplay').innerText = ocultarBits(saldoLivre);
+        atualizarGrafico(sRec, sGas, sDiv, sRes);
+    }
+
+    function atualizarGrafico(rec, gas, div, res) {
+        const ctx = document.getElementById('miniChart').getContext('2d');
+        if(chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Entradas', 'Gastos', 'Dívidas', 'Reserva'],
+                datasets: [{
+                    data: [rec, gas, div, res],
+                    backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
+                    borderWidth: 2, borderColor: '#ffffff', hoverOffset: 15
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, cutout: '80%', plugins: { legend: { display: false } } }
+        });
     }
 
     function editar(idx) {
         const r = registros[idx];
-        switchTab('nova');
         document.getElementById('tipo').value = r.tipo;
         atualizarSubmenu();
         document.getElementById('desc').value = r.desc;
@@ -288,20 +357,27 @@
         document.getElementById('pago').value = r.pago;
         document.getElementById('data').value = r.data;
         document.getElementById('editIndex').value = idx;
-        document.getElementById('formTitle').innerHTML = '<i class="fa-solid fa-pen"></i> EDITAR REGISTRO';
+        document.getElementById('formTitle').innerHTML = '<i class="fa-solid fa-pen"></i> EDITAR TRANSAÇÃO';
+        toggleCampos();
     }
 
     async function gerarPDF() {
         const { jsPDF } = window.jspdf;
-        html2canvas(document.body).then(canvas => {
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, (canvas.height * 210) / canvas.width);
-            pdf.save("Gêneses_Extrato.pdf");
+        html2canvas(document.getElementById('app')).then(canvas => {
+            const img = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('l', 'mm', 'a4');
+            pdf.addImage(img, 'PNG', 0, 0, 297, (canvas.height * 297) / canvas.width);
+            pdf.save("Protocolo_Foton_Extrato.pdf");
         });
     }
 
+    // REGISTRO DO SERVICE WORKER (Vital para PWA)
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').then(reg => console.log('Fóton SW On'));
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('Fóton SW Ativo'))
+            .catch(err => console.log('Erro SW:', err));
+        });
     }
 
     window.onload = () => { atualizarSubmenu(); renderizar(); };
