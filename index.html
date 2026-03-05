@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* VARIÁVEIS PADRÃO (DARK / CIBERNÉTICO) */
+        /* VARIÁVEIS DO TEMA ESCURO (PADRÃO) */
         :root {
             --bg: #030712;
             --card: #111827;
@@ -32,16 +32,16 @@
             --reserve: #8b5cf6;
         }
 
-        /* TEMA: CLARO */
+        /* VARIÁVEIS DO TEMA CLARO */
         [data-theme="light"] {
             --bg: #f8fafc;
             --card: #ffffff;
-            --accent: #0ea5e9;
+            --accent: #0284c7;
             --text: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
             --input-bg: #f1f5f9;
-            --hover-bg: rgba(0,0,0,0.03);
+            --hover-bg: rgba(0,0,0,0.05);
             --success: #059669;
             --danger: #dc2626;
             --warning: #d97706;
@@ -84,8 +84,8 @@
         [data-theme="itau"] {
             --bg: #f0f1f3;
             --card: #ffffff;
-            --accent: #ec7000; /* Laranja Itaú */
-            --text: #002959; /* Azul Itaú */
+            --accent: #ec7000;
+            --text: #002959;
             --text-muted: #6c7a89;
             --border: #dcdde1;
             --input-bg: #f5f6f8;
@@ -100,7 +100,7 @@
         [data-theme="bradesco"] {
             --bg: #ffffff;
             --card: #f9f9f9;
-            --accent: #cc092f; /* Vermelho Bradesco */
+            --accent: #cc092f;
             --text: #333333;
             --text-muted: #777777;
             --border: #e6e6e6;
@@ -116,15 +116,27 @@
         
         body { font-family: 'Ubuntu', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; font-size: 0.95rem; }
 
-        header { background: var(--bg); padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        header { background: var(--bg); padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         
         .profile-section { display: flex; align-items: center; gap: 14px; cursor: pointer; }
-        .avatar { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, var(--accent), rgba(0,0,0,0.8)); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #ffffff; border: 2px solid var(--border); font-size: 1.3rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
+        /* ESTILO DO AVATAR / FOTO DE PERFIL */
+        .avatar { 
+            width: 44px; height: 44px; border-radius: 14px; 
+            background: linear-gradient(135deg, var(--accent), #0a192f); 
+            display: flex; align-items: center; justify-content: center; 
+            font-weight: bold; color: #ffffff; border: 2px solid var(--border); 
+            font-size: 1.3rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+            overflow: hidden; 
+            background-size: cover; background-position: center; 
+        }
+        [data-theme="light"] .avatar { box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
         .user-info span { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; display: block; text-transform: uppercase; margin-bottom: 2px; }
         .user-info strong { font-size: 0.95rem; color: var(--text); letter-spacing: 0.5px;}
 
-        .sidebar { position: fixed; top: 0; right: -100%; width: 85%; max-width: 380px; height: 100%; background: var(--card); z-index: 3000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 30px 24px; border-left: 1px solid var(--accent); box-shadow: -15px 0 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; overflow-y: auto; }
+        .sidebar { position: fixed; top: 0; right: -100%; width: 85%; max-width: 380px; height: 100%; background: var(--card); z-index: 3000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 30px 24px; border-left: 1px solid var(--accent); box-shadow: -15px 0 40px rgba(0,0,0,0.7); display: flex; flex-direction: column; overflow-y: auto; }
+        [data-theme="light"] .sidebar { box-shadow: -15px 0 40px rgba(0,0,0,0.1); }
         .sidebar.open { right: 0; }
         .sidebar-header { margin-bottom: 25px; text-align: center; position: relative; }
         
@@ -144,19 +156,18 @@
         .menu-item div { display: flex; align-items: center; gap: 15px; }
         .menu-item i { color: var(--accent); font-size: 1.1rem; width: 25px; text-align: center; }
 
-        /* Estilo para submenu de temas */
         .theme-selector { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 10px; margin-top: 5px; display: none; flex-direction: column; gap: 5px; }
         .theme-selector.open { display: flex; }
         .theme-btn { padding: 10px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; border: 1px solid var(--border); background: var(--card); color: var(--text); text-align: center; font-weight: bold; }
         .theme-btn:active { opacity: 0.7; }
 
         .month-selector { display: flex; justify-content: space-between; align-items: center; padding: 22px 22px 0; }
-        .month-selector button { background: var(--hover-bg); border: 1px solid var(--border); color: var(--text); width: 38px; height: 38px; border-radius: 10px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .month-selector button { background: var(--hover-bg); border: 1px solid var(--border); color: var(--text); width: 38px; height: 38px; border-radius: 10px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .month-selector span { font-size: 0.95rem; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 1.2px; }
 
         .balance-card { padding: 18px 22px 25px; text-align: center; }
         .balance-card small { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; font-weight: 500;}
-        .balance-card h1 { font-size: 2.5rem; margin: 8px 0 0; font-weight: 800; color: var(--text); text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .balance-card h1 { font-size: 2.5rem; margin: 8px 0 0; font-weight: 800; color: var(--text); text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
 
         .quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 0 22px 22px; }
         .mini-card { background: var(--card); padding: 16px; border-radius: 16px; border: 1px solid var(--border); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
@@ -194,7 +205,7 @@
         .fab { position: fixed; bottom: 30px; right: 22px; width: 60px; height: 60px; border-radius: 20px; background: var(--accent); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: none; z-index: 1000; cursor: pointer; transition: transform 0.2s; }
         .fab:active { transform: scale(0.95); }
 
-        .modal { position: fixed; bottom: -100%; left: 0; width: 100%; height: 92%; background: var(--card); border-radius: 35px 35px 0 0; z-index: 2000; padding: 25px 22px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; border-top: 1px solid var(--border); box-shadow: 0 -10px 40px rgba(0,0,0,0.2); }
+        .modal { position: fixed; bottom: -100%; left: 0; width: 100%; height: 92%; background: var(--card); border-radius: 35px 35px 0 0; z-index: 2000; padding: 25px 22px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; border-top: 1px solid var(--border); box-shadow: 0 -10px 40px rgba(0,0,0,0.5); }
         .modal.open { bottom: 0; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; backdrop-filter: blur(4px); }
 
@@ -220,7 +231,7 @@
 
     <header>
         <div class="profile-section" onclick="toggleSidebar()">
-            <div class="avatar"><i class="fa-solid fa-coins"></i></div>
+            <div class="avatar" id="headerAvatar">WC</div>
             <div class="user-info">
                 <span>MEUCAIXA</span>
                 <strong id="headerUserName">WENDEL CARNEIRO</strong>
@@ -234,7 +245,7 @@
     <div class="sidebar" id="profileSidebar">
         <div style="text-align: right; margin-bottom: 15px;"><i class="fa-solid fa-xmark" style="font-size: 1.4rem; cursor: pointer; color: var(--text-muted);" onclick="toggleSidebar()"></i></div>
         <div class="sidebar-header">
-            <div class="avatar" style="width: 70px; height: 70px; font-size: 2rem; margin: 0 auto 12px;"><i class="fa-solid fa-coins"></i></div>
+            <div class="avatar" id="sidebarAvatar" style="width: 70px; height: 70px; font-size: 2rem; margin: 0 auto 12px;">WC</div>
             <h2 style="margin:0; font-size: 1.15rem; color: var(--text);">Painel MeuCaixa</h2>
             <span style="color: var(--accent); font-size: 0.75rem;">Operacional</span>
         </div>
@@ -255,6 +266,11 @@
         </div>
         
         <div class="sidebar-menu">
+            <input type="file" id="fotoPerfilInput" accept="image/*" style="display: none;" onchange="carregarNovaFoto(event)">
+            <div class="menu-item" onclick="document.getElementById('fotoPerfilInput').click()">
+                <div><i class="fa-solid fa-camera-retro"></i> <span>Mudar Foto de Perfil</span></div>
+            </div>
+
             <div class="menu-item" onclick="mudarNome()">
                 <div><i class="fa-solid fa-user-pen"></i> <span>Mudar Nome</span></div>
             </div>
@@ -422,10 +438,10 @@
         let appConfig = {
             nome: savedConfig.nome || "WENDEL CARNEIRO",
             moeda: savedConfig.moeda || "R$",
-            metaMensal: parseFloat(savedConfig.metaMensal) || 0
+            metaMensal: parseFloat(savedConfig.metaMensal) || 0,
+            fotoPerfil: savedConfig.fotoPerfil || null // Nova variável para salvar a foto
         };
 
-        // LÓGICA DE TEMAS (BANCOS)
         function checkTheme() {
             const savedTheme = localStorage.getItem('meucaixa_theme');
             if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
@@ -438,16 +454,30 @@
             closeAll();
         }
 
-        // FUNÇÕES DE CONFIGURAÇÃO (MOEDA E NOME)
         function salvarConfig() {
             localStorage.setItem('meucaixa_config', JSON.stringify(appConfig));
             carregarConfig();
             renderizar();
         }
 
+        // LÓGICA DO AVATAR / NOME
         function carregarConfig() {
             document.getElementById('headerUserName').innerText = appConfig.nome;
             document.getElementById('currentCurrencyDisplay').innerText = appConfig.moeda;
+            
+            // Lógica para mostrar a foto ou as iniciais
+            let avatares = [document.getElementById('headerAvatar'), document.getElementById('sidebarAvatar')];
+            let iniciais = appConfig.nome.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            
+            avatares.forEach(av => {
+                if (appConfig.fotoPerfil) {
+                    av.style.backgroundImage = `url(${appConfig.fotoPerfil})`;
+                    av.innerText = "";
+                } else {
+                    av.style.backgroundImage = "none";
+                    av.innerText = iniciais;
+                }
+            });
             
             if(appConfig.metaMensal > 0) {
                 document.getElementById('metaPanelInfo').classList.remove('hidden');
@@ -455,6 +485,34 @@
             } else {
                 document.getElementById('metaPanelInfo').classList.add('hidden');
             }
+        }
+
+        // FUNÇÃO DE UPLOAD E REDUÇÃO DA FOTO
+        function carregarNovaFoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(e) {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function() {
+                    // Reduz a imagem para não estourar a memória do navegador
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 150;
+                    const scaleSize = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scaleSize;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    
+                    // Salva em base64 e atualiza
+                    appConfig.fotoPerfil = canvas.toDataURL('image/jpeg', 0.7);
+                    salvarConfig();
+                    closeAll();
+                }
+            };
         }
 
         function mudarNome() {
@@ -584,7 +642,6 @@
             document.getElementById('labelPercRes').innerText = pRes.toFixed(1) + '%';
             document.getElementById('contadorRegistros').innerText = registros.length;
 
-            // ATUALIZAR META NO PAINEL
             if(appConfig.metaMensal > 0) {
                 const progresso = Math.min((sRes / appConfig.metaMensal) * 100, 100);
                 document.getElementById('metaFillBar').style.width = progresso + '%';
