@@ -21,13 +21,39 @@
 
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
 
+        /* Header com Avatar */
         header {
             background: var(--bg); padding: 15px 20px; display: flex; justify-content: space-between;
             align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #1f2937;
         }
-        .user-info span { font-size: 0.7rem; color: #94a3b8; letter-spacing: 1px; display: block; }
-        .user-info strong { font-size: 0.9rem; color: var(--accent); }
+        
+        .profile-section { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .avatar { 
+            width: 40px; height: 40px; border-radius: 12px; 
+            background: linear-gradient(135deg, var(--accent), var(--reserve));
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; color: var(--bg); border: 2px solid #1f2937;
+        }
+        
+        .user-info span { font-size: 0.6rem; color: #94a3b8; letter-spacing: 1px; display: block; text-transform: uppercase; }
+        .user-info strong { font-size: 0.85rem; color: var(--text); }
 
+        /* Painel de Controle (Sidebar) */
+        .sidebar {
+            position: fixed; top: 0; right: -100%; width: 80%; height: 100%;
+            background: var(--card); z-index: 3000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 30px 20px; box-sizing: border-box; border-left: 1px solid var(--accent);
+        }
+        .sidebar.open { right: 0; }
+        .sidebar-header { margin-bottom: 30px; text-align: center; }
+        .sidebar-menu { display: flex; flex-direction: column; gap: 15px; }
+        .menu-item { 
+            padding: 15px; border-radius: 12px; background: rgba(255,255,255,0.03);
+            display: flex; align-items: center; gap: 12px; font-size: 0.9rem;
+        }
+        .menu-item i { color: var(--accent); width: 20px; }
+
+        /* Resto do Layout Original */
         .balance-card { padding: 25px 20px; text-align: center; }
         .balance-card small { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; }
         .balance-card h1 { font-size: 2.2rem; margin: 10px 0; font-weight: 800; }
@@ -46,7 +72,6 @@
         .section-header { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 15px; }
         .section-header h3 { font-size: 0.9rem; color: #94a3b8; text-transform: uppercase; margin: 0; }
         
-        /* Botão Voltar Dinâmico */
         #btnVoltar { 
             background: rgba(0, 242, 255, 0.1); color: var(--accent); border: 1px solid var(--accent);
             padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer;
@@ -83,7 +108,7 @@
             padding: 25px; box-sizing: border-box; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .modal.open { bottom: 0; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 2500; }
 
         input, select {
             width: 100%; background: #1f2937; border: 1px solid #374151; padding: 14px;
@@ -100,14 +125,39 @@
 <body>
 
     <header>
-        <div class="user-info">
-            <span>PROTOCOLO FÓTON</span>
-            <strong>WENDEL C. R. CARNEIRO</strong>
+        <div class="profile-section" onclick="toggleSidebar()">
+            <div class="avatar">WC</div>
+            <div class="user-info">
+                <span>PROTOCOLO FÓTON</span>
+                <strong>WENDEL CARNEIRO</strong>
+            </div>
         </div>
         <button onclick="toggleFantasma()" style="background:none; border:1px solid #1f2937; color:white; padding:8px; border-radius:10px;">
             <i id="eyeIcon" class="fa-solid fa-eye"></i>
         </button>
     </header>
+
+    <div class="sidebar" id="profileSidebar">
+        <div style="text-align: right; margin-bottom: 10px;">
+            <i class="fa-solid fa-xmark" style="font-size: 1.5rem;" onclick="toggleSidebar()"></i>
+        </div>
+        <div class="sidebar-header">
+            <div class="avatar" style="width: 70px; height: 70px; font-size: 1.5rem; margin: 0 auto 10px;">WC</div>
+            <h2 style="margin:0; font-size: 1.1rem;">Painel do Autor</h2>
+            <span style="color: var(--accent); font-size: 0.7rem;">Mestre da Blockchain Biológica</span>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div class="menu-item"><i class="fa-solid fa-shield-halved"></i> Configurações Fóton</div>
+            <div class="menu-item"><i class="fa-solid fa-file-export"></i> Exportar Dados (CSV)</div>
+            <div class="menu-item" onclick="toggleFantasma()"><i class="fa-solid fa-ghost"></i> Modo Fantasma</div>
+            <div class="menu-item" style="color: var(--danger);" onclick="localStorage.clear(); location.reload();"><i class="fa-solid fa-trash"></i> Resetar Terminal</div>
+        </div>
+        
+        <div style="position: absolute; bottom: 20px; left: 20px; font-size: 0.6rem; color: #4b5563;">
+            ID: FOTON-2026-ALPHA<br>STATUS: OPERACIONAL
+        </div>
+    </div>
 
     <div class="balance-card">
         <small>Saldo Disponível</small>
@@ -142,14 +192,13 @@
     </section>
 
     <button class="fab" onclick="openModal()"><i class="fa-solid fa-plus"></i></button>
-    <div class="overlay" id="overlay" onclick="closeModal()"></div>
+    <div class="overlay" id="overlay" onclick="closeAll()"></div>
 
     <div class="modal" id="modalForm">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 id="modalTitle" style="margin:0; font-size:1.2rem;">Nova Operação</h2>
             <i class="fa-solid fa-circle-xmark" style="font-size:1.5rem; color:#374151;" onclick="closeModal()"></i>
         </div>
-        
         <span class="label-mini">Tipo</span>
         <select id="tipo" onchange="atualizarSubmenu()">
             <option value="Receita">Receita</option>
@@ -158,16 +207,13 @@
             <option value="Divida">Dívida / Boleto</option>
             <option value="Reserva">Patrimônio</option>
         </select>
-
         <span class="label-mini">Categoria</span>
         <select id="submenu" onchange="definirDescricao()"></select>
         <input type="text" id="desc" placeholder="Descrição Personalizada">
-        
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
             <div><span class="label-mini">Valor Total</span><input type="number" id="valor" placeholder="0,00" step="0.01" inputmode="decimal"></div>
             <div id="campoPago"><span class="label-mini">Valor Pago</span><input type="number" id="pago" placeholder="0,00" step="0.01" inputmode="decimal"></div>
         </div>
-
         <span class="label-mini">Data</span>
         <input type="date" id="data">
         <input type="hidden" id="editIndex">
@@ -180,25 +226,28 @@
         let modoFantasma = false;
         let filtroAtual = "Tudo";
 
-        const opcoesSubmenu = {
-            "Receita": ["💰 Salário", "🚀 Freelance", "✨ Outros"],
-            "Fixo": ["🏠 Aluguel", "⚡ Energia", "🌐 Internet", "🎬 Streamings"],
-            "Variavel": ["🛒 Mercado", "🍕 Alimentação", "⛽ Combustível", "🚗 Uber"],
-            "Divida": ["💳 Cartão", "🤝 Empréstimo", "🧾 Boleto"],
-            "Reserva": ["₿ Cripto", "📊 Investimentos", "📦 Caixinha"]
-        };
+        function toggleSidebar() {
+            document.getElementById('profileSidebar').classList.toggle('open');
+            document.getElementById('overlay').style.display = 
+                document.getElementById('profileSidebar').classList.contains('open') ? 'block' : 'none';
+        }
+
+        function closeAll() {
+            closeModal();
+            document.getElementById('profileSidebar').classList.remove('open');
+            document.getElementById('overlay').style.display = 'none';
+        }
 
         function filtrarExtrato(categoria) {
             filtroAtual = categoria;
             const btn = document.getElementById('btnVoltar');
             const txt = document.getElementById('txtExtrato');
-            
             if(categoria === 'Tudo') {
                 btn.classList.add('hidden');
                 txt.innerText = "Extrato Biótico";
             } else {
                 btn.classList.remove('hidden');
-                txt.innerText = categoria === 'Gasto' ? "Filtro: Gastos" : "Filtro: " + categoria + "s";
+                txt.innerText = categoria === 'Gasto' ? "Filtro: Gastos" : "Filtro: " + categoria;
             }
             renderizar();
         }
@@ -207,37 +256,25 @@
             const corpo = document.getElementById('tabelaCorpo');
             corpo.innerHTML = '';
             let sRec = 0, sGas = 0, sDiv = 0, sRes = 0;
-
             const ordenados = [...registros].sort((a, b) => new Date(b.data) - new Date(a.data));
 
             ordenados.forEach(r => {
                 const idxOriginal = registros.indexOf(r);
                 const vTotal = parseFloat(r.valor), vPago = parseFloat(r.pago), falta = vTotal - vPago;
-                let icon = 'fa-receipt', color = '#00f2ff';
-
-                // Lógica de Soma Geral
+                
                 if(r.tipo === 'Receita') sRec += vTotal;
                 else if(r.tipo === 'Divida') sDiv += falta;
                 else if(r.tipo === 'Reserva') sRes += vTotal;
                 else sGas += vPago;
 
-                // Lógica de Filtro para Exibição
-                let exibir = false;
-                if(filtroAtual === "Tudo") exibir = true;
-                else if(filtroAtual === "Receita" && r.tipo === "Receita") exibir = true;
-                else if(filtroAtual === "Divida" && r.tipo === "Divida") exibir = true;
-                else if(filtroAtual === "Reserva" && r.tipo === "Reserva") exibir = true;
-                else if(filtroAtual === "Gasto" && (r.tipo === "Fixo" || r.tipo === "Variavel")) exibir = true;
+                let exibir = (filtroAtual === "Tudo") || 
+                             (filtroAtual === r.tipo) || 
+                             (filtroAtual === "Gasto" && (r.tipo === "Fixo" || r.tipo === "Variavel"));
 
                 if(exibir) {
-                    if(r.tipo === 'Receita') { icon='fa-arrow-up'; color='var(--success)'; }
-                    else if(r.tipo === 'Divida') { icon='fa-barcode'; color='var(--danger)'; }
-                    else if(r.tipo === 'Reserva') { icon='fa-vault'; color='var(--reserve)'; }
-                    else { icon='fa-cart-shopping'; color='var(--warning)'; }
-
-                    const statusColor = vPago >= vTotal ? 'var(--success)' : 'var(--danger)';
-                    const statusText = vPago >= vTotal ? 'LIQUIDADO' : `FALTA: ${ocultarBits(falta)}`;
-
+                    let icon = r.tipo === 'Receita' ? 'fa-arrow-up' : (r.tipo === 'Divida' ? 'fa-barcode' : (r.tipo === 'Reserva' ? 'fa-vault' : 'fa-cart-shopping'));
+                    let color = r.tipo === 'Receita' ? 'var(--success)' : (r.tipo === 'Divida' ? 'var(--danger)' : (r.tipo === 'Reserva' ? 'var(--reserve)' : 'var(--warning)'));
+                    
                     corpo.innerHTML += `
                         <div class="transaction-item" onclick="openModal(${idxOriginal})">
                             <div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div>
@@ -247,29 +284,34 @@
                             </div>
                             <div class="amount">
                                 <strong>${ocultarBits(vTotal)}</strong>
-                                <span class="status-debt" style="color:${statusColor}">${statusText}</span>
+                                <span class="status-debt" style="color:${vPago >= vTotal ? 'var(--success)' : 'var(--danger)'}">${vPago >= vTotal ? 'LIQUIDADO' : 'FALTA: '+ocultarBits(falta)}</span>
                             </div>
                         </div>`;
                 }
             });
 
-            // Atualização do Dashboard
             document.getElementById('totalReceitas').innerText = ocultarBits(sRec);
             document.getElementById('totalGastos').innerText = ocultarBits(sGas);
             document.getElementById('totalDividas').innerText = ocultarBits(sDiv);
             document.getElementById('totalReserva').innerText = ocultarBits(sRes);
             document.getElementById('totalSaldo').innerText = ocultarBits(sRec - (sGas + sDiv));
 
-            // Atualização dos Gráficos Inferiores
-            const percSaida = sRec > 0 ? Math.min(( (sGas + sDiv) / sRec) * 100, 100) : 0;
-            const percRes = sRec > 0 ? Math.min((sRes / sRec) * 100, 100) : 0;
-            document.getElementById('fillSaida').style.width = percSaida + '%';
-            document.getElementById('labelPercSaida').innerText = percSaida.toFixed(1) + '%';
-            document.getElementById('fillRes').style.width = percRes + '%';
-            document.getElementById('labelPercRes').innerText = percRes.toFixed(1) + '%';
+            const pSaida = sRec > 0 ? Math.min(((sGas + sDiv) / sRec) * 100, 100) : 0;
+            const pRes = sRec > 0 ? Math.min((sRes / sRec) * 100, 100) : 0;
+            document.getElementById('fillSaida').style.width = pSaida + '%';
+            document.getElementById('labelPercSaida').innerText = pSaida.toFixed(1) + '%';
+            document.getElementById('fillRes').style.width = pRes + '%';
+            document.getElementById('labelPercRes').innerText = pRes.toFixed(1) + '%';
         }
 
-        // Funções do Modal e Controle
+        const opcoesSubmenu = {
+            "Receita": ["💰 Salário", "🚀 Freelance", "✨ Outros"],
+            "Fixo": ["🏠 Aluguel", "⚡ Energia", "🌐 Internet", "🎬 Streamings"],
+            "Variavel": ["🛒 Mercado", "🍕 Alimentação", "⛽ Combustível", "🚗 Uber"],
+            "Divida": ["💳 Cartão", "🤝 Empréstimo", "🧾 Boleto"],
+            "Reserva": ["₿ Cripto", "📊 Investimentos", "📦 Caixinha"]
+        };
+
         function openModal(idx = null) {
             document.getElementById('modalForm').classList.add('open');
             document.getElementById('overlay').style.display = 'block';
@@ -293,66 +335,29 @@
         }
 
         function closeModal() { document.getElementById('modalForm').classList.remove('open'); document.getElementById('overlay').style.display = 'none'; }
-        
         function atualizarSubmenu() {
             const tipo = document.getElementById('tipo').value;
             const sub = document.getElementById('submenu');
             sub.innerHTML = '';
             opcoesSubmenu[tipo].forEach(opt => sub.innerHTML += `<option value="${opt}">${opt}</option>`);
-            const fieldPago = document.getElementById('campoPago');
-            if(tipo === 'Receita' || tipo === 'Reserva') fieldPago.classList.add('hidden');
-            else fieldPago.classList.remove('hidden');
+            document.getElementById('campoPago').classList.toggle('hidden', tipo === 'Receita' || tipo === 'Reserva');
         }
-
-        function definirDescricao() {
-            const val = document.getElementById('submenu').value;
-            document.getElementById('desc').value = val.split(' ').slice(1).join(' ');
-        }
-
+        function definirDescricao() { document.getElementById('desc').value = document.getElementById('submenu').value.split(' ').slice(1).join(' '); }
         function salvar() {
-            const tipo = document.getElementById('tipo').value;
-            const desc = document.getElementById('desc').value;
-            const valor = parseFloat(document.getElementById('valor').value) || 0;
-            const data = document.getElementById('data').value;
+            const tipo = document.getElementById('tipo').value, desc = document.getElementById('desc').value, valor = parseFloat(document.getElementById('valor').value) || 0, data = document.getElementById('data').value;
             let pago = parseFloat(document.getElementById('pago').value) || 0;
-            const editIdx = document.getElementById('editIndex').value;
-            if(!desc || valor <= 0 || !data) return alert("Dados incompletos!");
+            if(!desc || valor <= 0 || !data) return alert("Erro!");
             if(tipo === 'Receita' || tipo === 'Reserva') pago = valor;
+            const editIdx = document.getElementById('editIndex').value;
             const obj = { tipo, desc, valor, pago, data };
-            if(editIdx === "") registros.push(obj);
-            else registros[editIdx] = obj;
+            if(editIdx === "") registros.push(obj); else registros[editIdx] = obj;
             localStorage.setItem('foton_db', JSON.stringify(registros));
-            closeModal();
-            renderizar();
+            closeAll(); renderizar();
         }
-
-        function excluirRegistro() {
-            const idx = document.getElementById('editIndex').value;
-            if(confirm("Excluir?")) {
-                registros.splice(idx, 1);
-                localStorage.setItem('foton_db', JSON.stringify(registros));
-                closeModal();
-                renderizar();
-            }
-        }
-
-        function toggleFantasma() {
-            modoFantasma = !modoFantasma;
-            document.getElementById('eyeIcon').className = modoFantasma ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
-            renderizar();
-        }
-
-        function ocultarBits(v) {
-            return modoFantasma ? "R$ ••••" : "R$ " + v.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-        }
-
-        function resetForm() {
-            document.getElementById('editIndex').value = "";
-            document.getElementById('valor').value = "";
-            document.getElementById('pago').value = "";
-            document.getElementById('desc').value = "";
-            document.getElementById('data').value = new Date().toISOString().split('T')[0];
-        }
+        function excluirRegistro() { if(confirm("Excluir?")) { registros.splice(document.getElementById('editIndex').value, 1); localStorage.setItem('foton_db', JSON.stringify(registros)); closeAll(); renderizar(); } }
+        function toggleFantasma() { modoFantasma = !modoFantasma; document.getElementById('eyeIcon').className = modoFantasma ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'; renderizar(); }
+        function ocultarBits(v) { return modoFantasma ? "R$ ••••" : "R$ " + v.toLocaleString('pt-BR', {minimumFractionDigits: 2}); }
+        function resetForm() { document.getElementById('editIndex').value = ""; document.getElementById('valor').value = ""; document.getElementById('pago').value = ""; document.getElementById('desc').value = ""; document.getElementById('data').value = new Date().toISOString().split('T')[0]; }
 
         window.onload = () => { renderizar(); };
     </script>
