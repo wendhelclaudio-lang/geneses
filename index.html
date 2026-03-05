@@ -62,24 +62,27 @@
 
         /* TELA DE BLOQUEIO (LOGIN REDESENHADO) */
         #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--bg) 0%, var(--card) 100%); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; transition: opacity 0.6s ease, visibility 0.6s; }
+        [data-theme="light"] #lock-screen, [data-theme="santander"] #lock-screen, [data-theme="itau"] #lock-screen, [data-theme="bradesco"] #lock-screen, [data-theme="nubank"] #lock-screen { background: rgba(255, 255, 255, 0.85); }
         
         .login-logo { font-size: 4.5rem; color: var(--accent); margin-bottom: 10px; filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.3)); }
         .lock-title { font-size: 2rem; margin-bottom: 5px; color: var(--text); font-weight: 800; text-align: center; letter-spacing: 1px;}
         .lock-subtitle { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 40px; text-align: center;}
         
-        /* Estilos do Input de Senha e Botões de Login Local */
+        /* Estilos da área de Senha Local (inicia oculta) */
         #loginLocalArea { display: none; width: 100%; max-width: 320px; flex-direction: column; align-items: center; }
-        .lock-input { width: 100%; background: var(--input-bg); border: 2px solid var(--border); padding: 18px; border-radius: 16px; color: var(--text); font-size: 1.2rem; text-align: center; letter-spacing: 5px; margin-bottom: 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); transition: all 0.3s; }
+        .lock-input { width: 100%; background: var(--input-bg); border: 2px solid var(--border); padding: 18px; border-radius: 16px; color: var(--text); font-size: 1.2rem; text-align: center; letter-spacing: 5px; margin-bottom: 15px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); transition: all 0.3s; }
         .lock-input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
-        .btn-forgot { background: none; border: none; color: var(--accent); font-family: 'Ubuntu'; font-size: 0.85rem; cursor: pointer; margin-bottom: 20px; font-weight: 600;}
-        .btn-forgot:active { opacity: 0.7; }
-
-        .btn-google { width: 100%; max-width: 320px; background: #ffffff; color: #444; border: 1px solid #ddd; padding: 18px; border-radius: 16px; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 12px; cursor: pointer; font-size: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; transition: transform 0.2s;}
-        .btn-google:active { transform: scale(0.97); }
-        .btn-google img { width: 22px; height: 22px; }
-
-        .btn-guest { width: 100%; max-width: 320px; background: transparent; color: var(--text); border: 2px solid var(--border); padding: 18px; border-radius: 16px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 10px; cursor: pointer; font-size: 0.95rem; transition: background 0.2s;}
-        .btn-guest:active { background: var(--hover-bg); }
+        .btn-forgot { background: none; border: none; color: var(--text-muted); font-family: 'Ubuntu'; font-size: 0.85rem; cursor: pointer; margin-bottom: 20px; font-weight: 500; text-decoration: underline;}
+        
+        /* Estilo dos Botões Principais */
+        .btn-action { width: 100%; max-width: 320px; padding: 16px; border-radius: 14px; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 12px; cursor: pointer; font-size: 1rem; margin-bottom: 15px; transition: transform 0.2s, opacity 0.2s; border: none;}
+        .btn-action:active { transform: scale(0.97); opacity: 0.9; }
+        
+        .btn-google { background: #ffffff; color: #444; border: 1px solid #ddd; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .btn-google svg { width: 22px; height: 22px; }
+        .btn-confirm { background: var(--accent); color: #fff; box-shadow: 0 5px 15px rgba(0, 242, 255, 0.2); }
+        .btn-guest { background: transparent; color: var(--text); border: 2px solid var(--border); }
+        .btn-guest:hover { background: var(--hover-bg); }
 
         /* TOAST NOTIFICATION */
         #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: 90%; max-width: 350px;}
@@ -170,10 +173,6 @@
         input, select { width: 100%; background: var(--input-bg); border: 1px solid var(--input-border); padding: 14px; border-radius: 12px; color: var(--text); margin-bottom: 14px; font-family: 'Ubuntu', sans-serif; font-size: 0.95rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
         input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0,0,0,0.05); }
         
-        .btn-confirm { background: var(--accent); color: #ffffff; width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; font-family: 'Ubuntu', sans-serif; margin-top: 10px; cursor: pointer; font-size: 0.95rem; transition: transform 0.1s;}
-        .btn-confirm:active { transform: scale(0.98); }
-        .btn-delete { background: none; color: var(--danger); width: 100%; padding: 14px; border: 1px solid var(--danger); border-radius: 12px; margin-top: 16px; font-weight: 700; font-family: 'Ubuntu', sans-serif; font-size: 0.9rem; cursor: pointer; transition: background-color 0.2s;}
-        
         .label-mini { font-size: 0.65rem; color: var(--accent); font-weight: 800; margin-bottom: 5px; display: block; text-transform: uppercase; letter-spacing: 0.5px;}
         .hidden { display: none !important; }
 
@@ -191,20 +190,21 @@
     <div id="lock-screen">
         <i class="fa-solid fa-coins login-logo"></i>
         <h2 class="lock-title">MeuCaixa</h2>
-        <p class="lock-subtitle">Gerencie suas finanças com inteligência.</p>
+        <p class="lock-subtitle" id="loginSubtitle">Gerencie suas finanças com inteligência.</p>
         
         <div id="loginLocalArea">
-            <input type="password" id="inputSenha" class="lock-input" placeholder="••••" inputmode="numeric" onkeypress="if(event.key === 'Enter') checkLogin()">
-            <button class="btn-confirm" style="max-width: 320px; margin-top: 0; box-shadow: 0 5px 15px rgba(0,0,0,0.3); margin-bottom: 15px;" onclick="checkLogin()">ENTRAR</button>
-            <button class="btn-forgot" onclick="recuperarSenha()">Esqueci minha senha</button>
-            <div style="margin: 10px 0 20px 0; width: 100%; display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 0.8rem;">
+            <input type="password" id="inputSenha" class="lock-input" placeholder="PIN" inputmode="numeric" onkeypress="if(event.key === 'Enter') checkLogin()">
+            <button class="btn-action btn-confirm" onclick="checkLogin()">ENTRAR</button>
+            <button class="btn-forgot" onclick="recuperarSenha()">Esqueci minha senha local</button>
+            
+            <div style="margin: 10px 0 20px 0; width: 100%; max-width: 320px; display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 0.8rem;">
                 <div style="flex: 1; height: 1px; background: var(--border);"></div>
                 OU
                 <div style="flex: 1; height: 1px; background: var(--border);"></div>
             </div>
         </div>
 
-        <button class="btn-google" onclick="iniciarLoginGoogle()" id="btnGoogleAuth">
+        <button class="btn-action btn-google" onclick="iniciarLoginGoogle()" id="btnGoogleAuth">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                 <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
                 <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
@@ -214,8 +214,8 @@
             Entrar com Google
         </button>
         
-        <button class="btn-guest" onclick="continuarSemLogin()" id="btnGuestMode">
-            Continuar sem login
+        <button class="btn-action btn-guest" onclick="continuarSemLogin()" id="btnGuestMode">
+            Continuar Offline (Sem Login)
         </button>
     </div>
 
@@ -241,8 +241,8 @@
         </div>
         <div class="status-panel">
             <div class="status-row"><span class="status-label">Conexão</span><strong id="statusConexao" style="color: var(--warning); font-size: 0.75rem;">OFFLINE LOCAL</strong></div>
-            <div class="status-row"><span class="status-label">Segurança</span><strong id="statusSeguranca" style="color: var(--warning); font-size: 0.75rem;">DESATIVADA</strong></div>
-            <div class="status-row"><span class="status-label">Dados</span><strong id="contadorRegistros" style="color: var(--text);">0</strong></div>
+            <div class="status-row"><span class="status-label">Senha / PIN</span><strong id="statusSeguranca" style="color: var(--warning); font-size: 0.75rem;">DESATIVADA</strong></div>
+            <div class="status-row"><span class="status-label">Registros</span><strong id="contadorRegistros" style="color: var(--text);">0</strong></div>
             
             <div class="meta-panel hidden" id="metaPanelInfo">
                 <div class="meta-label">
@@ -254,8 +254,12 @@
         </div>
         
         <div class="sidebar-menu">
+            <div class="menu-item" onclick="iniciarLoginGoogle()">
+                <div><i class="fa-brands fa-google" style="color: #4CAF50"></i> <span>Conectar Nuvem (Google)</span></div>
+            </div>
+
             <div class="menu-item" onclick="configurarSenha()">
-                <div><i class="fa-solid fa-lock" style="color: var(--warning)"></i> <span>Configurar Segurança Local</span></div>
+                <div><i class="fa-solid fa-lock" style="color: var(--warning)"></i> <span>Configurar Senha Local</span></div>
             </div>
 
             <input type="file" id="fotoPerfilInput" accept="image/*" style="display: none;" onchange="carregarNovaFoto(event)">
@@ -307,7 +311,7 @@
             </div>
             
             <div class="menu-item" style="border-color: rgba(239, 68, 68, 0.2); margin-top: 15px;" onclick="fazerLogout()">
-                <div><i class="fa-solid fa-right-from-bracket" style="color: var(--danger);"></i> <span style="color: var(--danger);">Sair (Bloquear App)</span></div>
+                <div><i class="fa-solid fa-right-from-bracket" style="color: var(--danger);"></i> <span style="color: var(--danger);">Sair (Logout)</span></div>
             </div>
         </div>
     </div>
@@ -418,12 +422,12 @@
         <input type="date" id="data">
         
         <input type="hidden" id="editIndex">
-        <button class="btn-confirm" onclick="salvar()">SALVAR OPERAÇÃO</button>
-        <button id="btnExcluir" class="btn-delete hidden" onclick="excluirRegistro()">EXCLUIR</button>
+        <button class="btn-action btn-confirm" style="margin-top: 15px;" onclick="salvar()">SALVAR OPERAÇÃO</button>
+        <button class="btn-action btn-delete hidden" id="btnExcluir" onclick="excluirRegistro()">EXCLUIR REGISTRO</button>
     </div>
 
     <script>
-        // CONFIGURAÇÃO REAL DO SEU FIREBASE
+        // CONFIGURAÇÃO FIREBASE 
         const firebaseConfig = {
             apiKey: "AIzaSyD2TXAC0o5t8vTsH2jzLqZ9QoReHU5y0Mo",
             authDomain: "meucaixa-d8d24.firebaseapp.com",
@@ -432,8 +436,6 @@
             messagingSenderId: "486750418195",
             appId: "1:486750418195:web:4c33081663486abda796e6"
         };
-
-        // INICIALIZANDO FIREBASE
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const provider = new firebase.auth.GoogleAuthProvider();
@@ -465,40 +467,53 @@
         // SISTEMA DE LOGIN E SEGURANÇA
         // ==========================================
         
-        function initializeAppAuth() {
-            // Ocultar ou mostrar área de senha dependendo se o usuário configurou
-            if(appConfig.senhaHash) {
-                document.getElementById('loginLocalArea').style.display = 'flex';
-                document.getElementById('btnGoogleAuth').style.display = 'none';
-                document.getElementById('btnGuestMode').style.display = 'none';
-            } else {
-                document.getElementById('loginLocalArea').style.display = 'none';
-                document.getElementById('btnGoogleAuth').style.display = 'flex';
-                document.getElementById('btnGuestMode').style.display = 'flex';
+        function setupLoginScreen() {
+            const screen = document.getElementById('lock-screen');
+            const localArea = document.getElementById('loginLocalArea');
+            const btnGoogle = document.getElementById('btnGoogleAuth');
+            const btnGuest = document.getElementById('btnGuestMode');
+            const subtitle = document.getElementById('loginSubtitle');
+
+            // Verifica se a sessão do navegador já validou a entrada
+            if (sessionStorage.getItem('isLoggedIn') === 'true') {
+                screen.classList.add('hidden');
+                return;
             }
 
-            // Verifica se a sessão está ativa
-            if (sessionStorage.getItem('isLoggedIn') === 'true') {
-                document.getElementById('lock-screen').classList.add('hidden');
-            } else {
-                // Tenta ver se tem login persistente no Google
-                auth.onAuthStateChanged((user) => {
-                    if (user && !appConfig.senhaHash) {
-                        appConfig.nome = user.displayName;
-                        appConfig.fotoPerfil = user.photoURL;
-                        document.getElementById('statusConexao').innerText = "GOOGLE CLOUD";
-                        document.getElementById('statusConexao').style.color = "#0ea5e9";
-                        salvarConfig();
-                        
-                        sessionStorage.setItem('isLoggedIn', 'true');
-                        document.getElementById('lock-screen').style.opacity = '0';
-                        setTimeout(() => { document.getElementById('lock-screen').classList.add('hidden'); }, 500);
-                    } else if (sessionStorage.getItem('guestMode') !== 'true') {
-                        document.getElementById('lock-screen').classList.remove('hidden');
-                        document.getElementById('lock-screen').style.opacity = '1';
+            // Ouve as mudanças de autenticação do Firebase no fundo
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    // Está logado no Firebase (Nuvem)
+                    appConfig.nome = user.displayName;
+                    appConfig.fotoPerfil = user.photoURL;
+                    document.getElementById('statusConexao').innerText = "GOOGLE CLOUD";
+                    document.getElementById('statusConexao').style.color = "#0ea5e9";
+                    salvarConfig(false); // Salva silenciosamente
+                    
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    screen.style.opacity = '0';
+                    setTimeout(() => { screen.classList.add('hidden'); }, 500);
+                } else {
+                    // Não está logado no Google. Monta a tela de acordo com as configs
+                    document.getElementById('statusConexao').innerText = "OFFLINE LOCAL";
+                    document.getElementById('statusConexao').style.color = "var(--warning)";
+
+                    if(appConfig.senhaHash) {
+                        // Tem senha configurada
+                        localArea.style.display = 'flex';
+                        btnGuest.style.display = 'none';
+                        subtitle.innerText = "Insira sua senha para acessar.";
+                    } else {
+                        // Modo livre
+                        localArea.style.display = 'none';
+                        btnGuest.style.display = 'flex';
+                        subtitle.innerText = "Gerencie suas finanças com inteligência.";
                     }
-                });
-            }
+                    
+                    screen.classList.remove('hidden');
+                    screen.style.opacity = '1';
+                }
+            });
         }
 
         function checkLogin() {
@@ -516,56 +531,41 @@
 
         function iniciarLoginGoogle() {
             auth.signInWithPopup(provider).then((result) => {
-                var user = result.user;
-                appConfig.nome = user.displayName;
-                appConfig.fotoPerfil = user.photoURL;
-                sessionStorage.setItem('isLoggedIn', 'true');
-                
-                document.getElementById('statusConexao').innerText = "GOOGLE CLOUD";
-                document.getElementById('statusConexao').style.color = "#0ea5e9";
-                salvarConfig();
-                
-                document.getElementById('lock-screen').style.opacity = '0';
-                setTimeout(() => { document.getElementById('lock-screen').classList.add('hidden'); }, 500);
-                showToast(`Bem-vindo(a), ${user.displayName.split(" ")[0]}!`, "success");
+                showToast(`Bem-vindo(a), ${result.user.displayName.split(" ")[0]}!`, "success");
             }).catch((error) => {
-                showToast("Erro ao conectar: " + error.message, "error");
+                showToast("Erro ao conectar com o Google.", "error");
                 console.error(error);
             });
         }
 
         function continuarSemLogin() {
-            sessionStorage.setItem('guestMode', 'true');
-            document.getElementById('statusConexao').innerText = "OFFLINE LOCAL";
-            document.getElementById('statusConexao').style.color = "var(--warning)";
-            
+            sessionStorage.setItem('isLoggedIn', 'true');
             document.getElementById('lock-screen').style.opacity = '0';
             setTimeout(() => { document.getElementById('lock-screen').classList.add('hidden'); }, 500);
             showToast("Acesso Offline Liberado", "success");
         }
 
         function fazerLogout() {
-            auth.signOut().then(() => {
-                sessionStorage.removeItem('isLoggedIn');
-                sessionStorage.removeItem('guestMode');
-                closeAll();
-                
-                initializeAppAuth();
-                
-                document.getElementById('lock-screen').classList.remove('hidden');
-                setTimeout(() => { document.getElementById('lock-screen').style.opacity = '1'; }, 10);
-                showToast("Aplicativo bloqueado.", "success");
-            });
+            // Desloga do Google se estiver conectado
+            if (auth.currentUser) {
+                auth.signOut().then(() => { lockApp(); });
+            } else {
+                lockApp();
+            }
+        }
+        
+        function lockApp() {
+            sessionStorage.removeItem('isLoggedIn');
+            closeAll();
+            setupLoginScreen();
+            showToast("Aplicativo bloqueado.", "success");
         }
 
         function configurarSenha() {
             if(appConfig.senhaHash) {
-                if(confirm("Deseja remover a segurança local? O aplicativo abrirá direto.")) {
+                if(confirm("Deseja remover a segurança local? O aplicativo ficará livre para acesso.")) {
                     appConfig.senhaHash = null; appConfig.telefoneRec = null;
-                    salvarConfig(); 
-                    showToast("Segurança Local Removida", "success"); 
-                    closeAll();
-                    initializeAppAuth();
+                    salvarConfig(); showToast("Segurança Removida", "success"); closeAll();
                 }
             } else {
                 let novaSenha = prompt("Crie uma senha ou PIN para bloquear a entrada do aplicativo:");
@@ -573,10 +573,7 @@
                     let telefone = prompt("Digite seu celular com DDD (só números) para recuperar a senha caso esqueça:");
                     appConfig.senhaHash = novaSenha.trim();
                     if(telefone) appConfig.telefoneRec = telefone.replace(/\D/g, '');
-                    salvarConfig(); 
-                    showToast("Segurança Local Configurada!", "success"); 
-                    closeAll();
-                    initializeAppAuth();
+                    salvarConfig(); showToast("Segurança Configurada!", "success"); closeAll();
                 }
             }
         }
@@ -589,7 +586,7 @@
                 let codigoGerado = Math.floor(100000 + Math.random() * 900000).toString();
                 alert(`[SISTEMA DE RECUPERAÇÃO]\n\nO MeuCaixa detectou o pedido. Seu código gerado é: ${codigoGerado}`);
                 
-                let inputCodigo = prompt("Digite o código de 6 dígitos gerado:");
+                let inputCodigo = prompt("Digite o código de 6 dígitos recebido:");
                 if(inputCodigo === codigoGerado) {
                     let novaSenha = prompt("Código correto! Digite sua NOVA senha:");
                     if(novaSenha && novaSenha.trim().length > 0) {
@@ -598,7 +595,7 @@
                         salvarConfig();
                         document.getElementById('lock-screen').style.opacity = '0';
                         setTimeout(() => { document.getElementById('lock-screen').classList.add('hidden'); }, 500);
-                        showToast("Senha redefinida!", "success");
+                        showToast("Senha redefinida com sucesso!", "success");
                     }
                 } else { showToast("Código inválido.", "error"); }
             } else { showToast("Telefone não confere.", "error"); }
@@ -610,10 +607,10 @@
         function mudarTema(tema) { document.documentElement.setAttribute('data-theme', tema); localStorage.setItem('meucaixa_theme', tema); closeAll(); }
 
         // CONFIGURAÇÕES GERAIS E AVATAR
-        function salvarConfig() { 
+        function salvarConfig(render = true) { 
             localStorage.setItem('meucaixa_config', JSON.stringify(appConfig)); 
             carregarConfig(); 
-            renderizar(); 
+            if(render) renderizar(); 
         }
 
         function carregarConfig() {
@@ -621,11 +618,10 @@
             document.getElementById('sidebarUserName').innerText = appConfig.nome;
             document.getElementById('currentCurrencyDisplay').innerText = appConfig.moeda;
             
-            // Status de Segurança Visual
             document.getElementById('statusSeguranca').innerText = appConfig.senhaHash ? "ATIVADA" : "DESATIVADA";
             document.getElementById('statusSeguranca').style.color = appConfig.senhaHash ? "var(--success)" : "var(--warning)";
             
-            let avatares = [document.getElementById('headerAvatar'), document.getElementById('sidebarAvatar')];
+            let avatares = [document.getElementById('headerAvatar'), document.getElementById('sidebarAvatar'), document.getElementById('loginAvatar')];
             let iniciais = appConfig.nome.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
             
             avatares.forEach(av => {
@@ -789,7 +785,7 @@
         
         window.onload = () => { 
             carregarConfig(); 
-            initializeAppAuth(); 
+            setupLoginScreen(); 
             renderizar(); 
         };
     </script>
