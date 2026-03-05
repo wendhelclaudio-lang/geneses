@@ -52,110 +52,112 @@
         body { font-family: 'Ubuntu', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
 
         header {
-            background: var(--bg); padding: 15px 20px; display: flex; justify-content: space-between;
+            background: var(--bg); padding: 20px 24px; display: flex; justify-content: space-between;
             align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         
-        .profile-section { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .profile-section { display: flex; align-items: center; gap: 16px; cursor: pointer; }
         .avatar { 
-            width: 40px; height: 40px; border-radius: 12px; 
+            width: 48px; height: 48px; border-radius: 14px; 
             background: linear-gradient(135deg, var(--accent), #0a192f);
             display: flex; align-items: center; justify-content: center;
             font-weight: bold; color: #ffffff; border: 2px solid var(--border);
+            font-size: 1.4rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         
-        [data-theme="light"] .avatar { background: linear-gradient(135deg, var(--accent), #bae6fd); }
+        [data-theme="light"] .avatar { background: linear-gradient(135deg, var(--accent), #bae6fd); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
-        .user-info span { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; display: block; text-transform: uppercase; }
-        .user-info strong { font-size: 0.9rem; color: var(--text); }
+        .user-info span { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 1px; display: block; text-transform: uppercase; margin-bottom: 2px; }
+        .user-info strong { font-size: 1rem; color: var(--text); letter-spacing: 0.5px;}
 
         .sidebar {
-            position: fixed; top: 0; right: -100%; width: 85%; max-width: 350px; height: 100%;
+            position: fixed; top: 0; right: -100%; width: 85%; max-width: 380px; height: 100%;
             background: var(--card); z-index: 3000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 30px 20px; border-left: 1px solid var(--accent); box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            padding: 30px 24px; border-left: 1px solid var(--accent); box-shadow: -15px 0 40px rgba(0,0,0,0.7);
             display: flex; flex-direction: column; overflow-y: auto;
         }
-        [data-theme="light"] .sidebar { box-shadow: -10px 0 30px rgba(0,0,0,0.1); }
+        [data-theme="light"] .sidebar { box-shadow: -15px 0 40px rgba(0,0,0,0.1); }
         .sidebar.open { right: 0; }
-        .sidebar-header { margin-bottom: 25px; text-align: center; position: relative; }
+        .sidebar-header { margin-bottom: 30px; text-align: center; position: relative; }
         
-        .status-panel { background: var(--hover-bg); padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid var(--border); }
-        .status-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 10px; align-items: center; }
+        .status-panel { background: var(--hover-bg); padding: 18px; border-radius: 18px; margin-bottom: 30px; border: 1px solid var(--border); }
+        .status-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 12px; align-items: center; }
         .status-row:last-child { margin-bottom: 0; }
         .status-label { color: var(--text-muted); }
 
-        /* Estilos do Gráfico de Meta no Painel */
-        .meta-panel { margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--border); }
-        .meta-label { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 8px; color: var(--text); }
-        .meta-track { background: var(--bg); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
-        .meta-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--success)); transition: width 1s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
+        .sidebar-menu { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+        .menu-item { padding: 16px 20px; border-radius: 14px; background: var(--hover-bg); display: flex; align-items: center; gap: 18px; font-size: 0.95rem; cursor: pointer; border: 1px solid transparent; color: var(--text); font-weight: 500;}
+        .menu-item:active { background: var(--border); transform: scale(0.98); transition: transform 0.1s;}
+        .menu-item i { color: var(--accent); font-size: 1.2rem; width: 28px; text-align: center; }
 
-        .sidebar-menu { display: flex; flex-direction: column; gap: 10px; flex: 1; }
-        .menu-item { padding: 15px; border-radius: 12px; background: var(--hover-bg); display: flex; align-items: center; gap: 15px; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent; color: var(--text); }
-        .menu-item:active { background: var(--border); }
-        .menu-item i { color: var(--accent); font-size: 1.1rem; width: 25px; text-align: center; }
+        .month-selector { display: flex; justify-content: space-between; align-items: center; padding: 24px 24px 0; }
+        .month-selector button { background: var(--hover-bg); border: 1px solid var(--border); color: var(--text); width: 40px; height: 40px; border-radius: 12px; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .month-selector span { font-size: 1rem; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 1.5px; }
 
-        .month-selector { display: flex; justify-content: space-between; align-items: center; padding: 20px 20px 0; }
-        .month-selector button { background: var(--hover-bg); border: 1px solid var(--border); color: var(--text); width: 35px; height: 35px; border-radius: 10px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .month-selector span { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; }
+        .balance-card { padding: 20px 24px 30px; text-align: center; }
+        .balance-card small { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2.5px; font-weight: 500;}
+        .balance-card h1 { font-size: 2.8rem; margin: 8px 0 0; font-weight: 800; color: var(--text); text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
 
-        .balance-card { padding: 15px 20px 25px; text-align: center; }
-        .balance-card small { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; }
-        .balance-card h1 { font-size: 2.2rem; margin: 5px 0 0; font-weight: 800; color: var(--text); }
+        .quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 0 24px 24px; }
+        .mini-card { background: var(--card); padding: 18px; border-radius: 18px; border: 1px solid var(--border); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .mini-card:active { transform: translateY(2px); box-shadow: 0 2px 3px rgba(0,0,0,0.05); }
+        .mini-card i { font-size: 0.9rem; margin-bottom: 8px; }
+        .mini-card span { display: block; font-size: 0.7rem; color: var(--text-muted); font-weight: 500; margin-bottom: 4px;}
+        .mini-card strong { font-size: 1rem; color: var(--text); }
 
-        .quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 20px; }
-        .mini-card { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); cursor: pointer; transition: 0.2s; }
-        .mini-card i { font-size: 0.8rem; margin-bottom: 5px; }
-        .mini-card span { display: block; font-size: 0.65rem; color: var(--text-muted); }
-        .mini-card strong { font-size: 0.9rem; color: var(--text); }
-
-        main { padding: 0 20px 20px; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 15px; }
-        .section-header h3 { font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; margin: 0; }
+        main { padding: 0 24px 24px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin: 24px 0 18px; }
+        .section-header h3 { font-size: 0.95rem; color: var(--text-muted); text-transform: uppercase; margin: 0; letter-spacing: 1px;}
         
-        #btnVoltar { background: rgba(0, 242, 255, 0.1); color: var(--accent); border: 1px solid var(--accent); padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; }
-        [data-theme="light"] #btnVoltar { background: #e0f2fe; }
+        #btnVoltar { background: rgba(0, 242, 255, 0.1); color: var(--accent); border: 1px solid var(--accent); padding: 6px 14px; border-radius: 10px; font-size: 0.75rem; font-weight: 800; cursor: pointer; box-shadow: 0 2px 5px rgba(0, 242, 255, 0.2); }
+        [data-theme="light"] #btnVoltar { background: #e0f2fe; box-shadow: none; }
 
-        .submenu-divida { display: flex; gap: 10px; margin-bottom: 15px; }
-        .sub-btn { flex: 1; padding: 8px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; font-size: 0.65rem; font-weight: 800; color: var(--text-muted); }
+        .submenu-divida { display: flex; gap: 12px; margin-bottom: 20px; }
+        .sub-btn { flex: 1; padding: 10px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; font-size: 0.7rem; font-weight: 800; color: var(--text-muted); letter-spacing: 0.5px;}
         .sub-btn.active { background: rgba(0, 242, 255, 0.1); border-color: var(--accent); color: var(--accent); }
         [data-theme="light"] .sub-btn.active { background: #e0f2fe; }
 
-        .transaction-item { background: var(--card); padding: 15px; border-radius: 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); }
-        .icon-box { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--bg); min-width: 40px; border: 1px solid var(--border); }
+        .transaction-item { background: var(--card); padding: 18px; border-radius: 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .icon-box { width: 46px; height: 46px; border-radius: 14px; display: flex; align-items: center; justify-content: center; background: var(--bg); min-width: 46px; border: 1px solid var(--border); font-size: 1.1rem; }
         .details { flex: 1; overflow: hidden; }
-        .details strong { display: block; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
-        .details span { font-size: 0.7rem; color: var(--text-muted); }
+        .details strong { display: block; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); margin-bottom: 3px;}
+        .details span { font-size: 0.75rem; color: var(--text-muted); font-weight: 500;}
         
-        .amount { text-align: right; min-width: 90px; }
-        .amount strong { display: block; font-size: 0.85rem; color: var(--text); }
-        .amount .status-debt { font-size: 0.6rem; font-weight: 800; display: block; margin-top: 2px; }
+        .amount { text-align: right; min-width: 100px; }
+        .amount strong { display: block; font-size: 0.95rem; color: var(--text); margin-bottom: 3px;}
+        .amount .status-debt { font-size: 0.65rem; font-weight: 800; display: block; letter-spacing: 0.5px;}
 
-        .bottom-charts { padding: 20px; background: var(--card); border-top: 1px solid var(--border); margin-bottom: 100px; }
-        .chart-bar-group { margin-bottom: 15px; }
-        .chart-label { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 5px; color: var(--text-muted); }
-        .chart-track { background: var(--bg); height: 6px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+        .bottom-charts { padding: 24px; background: var(--card); border-top: 1px solid var(--border); margin-bottom: 100px; border-radius: 24px 24px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); }
+        .chart-bar-group { margin-bottom: 18px; }
+        .chart-label { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 8px; color: var(--text-muted); font-weight: 500; }
+        .chart-track { background: var(--bg); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
         .chart-fill { height: 100%; width: 0%; transition: 1s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
 
-        .fab { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; border-radius: 20px; background: var(--accent); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); border: none; z-index: 1000; cursor: pointer; }
+        .fab { position: fixed; bottom: 30px; right: 24px; width: 64px; height: 64px; border-radius: 22px; background: var(--accent); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 10px 25px rgba(0, 242, 255, 0.3); border: none; z-index: 1000; cursor: pointer; transition: transform 0.2s; }
+        .fab:active { transform: scale(0.95); }
 
-        .modal { position: fixed; bottom: -100%; left: 0; width: 100%; height: 92%; background: var(--card); border-radius: 30px 30px 0 0; z-index: 2000; padding: 25px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; border-top: 1px solid var(--border); }
+        .modal { position: fixed; bottom: -100%; left: 0; width: 100%; height: 92%; background: var(--card); border-radius: 35px 35px 0 0; z-index: 2000; padding: 30px 24px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; border-top: 1px solid var(--border); box-shadow: 0 -10px 40px rgba(0,0,0,0.5); }
+        [data-theme="light"] .modal { box-shadow: 0 -10px 40px rgba(0,0,0,0.1); }
         .modal.open { bottom: 0; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; backdrop-filter: blur(3px); }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; backdrop-filter: blur(4px); }
 
-        input, select { width: 100%; background: var(--input-bg); border: 1px solid var(--input-border); padding: 14px; border-radius: 12px; color: var(--text); margin-bottom: 12px; font-family: 'Ubuntu', sans-serif; font-size: 1rem; }
+        input, select { width: 100%; background: var(--input-bg); border: 1px solid var(--input-border); padding: 16px; border-radius: 14px; color: var(--text); margin-bottom: 16px; font-family: 'Ubuntu', sans-serif; font-size: 1rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+        input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0, 242, 255, 0.2); }
         
-        .btn-confirm { background: var(--accent); color: #ffffff; width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; font-family: 'Ubuntu', sans-serif; margin-top: 10px; cursor: pointer; }
-        .btn-delete { background: none; color: var(--danger); width: 100%; padding: 12px; border: 1px solid var(--danger); border-radius: 12px; margin-top: 15px; font-weight: 700; font-family: 'Ubuntu', sans-serif; cursor: pointer; }
+        .btn-confirm { background: var(--accent); color: #ffffff; width: 100%; padding: 18px; border-radius: 14px; border: none; font-weight: 800; font-family: 'Ubuntu', sans-serif; margin-top: 12px; cursor: pointer; font-size: 1.05rem; box-shadow: 0 4px 10px rgba(0, 242, 255, 0.2); transition: transform 0.1s;}
+        .btn-confirm:active { transform: scale(0.98); }
+        .btn-delete { background: none; color: var(--danger); width: 100%; padding: 14px; border: 1px solid var(--danger); border-radius: 14px; margin-top: 18px; font-weight: 700; font-family: 'Ubuntu', sans-serif; cursor: pointer; transition: background-color 0.2s;}
+        .btn-delete:active { background: rgba(239, 68, 68, 0.1); }
 
-        .label-mini { font-size: 0.65rem; color: var(--accent); font-weight: 800; margin-bottom: 5px; display: block; text-transform: uppercase; }
+        .label-mini { font-size: 0.7rem; color: var(--accent); font-weight: 800; margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.5px;}
         .hidden { display: none !important; }
 
-        .bloco-parcelas, .resumo-quitacao { background: var(--hover-bg); padding: 15px; border-radius: 12px; border: 1px dashed var(--accent); margin-bottom: 15px; }
-        .resumo-quitacao h4 { margin: 0 0 10px 0; font-size: 0.75rem; color: var(--accent); text-transform: uppercase; }
-        .resumo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .resumo-item { font-size: 0.7rem; color: var(--text-muted); }
-        .resumo-item strong { color: var(--text); display: block; font-size: 0.8rem; }
+        .bloco-parcelas, .resumo-quitacao { background: var(--hover-bg); padding: 18px; border-radius: 16px; border: 1px dashed var(--accent); margin-bottom: 18px; }
+        .resumo-quitacao h4 { margin: 0 0 12px 0; font-size: 0.8rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px;}
+        .resumo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .resumo-item { font-size: 0.75rem; color: var(--text-muted); }
+        .resumo-item strong { color: var(--text); display: block; font-size: 0.9rem; margin-top: 3px;}
     </style>
 </head>
 <body>
@@ -168,43 +170,37 @@
                 <strong id="userNameDisplay">WENDEL CARNEIRO</strong>
             </div>
         </div>
-        <button onclick="toggleFantasma()" style="background:none; border:1px solid var(--border); color:var(--text); padding:8px; border-radius:10px; cursor:pointer;">
+        <button onclick="toggleFantasma()" style="background:none; border:1px solid var(--border); color:var(--text); padding:10px; border-radius:12px; cursor:pointer;">
             <i id="eyeIcon" class="fa-solid fa-eye"></i>
         </button>
     </header>
 
     <div class="sidebar" id="profileSidebar">
-        <div style="text-align: right; margin-bottom: 10px;"><i class="fa-solid fa-xmark" style="font-size: 1.5rem; cursor: pointer; color: var(--text-muted);" onclick="toggleSidebar()"></i></div>
+        <div style="text-align: right; margin-bottom: 15px;"><i class="fa-solid fa-xmark" style="font-size: 1.6rem; cursor: pointer; color: var(--text-muted);" onclick="toggleSidebar()"></i></div>
         <div class="sidebar-header">
-            <div class="avatar" style="width: 65px; height: 65px; font-size: 2rem; margin: 0 auto 10px;"><i class="fa-solid fa-coins"></i></div>
-            <h2 style="margin:0; font-size: 1.1rem; color: var(--text);">Painel MeuCaixa</h2>
-            <span style="color: var(--accent); font-size: 0.75rem;">Operacional</span>
+            <div class="avatar" style="width: 75px; height: 75px; font-size: 2.2rem; margin: 0 auto 15px;"><i class="fa-solid fa-coins"></i></div>
+            <h2 style="margin:0; font-size: 1.2rem; color: var(--text);">Painel MeuCaixa</h2>
+            <span style="color: var(--accent); font-size: 0.8rem; font-weight: 500;">Operacional</span>
         </div>
         <div class="status-panel">
-            <div class="status-row"><span class="status-label">Conexão</span><strong style="color: var(--success); font-size: 0.75rem;">SEGURO</strong></div>
+            <div class="status-row"><span class="status-label">Conexão</span><strong style="color: var(--success); font-size: 0.8rem;">SEGURO</strong></div>
             <div class="status-row"><span class="status-label">Dados</span><strong id="contadorRegistros" style="color: var(--text);">0</strong></div>
             <div class="status-row"><span class="status-label">Saúde</span><strong id="statusFluxo" style="color: var(--text);">ESTÁVEL</strong></div>
-            
-            <div class="meta-panel hidden" id="metaPanelInfo">
-                <div class="meta-label">
-                    <span>Meta: <strong id="metaValorDisplay">R$ 0,00</strong></span>
-                    <span id="metaProgressoDisplay" style="color: var(--success); font-weight: bold;">0%</span>
-                </div>
-                <div class="meta-track">
-                    <div class="meta-fill" id="metaFillBar"></div>
-                </div>
-            </div>
         </div>
-        
         <div class="sidebar-menu">
             <div class="menu-item" onclick="mudarNome()"><i class="fa-solid fa-user-pen"></i> <span>Mudar Nome</span></div>
-            <div class="menu-item" onclick="configurarMeta()"><i class="fa-solid fa-bullseye" style="color: var(--success);"></i> <span>Meta de Economia</span></div>
             <div class="menu-item" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i> <span>Alternar Tema</span></div>
+            
             <div class="menu-item" onclick="toggleFantasma()"><i class="fa-solid fa-ghost"></i> <span>Privacidade</span></div>
             <div class="menu-item" onclick="exportarDados()"><i class="fa-solid fa-file-export"></i> <span>Exportar CSV</span></div>
             <input type="file" id="fileInput" accept=".csv" style="display: none;" onchange="importarDados(event)">
             <div class="menu-item" onclick="document.getElementById('fileInput').click()"><i class="fa-solid fa-file-import"></i> <span>Importar Backup</span></div>
-            <div class="menu-item" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.2);" onclick="limparTerminal()"><i class="fa-solid fa-trash" style="color: var(--danger);"></i> <span>Resetar Banco</span></div>
+            
+            <div class="menu-item" style="border-color: rgba(245, 158, 11, 0.2);" onclick="limparMesAtual()">
+                <i class="fa-solid fa-calendar-xmark" style="color: var(--warning);"></i> <span style="color: var(--warning);">Limpar Mês Atual</span>
+            </div>
+
+            <div class="menu-item" style="border-color: rgba(239, 68, 68, 0.2);" onclick="limparTerminal()"><i class="fa-solid fa-trash" style="color: var(--danger);"></i> <span style="color: var(--danger);">Resetar Banco</span></div>
         </div>
     </div>
 
@@ -255,9 +251,9 @@
     <div class="overlay" id="overlay" onclick="closeAll()"></div>
 
     <div class="modal" id="modalForm">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2 id="modalTitle" style="margin:0; font-size:1.2rem; color: var(--text);">Nova Operação</h2>
-            <i class="fa-solid fa-circle-xmark" style="font-size:1.5rem; color:var(--text-muted); cursor:pointer;" onclick="closeModal()"></i>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+            <h2 id="modalTitle" style="margin:0; font-size:1.3rem; color: var(--text);">Nova Operação</h2>
+            <i class="fa-solid fa-circle-xmark" style="font-size:1.6rem; color:var(--text-muted); cursor:pointer;" onclick="closeModal()"></i>
         </div>
         
         <div id="blocoResumoGeral" class="resumo-quitacao hidden">
@@ -289,7 +285,7 @@
 
         <input type="text" id="desc" placeholder="Descrição Personalizada">
         
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
             <div>
                 <span class="label-mini">Valor</span>
                 <input type="number" id="valor" placeholder="0,00" step="0.01" inputmode="decimal">
@@ -304,7 +300,7 @@
         </div>
 
         <div id="blocoParcelamento" class="bloco-parcelas hidden">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
                 <div><span class="label-mini">Total Parcelas</span><input type="number" id="parcelas" value="1" min="1"></div>
                 <div><span class="label-mini">Pagas</span><input type="number" id="parcelasPagas" value="0" min="0"></div>
             </div>
@@ -340,17 +336,11 @@
             closeAll(); // Fecha o menu para ver a mudança
         }
 
-        // 3. FUNÇÃO DE CONFIGURAR NOME E META
-        function carregarConfig() {
+        // 3. FUNÇÃO DE CONFIGURAR NOME
+        function carregarNome() {
             let nomeSalvo = localStorage.getItem('meucaixa_username');
-            if(nomeSalvo) document.getElementById('userNameDisplay').innerText = nomeSalvo;
-            
-            let metaSalva = parseFloat(localStorage.getItem('meucaixa_meta')) || 0;
-            if (metaSalva > 0) {
-                document.getElementById('metaPanelInfo').classList.remove('hidden');
-                document.getElementById('metaValorDisplay').innerText = "R$ " + metaSalva.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-            } else {
-                document.getElementById('metaPanelInfo').classList.add('hidden');
+            if(nomeSalvo) {
+                document.getElementById('userNameDisplay').innerText = nomeSalvo;
             }
         }
 
@@ -358,18 +348,24 @@
             let novoNome = prompt("Como deseja ser chamado no MeuCaixa?");
             if (novoNome && novoNome.trim() !== "") {
                 localStorage.setItem('meucaixa_username', novoNome.trim().toUpperCase());
-                carregarConfig();
+                carregarNome();
                 closeAll();
             }
         }
 
-        function configurarMeta() {
-            let meta = prompt("Qual o valor que você deseja alcançar na sua Reserva este mês?");
-            if (meta !== null && !isNaN(meta)) {
-                localStorage.setItem('meucaixa_meta', meta);
-                carregarConfig();
+        // 4. NOVA FUNÇÃO: LIMPAR MÊS ATUAL
+        function limparMesAtual() {
+            const mesFormatado = formatarMesAno(dataVisualizacao);
+            if(confirm(`Tem certeza que deseja apagar TODAS as operações de ${mesFormatado}? Isso não pode ser desfeito.`)) {
+                const prefixoMes = `${dataVisualizacao.getFullYear()}-${String(dataVisualizacao.getMonth() + 1).padStart(2, '0')}`;
+                
+                // Filtra os registros, mantendo APENAS os que NÃO são do mês atual
+                registros = registros.filter(r => !r.data.startsWith(prefixoMes));
+                
+                localStorage.setItem('foton_db', JSON.stringify(registros));
                 renderizar();
                 closeAll();
+                alert(`Registros de ${mesFormatado} apagados com sucesso.`);
             }
         }
 
@@ -397,13 +393,13 @@
             document.getElementById('overlay').style.display = s.classList.contains('open') ? 'block' : 'none'; 
         }
 
-        // CORREÇÃO: ADICIONANDO A FUNÇÃO DE FECHAR A OPERAÇÃO
+        // FUNÇÃO DE FECHAR A OPERAÇÃO
         function closeModal() { 
             document.getElementById('modalForm').classList.remove('open'); 
             document.getElementById('overlay').style.display = 'none'; 
         }
 
-        // CORREÇÃO: O CLOSE ALL AGORA CHAMA O CLOSE MODAL
+        // O CLOSE ALL AGORA CHAMA O CLOSE MODAL
         function closeAll() { 
             closeModal();
             document.getElementById('profileSidebar').classList.remove('open'); 
@@ -500,14 +496,6 @@
             document.getElementById('fillRes').style.width = pRes + '%';
             document.getElementById('labelPercRes').innerText = pRes.toFixed(1) + '%';
             document.getElementById('contadorRegistros').innerText = registros.length;
-
-            // ATUALIZAÇÃO DA META NO PAINEL
-            let metaSalva = parseFloat(localStorage.getItem('meucaixa_meta')) || 0;
-            if (metaSalva > 0) {
-                let percMeta = Math.min((sRes / metaSalva) * 100, 100);
-                document.getElementById('metaFillBar').style.width = percMeta + '%';
-                document.getElementById('metaProgressoDisplay').innerText = percMeta.toFixed(1) + '%';
-            }
         }
 
         function openModal(idx = null) {
@@ -594,7 +582,7 @@
             
             let valorPago = isP ? vT : 0;
 
-            if(!desc || vT <= 0 || !dBase) return alert("Preencha todos os campos!");
+            if(!desc || vT <= 0 || !dBase) return alert("Preencha todos os campos corretamente!");
 
             if(editIdx !== "") { 
                 registros[editIdx] = { ...registros[editIdx], tipo: t, desc, valor: vT, pago: valorPago, data: dBase, forma: t==='Receita' ? forma : null }; 
@@ -683,7 +671,7 @@
         }
 
         function limparTerminal() { 
-            if(confirm("Tem certeza que deseja apagar todos os dados? Isso não pode ser desfeito.")) { 
+            if(confirm("Tem certeza que deseja apagar TODOS os dados de todos os meses? Isso não pode ser desfeito.")) { 
                 localStorage.removeItem('foton_db'); 
                 location.reload(); 
             } 
@@ -700,7 +688,7 @@
         }
         
         window.onload = () => {
-            carregarConfig();
+            carregarNome();
             renderizar();
         };
     </script>
