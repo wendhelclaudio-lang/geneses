@@ -38,7 +38,7 @@
         .mini-card span { display: block; font-size: 0.65rem; color: #94a3b8; }
         .mini-card strong { font-size: 0.9rem; }
 
-        main { padding: 0 20px 100px; }
+        main { padding: 0 20px 20px; }
         .section-header h3 { font-size: 0.9rem; color: #94a3b8; text-transform: uppercase; margin: 20px 0 15px; }
 
         .transaction-item {
@@ -53,6 +53,13 @@
         .amount { text-align: right; min-width: 90px; }
         .amount strong { display: block; font-size: 0.85rem; }
         .amount .status-debt { font-size: 0.6rem; font-weight: 800; display: block; margin-top: 2px; }
+
+        /* Gráficos na Base */
+        .bottom-charts { padding: 20px; background: #070b14; border-top: 1px solid #1f2937; margin-bottom: 100px; }
+        .chart-bar-group { margin-bottom: 15px; }
+        .chart-label { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 5px; color: #94a3b8; }
+        .chart-track { background: #1f2937; height: 6px; border-radius: 10px; overflow: hidden; }
+        .chart-fill { height: 100%; width: 0%; transition: 1s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
 
         .fab {
             position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; border-radius: 20px;
@@ -87,7 +94,7 @@
             <span>PROTOCOLO FÓTON</span>
             <strong>WENDEL C. R. CARNEIRO</strong>
         </div>
-        <button id="btnFantasma" onclick="toggleFantasma()" style="background:none; border:1px solid #1f2937; color:white; padding:8px; border-radius:10px;">
+        <button onclick="toggleFantasma()" style="background:none; border:1px solid #1f2937; color:white; padding:8px; border-radius:10px;">
             <i id="eyeIcon" class="fa-solid fa-eye"></i>
         </button>
     </header>
@@ -109,6 +116,20 @@
         <div id="tabelaCorpo"></div>
     </main>
 
+    <section class="bottom-charts">
+        <div class="section-header" style="margin-top:0;"><h3>Performance de Fluxo</h3></div>
+        
+        <div class="chart-bar-group">
+            <div class="chart-label"><span>Comprometimento de Renda</span><span id="labelPercSaida">0%</span></div>
+            <div class="chart-track"><div id="fillSaida" class="chart-fill" style="background:var(--danger)"></div></div>
+        </div>
+
+        <div class="chart-bar-group">
+            <div class="chart-label"><span>Taxa de Acúmulo (Patrimônio)</span><span id="labelPercRes">0%</span></div>
+            <div class="chart-track"><div id="fillRes" class="chart-fill" style="background:var(--reserve)"></div></div>
+        </div>
+    </section>
+
     <button class="fab" onclick="openModal()"><i class="fa-solid fa-plus"></i></button>
     <div class="overlay" id="overlay" onclick="closeModal()"></div>
 
@@ -129,23 +150,15 @@
 
         <span class="label-mini">Categoria</span>
         <select id="submenu" onchange="definirDescricao()"></select>
-        
         <input type="text" id="desc" placeholder="Descrição Personalizada">
         
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <div>
-                <span class="label-mini">Valor Total</span>
-                <input type="number" id="valor" placeholder="0,00" step="0.01" inputmode="decimal">
-            </div>
-            <div id="campoPago">
-                <span class="label-mini">Valor Pago</span>
-                <input type="number" id="pago" placeholder="0,00" step="0.01" inputmode="decimal">
-            </div>
+            <div><span class="label-mini">Valor Total</span><input type="number" id="valor" placeholder="0,00" step="0.01" inputmode="decimal"></div>
+            <div id="campoPago"><span class="label-mini">Valor Pago</span><input type="number" id="pago" placeholder="0,00" step="0.01" inputmode="decimal"></div>
         </div>
 
         <span class="label-mini">Data</span>
         <input type="date" id="data">
-        
         <input type="hidden" id="editIndex">
         <button class="btn-confirm" onclick="salvar()">SALVAR OPERAÇÃO</button>
         <button id="btnExcluir" class="btn-delete hidden" onclick="excluirRegistro()">EXCLUIR REGISTRO</button>
@@ -162,81 +175,6 @@
             "Divida": ["💳 Cartão", "🤝 Empréstimo", "🧾 Boleto"],
             "Reserva": ["₿ Cripto", "📊 Investimentos", "📦 Caixinha"]
         };
-
-        function openModal(idx = null) {
-            document.getElementById('modalForm').classList.add('open');
-            document.getElementById('overlay').style.display = 'block';
-            
-            if(idx !== null) {
-                const r = registros[idx];
-                document.getElementById('modalTitle').innerText = "Editar";
-                document.getElementById('editIndex').value = idx;
-                document.getElementById('tipo').value = r.tipo;
-                atualizarSubmenu();
-                document.getElementById('desc').value = r.desc;
-                document.getElementById('valor').value = r.valor;
-                document.getElementById('pago').value = r.pago;
-                document.getElementById('data').value = r.data;
-                document.getElementById('btnExcluir').classList.remove('hidden');
-            } else {
-                document.getElementById('modalTitle').innerText = "Nova Operação";
-                document.getElementById('btnExcluir').classList.add('hidden');
-                resetForm();
-                atualizarSubmenu();
-            }
-        }
-
-        function closeModal() {
-            document.getElementById('modalForm').classList.remove('open');
-            document.getElementById('overlay').style.display = 'none';
-        }
-
-        function atualizarSubmenu() {
-            const tipo = document.getElementById('tipo').value;
-            const sub = document.getElementById('submenu');
-            sub.innerHTML = '';
-            opcoesSubmenu[tipo].forEach(opt => sub.innerHTML += `<option value="${opt}">${opt}</option>`);
-            
-            // Controle de visualização do campo pago
-            const fieldPago = document.getElementById('campoPago');
-            if(tipo === 'Receita' || tipo === 'Reserva') fieldPago.classList.add('hidden');
-            else fieldPago.classList.remove('hidden');
-        }
-
-        function definirDescricao() {
-            const val = document.getElementById('submenu').value;
-            document.getElementById('desc').value = val.split(' ').slice(1).join(' ');
-        }
-
-        function salvar() {
-            const tipo = document.getElementById('tipo').value;
-            const desc = document.getElementById('desc').value;
-            const valor = parseFloat(document.getElementById('valor').value) || 0;
-            const data = document.getElementById('data').value;
-            let pago = parseFloat(document.getElementById('pago').value) || 0;
-            const editIdx = document.getElementById('editIndex').value;
-
-            if(!desc || valor <= 0 || !data) return alert("Erro: Dados incompletos.");
-            if(tipo === 'Receita' || tipo === 'Reserva') pago = valor;
-
-            const obj = { tipo, desc, valor, pago, data };
-            if(editIdx === "") registros.push(obj);
-            else registros[editIdx] = obj;
-
-            localStorage.setItem('foton_db', JSON.stringify(registros));
-            closeModal();
-            renderizar();
-        }
-
-        function excluirRegistro() {
-            const idx = document.getElementById('editIndex').value;
-            if(confirm("Deseja apagar este registro do Protocolo Fóton?")) {
-                registros.splice(idx, 1);
-                localStorage.setItem('foton_db', JSON.stringify(registros));
-                closeModal();
-                renderizar();
-            }
-        }
 
         function renderizar() {
             const corpo = document.getElementById('tabelaCorpo');
@@ -277,6 +215,82 @@
             document.getElementById('totalDividas').innerText = ocultarBits(sDiv);
             document.getElementById('totalReserva').innerText = ocultarBits(sRes);
             document.getElementById('totalSaldo').innerText = ocultarBits(sRec - (sGas + sDiv));
+
+            // Lógica dos Gráficos de Barra (na base)
+            const percSaida = sRec > 0 ? Math.min(( (sGas + sDiv) / sRec) * 100, 100) : 0;
+            const percRes = sRec > 0 ? Math.min((sRes / sRec) * 100, 100) : 0;
+
+            document.getElementById('fillSaida').style.width = percSaida + '%';
+            document.getElementById('labelPercSaida').innerText = percSaida.toFixed(1) + '%';
+            
+            document.getElementById('fillRes').style.width = percRes + '%';
+            document.getElementById('labelPercRes').innerText = percRes.toFixed(1) + '%';
+        }
+
+        function openModal(idx = null) {
+            document.getElementById('modalForm').classList.add('open');
+            document.getElementById('overlay').style.display = 'block';
+            if(idx !== null) {
+                const r = registros[idx];
+                document.getElementById('modalTitle').innerText = "Editar";
+                document.getElementById('editIndex').value = idx;
+                document.getElementById('tipo').value = r.tipo;
+                atualizarSubmenu();
+                document.getElementById('desc').value = r.desc;
+                document.getElementById('valor').value = r.valor;
+                document.getElementById('pago').value = r.pago;
+                document.getElementById('data').value = r.data;
+                document.getElementById('btnExcluir').classList.remove('hidden');
+            } else {
+                document.getElementById('modalTitle').innerText = "Nova Operação";
+                document.getElementById('btnExcluir').classList.add('hidden');
+                resetForm();
+                atualizarSubmenu();
+            }
+        }
+
+        function closeModal() { document.getElementById('modalForm').classList.remove('open'); document.getElementById('overlay').style.display = 'none'; }
+        
+        function atualizarSubmenu() {
+            const tipo = document.getElementById('tipo').value;
+            const sub = document.getElementById('submenu');
+            sub.innerHTML = '';
+            opcoesSubmenu[tipo].forEach(opt => sub.innerHTML += `<option value="${opt}">${opt}</option>`);
+            const fieldPago = document.getElementById('campoPago');
+            if(tipo === 'Receita' || tipo === 'Reserva') fieldPago.classList.add('hidden');
+            else fieldPago.classList.remove('hidden');
+        }
+
+        function definirDescricao() {
+            const val = document.getElementById('submenu').value;
+            document.getElementById('desc').value = val.split(' ').slice(1).join(' ');
+        }
+
+        function salvar() {
+            const tipo = document.getElementById('tipo').value;
+            const desc = document.getElementById('desc').value;
+            const valor = parseFloat(document.getElementById('valor').value) || 0;
+            const data = document.getElementById('data').value;
+            let pago = parseFloat(document.getElementById('pago').value) || 0;
+            const editIdx = document.getElementById('editIndex').value;
+            if(!desc || valor <= 0 || !data) return alert("Erro!");
+            if(tipo === 'Receita' || tipo === 'Reserva') pago = valor;
+            const obj = { tipo, desc, valor, pago, data };
+            if(editIdx === "") registros.push(obj);
+            else registros[editIdx] = obj;
+            localStorage.setItem('foton_db', JSON.stringify(registros));
+            closeModal();
+            renderizar();
+        }
+
+        function excluirRegistro() {
+            const idx = document.getElementById('editIndex').value;
+            if(confirm("Excluir?")) {
+                registros.splice(idx, 1);
+                localStorage.setItem('foton_db', JSON.stringify(registros));
+                closeModal();
+                renderizar();
+            }
         }
 
         function toggleFantasma() {
