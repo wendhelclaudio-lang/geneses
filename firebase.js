@@ -1,49 +1,16 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-
-import {
-getAuth,
-signInWithEmailAndPassword,
-createUserWithEmailAndPassword,
-onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
+// CONFIGURAÇÃO FIREBASE
 const firebaseConfig = {
-apiKey: "AIzaSyC9c9mUFCvUd3HhbE4ePOFFeb66ZgvYMSc",
-authDomain: "meu-caixa-f130f.firebaseapp.com",
-projectId: "meu-caixa-f130f",
-storageBucket: "meu-caixa-f130f.firebasestorage.app",
-messagingSenderId: "185078430495",
-appId: "1:185078430495:web:2ef34d0a3d8b514cc44e2a"
+  apiKey: "AIzaSyD2TXACQ5t8vIsH2iZLq79oHeUI5y0Wo",
+  authDomain: "meucaixa-d8d24.firebaseapp.com",
+  projectId: "meucaixa-d8d24",
+  storageBucket: "meucaixa-d8d24.firebasestorage.app",
+  messagingSenderId: "486750418195",
+  appId: "1:486750418195:web:4c33801663486abda796e6"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+// inicializa
+firebase.initializeApp(firebaseConfig);
 
-window.login = async () => {
-
-const email = document.getElementById("email").value;
-const senha = document.getElementById("senha").value;
-
-await signInWithEmailAndPassword(auth,email,senha);
-
-}
-
-window.criarConta = async () => {
-
-const email = document.getElementById("email").value;
-const senha = document.getElementById("senha").value;
-
-await createUserWithEmailAndPassword(auth,email,senha);
-
-}
-
-onAuthStateChanged(auth,user=>{
-
-if(user){
-
-document.getElementById("loginBox").style.display="none";
-document.getElementById("app").style.display="block";
-
-}
-
-});
+// auth
+window.auth = firebase.auth();
+window.provider = new firebase.auth.GoogleAuthProvider();
