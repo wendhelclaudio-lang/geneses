@@ -36,56 +36,44 @@
             transition: all 0.8s cubic-bezier(0.65, 0, 0.35, 1);
         }
 
-        /* Moeda 3D */
-        .coin-wrapper {
-            position: relative; width: 100px; height: 100px;
-            perspective: 1000px;
+        /* Moeda Koinz Otimizada */
+        .koinz-portal {
+            position: relative; width: 120px; height: 120px;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        .koinz-icon {
-            width: 100%; height: 100%; position: absolute;
-            transform-style: preserve-3d;
-            animation: coinRotate 3s infinite linear;
+        .coin-3d {
+            width: 80px; height: 80px; background: var(--gold);
+            border-radius: 50%; display: flex; justify-content: center;
+            align-items: center; font-weight: 900; font-size: 2.5rem;
+            color: #5c430d; border: 4px solid #fff;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.4), inset 0 0 20px rgba(0,0,0,0.2);
+            animation: coinSynth 2.5s infinite linear;
+            z-index: 2;
         }
 
-        .coin-face {
+        .portal-ring {
             position: absolute; width: 100%; height: 100%;
-            border-radius: 50%; display: flex; align-items: center;
-            justify-content: center; font-weight: 900; font-size: 2.5rem;
-            color: #b8860b; border: 4px solid var(--gold);
-            background: linear-gradient(135deg, var(--gold), #daa520);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.3), 0 0 30px rgba(255, 215, 0, 0.3);
-            backface-visibility: hidden;
-        }
-
-        .coin-back { transform: rotateY(180deg); }
-
-        /* Anel de Energia */
-        .energy-ring {
-            position: absolute; width: 160px; height: 40px;
             border: 2px solid var(--accent); border-radius: 50%;
-            top: 110px; opacity: 0.5;
-            filter: blur(2px); box-shadow: 0 0 20px var(--accent);
-            animation: ringPulse 2s infinite ease-in-out;
+            border-top-color: transparent; border-bottom-color: transparent;
+            animation: ringRotate 1.5s infinite linear;
         }
 
-        @keyframes coinRotate {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
+        @keyframes coinSynth {
+            0% { transform: rotateY(0deg) scale(0.8); filter: brightness(1); }
+            50% { transform: rotateY(180deg) scale(1.1); filter: brightness(1.5); }
+            100% { transform: rotateY(360deg) scale(0.8); filter: brightness(1); }
         }
 
-        @keyframes ringPulse {
-            0%, 100% { transform: scale(0.8); opacity: 0.3; }
-            50% { transform: scale(1.1); opacity: 0.6; }
-        }
+        @keyframes ringRotate { 100% { transform: rotate(360deg); } }
 
         .status-msg {
-            margin-top: 120px; font-weight: 800; font-size: 0.75rem;
-            color: var(--accent); letter-spacing: 4px; text-transform: uppercase;
+            margin-top: 40px; font-weight: 800; font-size: 0.7rem;
+            color: var(--accent); letter-spacing: 3px; text-transform: uppercase;
             text-shadow: 0 0 10px var(--accent);
         }
 
-        #splash-screen.fade-out { opacity: 0; visibility: hidden; transform: scale(1.5); }
+        #splash-screen.fade-out { opacity: 0; visibility: hidden; transform: scale(1.5) rotate(5deg); }
         /* ------------------------------------------- */
 
         header {
@@ -156,21 +144,21 @@
         .amount strong { display: block; font-size: 0.85rem; }
         .amount .status-debt { font-size: 0.6rem; font-weight: 800; display: block; margin-top: 2px; }
 
-        .fab { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; border-radius: 20px; background: var(--accent); color: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 10px 20px rgba(0, 242, 255, 0.3); border: none; z-index: 1000; }
+        .fab { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; border-radius: 20px; background: var(--gold); color: #000; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 10px 20px rgba(255, 215, 0, 0.2); border: none; z-index: 1000; }
 
         .modal { position: fixed; bottom: -100%; left: 0; width: 100%; height: 92%; background: var(--card); border-radius: 30px 30px 0 0; z-index: 2000; padding: 25px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; }
         .modal.open { bottom: 0; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; backdrop-filter: blur(3px); }
 
         input, select { width: 100%; background: #1f2937; border: 1px solid #374151; padding: 14px; border-radius: 12px; color: white; margin-bottom: 12px; font-size: 1rem; }
-        .btn-confirm { background: var(--accent); color: var(--bg); width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; margin-top: 10px; }
+        .btn-confirm { background: var(--gold); color: #000; width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; margin-top: 10px; }
         .btn-delete { background: none; color: var(--danger); width: 100%; padding: 12px; border: 1px solid var(--danger); border-radius: 12px; margin-top: 15px; font-weight: 700; }
 
-        .label-mini { font-size: 0.65rem; color: var(--accent); font-weight: 800; margin-bottom: 5px; display: block; text-transform: uppercase; }
+        .label-mini { font-size: 0.65rem; color: var(--gold); font-weight: 800; margin-bottom: 5px; display: block; text-transform: uppercase; }
         .hidden { display: none !important; }
 
-        .bloco-parcelas, .resumo-quitacao { background: rgba(0, 242, 255, 0.05); padding: 15px; border-radius: 12px; border: 1px dashed var(--accent); margin-bottom: 15px; }
-        .resumo-quitacao h4 { margin: 0 0 10px 0; font-size: 0.75rem; color: var(--accent); text-transform: uppercase; }
+        .bloco-parcelas, .resumo-quitacao { background: rgba(255, 215, 0, 0.05); padding: 15px; border-radius: 12px; border: 1px dashed var(--gold); margin-bottom: 15px; }
+        .resumo-quitacao h4 { margin: 0 0 10px 0; font-size: 0.75rem; color: var(--gold); text-transform: uppercase; }
         .resumo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .resumo-item { font-size: 0.7rem; color: #94a3b8; }
         .resumo-item strong { color: white; display: block; font-size: 0.8rem; }
@@ -179,14 +167,11 @@
 <body>
 
     <div id="splash-screen">
-        <div class="energy-ring"></div>
-        <div class="coin-wrapper">
-            <div class="koinz-icon">
-                <div class="coin-face">K</div>
-                <div class="coin-face coin-back">K</div>
-            </div>
+        <div class="koinz-portal">
+            <div class="portal-ring"></div>
+            <div class="coin-3d">K</div>
         </div>
-        <div class="status-msg" id="status-text">Koinz Protocol</div>
+        <div class="status-msg" id="status-text">Sincronizando Koinz</div>
     </div>
 
     <header>
@@ -204,18 +189,18 @@
 
     <div class="sidebar" id="profileSidebar">
         <div style="text-align: right; margin-bottom: 10px;"><i class="fa-solid fa-xmark" style="font-size: 1.5rem; cursor: pointer; color: #94a3b8;" onclick="toggleSidebar()"></i></div>
-        <div class="sidebar-header"><div class="avatar" style="width: 65px; height: 65px; font-size: 1.5rem; margin: 0 auto 10px;">K</div><h2 style="margin:0; font-size: 1.1rem;">Koinz System</h2><span style="color: var(--gold); font-size: 0.75rem;">Premium Management</span></div>
+        <div class="sidebar-header"><div class="avatar" style="width: 65px; height: 65px; font-size: 1.5rem; margin: 0 auto 10px;">K</div><h2 style="margin:0; font-size: 1.1rem;">Sistema Koinz</h2><span style="color: var(--gold); font-size: 0.75rem;">Gestão de Elite</span></div>
         <div class="status-panel">
-            <div class="status-row"><span class="status-label">Conexão</span><strong style="color: var(--success); font-size: 0.75rem;">CRYPTED</strong></div>
-            <div class="status-row"><span class="status-label">Data</span><strong id="contadorRegistros">0</strong></div>
-            <div class="status-row"><span class="status-label">Flow</span><strong id="statusFluxo">STABLE</strong></div>
+            <div class="status-row"><span class="status-label">Conexão</span><strong style="color: var(--success); font-size: 0.75rem;">CRIPTOGRAFADO</strong></div>
+            <div class="status-row"><span class="status-label">Registros</span><strong id="contadorRegistros">0</strong></div>
+            <div class="status-row"><span class="status-label">Fluxo</span><strong id="statusFluxo">ESTÁVEL</strong></div>
         </div>
         <div class="sidebar-menu">
-            <div class="menu-item" onclick="toggleFantasma()"><i class="fa-solid fa-ghost"></i> <span>Ghost Mode</span></div>
-            <div class="menu-item" onclick="exportarDados()"><i class="fa-solid fa-file-export"></i> <span>Secure Export</span></div>
+            <div class="menu-item" onclick="toggleFantasma()"><i class="fa-solid fa-ghost"></i> <span>Modo Fantasma</span></div>
+            <div class="menu-item" onclick="exportarDados()"><i class="fa-solid fa-file-export"></i> <span>Exportar Relatório</span></div>
             <input type="file" id="fileInput" accept=".csv" style="display: none;" onchange="importarDados(event)">
-            <div class="menu-item" onclick="document.getElementById('fileInput').click()"><i class="fa-solid fa-file-import"></i> <span>Restore Cloud</span></div>
-            <div class="menu-item" style="color: var(--danger);" onclick="limparTerminal()"><i class="fa-solid fa-trash"></i> <span>Erase Memory</span></div>
+            <div class="menu-item" onclick="document.getElementById('fileInput').click()"><i class="fa-solid fa-file-import"></i> <span>Restaurar Nuvem</span></div>
+            <div class="menu-item" style="color: var(--danger);" onclick="limparTerminal()"><i class="fa-solid fa-trash"></i> <span>Zerar Banco de Dados</span></div>
         </div>
     </div>
 
@@ -231,34 +216,34 @@
     </div>
 
     <div class="quick-stats">
-        <div class="mini-card" onclick="filtrarExtrato('Receita')"><i class="fa-solid fa-arrow-up" style="color:var(--success)"></i><span>Inflow</span><strong id="totalReceitas">R$ 0,00</strong></div>
-        <div class="mini-card" onclick="filtrarExtrato('Gasto')"><i class="fa-solid fa-arrow-down" style="color:var(--warning)"></i><span>Expenses</span><strong id="totalGastos">R$ 0,00</strong></div>
-        <div class="mini-card" onclick="filtrarExtrato('Divida')"><i class="fa-solid fa-barcode" style="color:var(--danger)"></i><span>Debts</span><strong id="totalDividas">R$ 0,00</strong></div>
-        <div class="mini-card" onclick="filtrarExtrato('Reserva')"><i class="fa-solid fa-vault" style="color:var(--gold)"></i><span>Vault</span><strong id="totalReserva">R$ 0,00</strong></div>
+        <div class="mini-card" onclick="filtrarExtrato('Receita')"><i class="fa-solid fa-arrow-up" style="color:var(--success)"></i><span>Entradas</span><strong id="totalReceitas">R$ 0,00</strong></div>
+        <div class="mini-card" onclick="filtrarExtrato('Gasto')"><i class="fa-solid fa-arrow-down" style="color:var(--warning)"></i><span>Despesas</span><strong id="totalGastos">R$ 0,00</strong></div>
+        <div class="mini-card" onclick="filtrarExtrato('Divida')"><i class="fa-solid fa-barcode" style="color:var(--danger)"></i><span>Dívidas</span><strong id="totalDividas">R$ 0,00</strong></div>
+        <div class="mini-card" onclick="filtrarExtrato('Reserva')"><i class="fa-solid fa-vault" style="color:var(--gold)"></i><span>Cofre</span><strong id="totalReserva">R$ 0,00</strong></div>
     </div>
 
     <main>
         <div class="section-header">
             <h3 id="txtExtrato">Ativos do Ciclo</h3>
-            <button id="btnVoltar" class="hidden" onclick="filtrarExtrato('Tudo')"><i class="fa-solid fa-chevron-left"></i></button>
+            <button id="btnVoltar" class="hidden" onclick="filtrarExtrato('Tudo')"><i class="fa-solid fa-chevron-left"></i> VOLTAR</button>
         </div>
         
         <div id="subFiltros" class="submenu-divida hidden">
-            <button class="sub-btn active" id="btnPendente" onclick="setSubFiltro('Pendente')">PENDING</button>
-            <button class="sub-btn" id="btnPago" onclick="setSubFiltro('Pago')">SETTLED</button>
+            <button class="sub-btn active" id="btnPendente" onclick="setSubFiltro('Pendente')">PENDENTES</button>
+            <button class="sub-btn" id="btnPago" onclick="setSubFiltro('Pago')">LIQUIDADOS</button>
         </div>
         
-        <input type="text" id="inputPesquisa" class="search-bar" placeholder="🔍 Scanning Assets..." onkeyup="renderizar()">
+        <input type="text" id="inputPesquisa" class="search-bar" placeholder="🔍 Escaneando ativos..." onkeyup="renderizar()">
         <div id="tabelaCorpo"></div>
     </main>
 
     <section class="bottom-charts">
         <div class="chart-bar-group">
-            <div class="chart-label"><span>Risk Level</span><span id="labelPercSaida">0%</span></div>
+            <div class="chart-label"><span>Nível de Risco</span><span id="labelPercSaida">0%</span></div>
             <div class="chart-track"><div id="fillSaida" class="chart-fill" style="background:var(--danger)"></div></div>
         </div>
         <div class="chart-bar-group">
-            <div class="chart-label"><span>Growth Rate</span><span id="labelPercRes">0%</span></div>
+            <div class="chart-label"><span>Taxa de Crescimento</span><span id="labelPercRes">0%</span></div>
             <div class="chart-track"><div id="fillRes" class="chart-fill" style="background:var(--gold)"></div></div>
         </div>
     </section>
@@ -267,32 +252,32 @@
     <div class="overlay" id="overlay" onclick="closeAll()"></div>
 
     <div class="modal" id="modalForm">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2 id="modalTitle" style="margin:0; font-size:1.2rem;">Koinz Operation</h2><i class="fa-solid fa-circle-xmark" style="font-size:1.5rem; color:#374151;" onclick="closeModal()"></i></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2 id="modalTitle" style="margin:0; font-size:1.2rem;">Operação Koinz</h2><i class="fa-solid fa-circle-xmark" style="font-size:1.5rem; color:#374151;" onclick="closeModal()"></i></div>
         <div id="blocoResumoGeral" class="resumo-quitacao hidden">
-            <h4 id="resumoTitulo">Analytics</h4>
+            <h4 id="resumoTitulo">Análise</h4>
             <div id="resumoConteudo" class="resumo-grid"></div>
         </div>
-        <span class="label-mini">Operation Type</span>
-        <select id="tipo" onchange="atualizarSubmenu()"><option value="Receita">Inflow</option><option value="Fixo">Fixed Cost</option><option value="Variavel">Variable</option><option value="Divida">Debt</option><option value="Reserva">Vault</option></select>
-        <span class="label-mini">Tag</span><select id="submenu" onchange="definirDescricao()"></select>
+        <span class="label-mini">Tipo de Transação</span>
+        <select id="tipo" onchange="atualizarSubmenu()"><option value="Receita">Entrada</option><option value="Fixo">Custo Fixo</option><option value="Variavel">Variável</option><option value="Divida">Dívida</option><option value="Reserva">Cofre</option></select>
+        <span class="label-mini">Etiqueta</span><select id="submenu" onchange="definirDescricao()"></select>
         <div id="blocoRecebimento" class="hidden">
-            <span class="label-mini">Channel</span>
-            <select id="formaRecebimento"><option value="Pix">Pix</option><option value="Cash">Cash</option><option value="Card">Card</option></select>
+            <span class="label-mini">Canal de Entrada</span>
+            <select id="formaRecebimento"><option value="Pix">Pix</option><option value="Dinheiro">Dinheiro</option><option value="Cartão">Cartão</option></select>
         </div>
-        <input type="text" id="desc" placeholder="Asset Description">
+        <input type="text" id="desc" placeholder="Descrição do Ativo">
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <div><span class="label-mini">Value</span><input type="number" id="valor" placeholder="0,00" step="0.01"></div>
-            <div id="campoPago"><span class="label-mini">Confirmed?</span><select id="selectPago"><option value="0">NO</option><option value="1">YES</option></select></div>
+            <div><span class="label-mini">Valor</span><input type="number" id="valor" placeholder="0,00" step="0.01"></div>
+            <div id="campoPago"><span class="label-mini">Confirmado?</span><select id="selectPago"><option value="0">NÃO</option><option value="1">SIM</option></select></div>
         </div>
         <div id="blocoParcelamento" class="bloco-parcelas hidden">
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <div><span class="label-mini">Total Months</span><input type="number" id="parcelas" value="1" min="1"></div>
-                <div><span class="label-mini">Settled</span><input type="number" id="parcelasPagas" value="0" min="0"></div>
+                <div><span class="label-mini">Meses Totais</span><input type="number" id="parcelas" value="1" min="1"></div>
+                <div><span class="label-mini">Liquidadas</span><input type="number" id="parcelasPagas" value="0" min="0"></div>
             </div>
         </div>
-        <span class="label-mini">Timestamp</span><input type="date" id="data">
-        <input type="hidden" id="editIndex"><button class="btn-confirm" onclick="salvar()">EXECUTE TRANSACTION</button>
-        <button id="btnExcluir" class="btn-delete hidden" onclick="excluirRegistro()">TERMINATE REGISTER</button>
+        <span class="label-mini">Data da Operação</span><input type="date" id="data">
+        <input type="hidden" id="editIndex"><button class="btn-confirm" onclick="salvar()">EXECUTAR TRANSAÇÃO</button>
+        <button id="btnExcluir" class="btn-delete hidden" onclick="excluirRegistro()">EXCLUIR REGISTRO</button>
     </div>
 
     <script>
@@ -300,17 +285,16 @@
         let modoFantasma = false, filtroAtual = "Tudo", subFiltro = "Pendente", dataVisualizacao = new Date();
 
         const opcoesSubmenu = {
-            "Receita": ["Salary", "Freelance", "Returns"],
-            "Fixo": ["Rent", "Energy", "Services"],
-            "Variavel": ["Market", "Food", "Transport"],
-            "Divida": ["Installment", "Card", "Loan"],
-            "Reserva": ["Investments", "Savings", "Emergency"]
+            "Receita": ["Salário", "Freelance", "Rendimento"],
+            "Fixo": ["Aluguel", "Energia", "Serviços"],
+            "Variavel": ["Mercado", "Alimentação", "Transporte"],
+            "Divida": ["Parcelamento", "Cartão", "Empréstimo"],
+            "Reserva": ["Investimento", "Poupança", "Emergência"]
         };
 
-        // LÓGICA DE ABERTURA FUTURISTA
         window.addEventListener('load', () => {
             const statusText = document.getElementById('status-text');
-            const messages = ["Booting Koinz...", "Securing Assets...", "Interface Ready"];
+            const messages = ["Iniciando Koinz...", "Protegendo Ativos...", "Interface Pronta"];
             let i = 0;
             const interval = setInterval(() => {
                 if(i < messages.length) {
@@ -318,7 +302,7 @@
                     i++;
                 } else {
                     clearInterval(interval);
-                    setTimeout(() => { document.getElementById('splash-screen').classList.add('fade-out'); }, 500);
+                    setTimeout(() => { document.getElementById('splash-screen').classList.add('fade-out'); }, 600);
                 }
             }, 800);
         });
@@ -349,7 +333,7 @@
                 if(exibir) {
                     let icon = r.tipo === 'Receita' ? 'fa-money-bill-trend-up' : (r.tipo === 'Divida' ? 'fa-barcode' : (r.tipo === 'Reserva' ? 'fa-vault' : 'fa-cart-shopping'));
                     let color = r.tipo === 'Receita' ? 'var(--success)' : (r.tipo === 'Divida' ? 'var(--danger)' : (r.tipo === 'Reserva' ? 'var(--gold)' : 'var(--warning)'));
-                    let statusLabel = isPago ? 'SETTLED' : 'PENDING';
+                    let statusLabel = isPago ? 'LIQUIDADO' : 'PENDENTE';
                     corpo.innerHTML += `<div class="transaction-item" onclick="openModal(${idxO})"><div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div><div class="details"><strong>${r.desc}</strong><span>${r.data.split('-').reverse().join('/')}</span></div><div class="amount"><strong>${ocultarBits(vT)}</strong><span class="status-debt" style="color:${isPago ? 'var(--success)' : 'var(--danger)'}">${statusLabel}</span></div></div>`;
                 }
             });
@@ -393,7 +377,7 @@
         function definirDescricao() { document.getElementById('desc').value = document.getElementById('submenu').value; }
         function salvar() {
             const t = document.getElementById('tipo').value, desc = document.getElementById('desc').value, vT = parseFloat(document.getElementById('valor').value) || 0, dBase = document.getElementById('data').value, editIdx = document.getElementById('editIndex').value, isP = document.getElementById('selectPago').value === "1";
-            if(!desc || vT <= 0 || !dBase) return alert("Error");
+            if(!desc || vT <= 0 || !dBase) return alert("Erro");
             if(editIdx !== "") { registros[editIdx] = { ...registros[editIdx], tipo: t, desc, valor: vT, pago: isP ? vT : 0, data: dBase }; } 
             else {
                 const p = parseInt(document.getElementById('parcelas').value), pP = parseInt(document.getElementById('parcelasPagas').value);
@@ -406,12 +390,12 @@
             }
             localStorage.setItem('foton_db', JSON.stringify(registros)); closeAll(); renderizar();
         }
-        function excluirRegistro() { if(confirm("Terminate?")) { registros.splice(document.getElementById('editIndex').value, 1); localStorage.setItem('foton_db', JSON.stringify(registros)); renderizar(); closeAll(); } }
-        function exportarDados() { let csv = "Type,Desc,Val,Paid,Date\n"; registros.forEach(r => csv += `${r.tipo},${r.desc},${r.valor},${r.pago},${r.data}\n`); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); a.download = 'Backup.csv'; a.click(); }
+        function excluirRegistro() { if(confirm("Excluir?")) { registros.splice(document.getElementById('editIndex').value, 1); localStorage.setItem('foton_db', JSON.stringify(registros)); renderizar(); closeAll(); } }
+        function exportarDados() { let csv = "Tipo,Descricao,Valor,Pago,Data\n"; registros.forEach(r => csv += `${r.tipo},${r.desc},${r.valor},${r.pago},${r.data}\n`); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); a.download = 'KoinzBackup.csv'; a.click(); }
         function importarDados(e) { const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = function(ev) { const lines = ev.target.result.split('\n'); let novos = []; for(let i=1; i<lines.length; i++){ const c = lines[i].split(','); if(c.length>=4) novos.push({ tipo: c[0], desc: c[1], valor: parseFloat(c[2]), pago: parseFloat(c[3]), data: c[4].trim() }); } registros = novos; localStorage.setItem('foton_db', JSON.stringify(registros)); renderizar(); closeAll(); }; r.readAsText(f); }
         function toggleFantasma() { modoFantasma = !modoFantasma; document.getElementById('eyeIcon').className = modoFantasma ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'; renderizar(); }
         function ocultarBits(v) { return modoFantasma ? "R$ ••••" : "R$ " + v.toLocaleString('pt-BR', {minimumFractionDigits: 2}); }
-        function limparTerminal() { if(confirm("Erase?")) { localStorage.removeItem('foton_db'); location.reload(); } }
+        function limparTerminal() { if(confirm("Resetar?")) { localStorage.removeItem('foton_db'); location.reload(); } }
         function resetForm() { document.getElementById('editIndex').value = ""; document.getElementById('valor').value = ""; document.getElementById('parcelas').value = "1"; document.getElementById('parcelasPagas').value = "0"; document.getElementById('desc').value = ""; document.getElementById('data').value = new Date().toISOString().split('T')[0]; }
         window.onload = renderizar;
     </script>
