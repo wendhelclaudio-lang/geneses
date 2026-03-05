@@ -27,11 +27,11 @@
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
 
-        /* Header e Avatar */
         header {
             background: var(--bg); padding: 15px 20px; display: flex; justify-content: space-between;
             align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #1f2937;
         }
+        
         .profile-section { display: flex; align-items: center; gap: 12px; cursor: pointer; }
         .avatar { 
             width: 40px; height: 40px; border-radius: 12px; 
@@ -39,10 +39,10 @@
             display: flex; align-items: center; justify-content: center;
             font-weight: bold; color: var(--bg); border: 2px solid #1f2937;
         }
+        
         .user-info span { font-size: 0.65rem; color: #94a3b8; letter-spacing: 1px; display: block; text-transform: uppercase; }
         .user-info strong { font-size: 0.9rem; color: var(--text); }
 
-        /* Painel Lateral (Sidebar) */
         .sidebar {
             position: fixed; top: 0; right: -100%; width: 85%; max-width: 350px; height: 100%;
             background: var(--card); z-index: 3000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -65,7 +65,6 @@
         .menu-item:active { background: #1f2937; }
         .menu-item i { color: var(--accent); font-size: 1.1rem; width: 25px; text-align: center; }
 
-        /* Seletor de Mês */
         .month-selector { display: flex; justify-content: space-between; align-items: center; padding: 20px 20px 0; }
         .month-selector button {
             background: rgba(255,255,255,0.05); border: 1px solid #1f2937; color: var(--text);
@@ -75,7 +74,6 @@
         .month-selector button:active { background: #1f2937; }
         .month-selector span { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; }
 
-        /* Layout Principal */
         .balance-card { padding: 15px 20px 25px; text-align: center; }
         .balance-card small { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; }
         .balance-card h1 { font-size: 2.2rem; margin: 5px 0 0; font-weight: 800; }
@@ -93,7 +91,6 @@
         
         #btnVoltar { background: rgba(0, 242, 255, 0.1); color: var(--accent); border: 1px solid var(--accent); padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; }
 
-        /* Barra de Pesquisa */
         .search-bar { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid #1f2937; padding: 12px 15px; border-radius: 12px; color: white; margin-bottom: 15px; font-size: 0.9rem; outline: none; }
         .search-bar:focus { border-color: var(--accent); }
 
@@ -126,6 +123,12 @@
 
         .label-mini { font-size: 0.65rem; color: var(--accent); font-weight: 800; margin-bottom: 5px; display: block; text-transform: uppercase; }
         .hidden { display: none !important; }
+
+        /* Estilo do Bloco de Parcelamento */
+        .bloco-parcelas {
+            background: rgba(245, 158, 11, 0.05); padding: 15px; border-radius: 12px; 
+            border: 1px dashed var(--warning); margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -175,12 +178,10 @@
             <div class="menu-item" onclick="exportarDados()">
                 <i class="fa-solid fa-file-export"></i> <span>Exportar Backup (CSV)</span>
             </div>
-            
             <input type="file" id="fileInput" accept=".csv" style="display: none;" onchange="importarDados(event)">
             <div class="menu-item" onclick="document.getElementById('fileInput').click()">
                 <i class="fa-solid fa-file-import"></i> <span>Importar Backup</span>
             </div>
-            
             <div class="menu-item" onclick="otimizarTerminal()">
                 <i class="fa-solid fa-bolt"></i> <span>Otimizar Performance</span>
             </div>
@@ -214,7 +215,7 @@
             <button id="btnVoltar" class="hidden" onclick="filtrarExtrato('Tudo')"><i class="fa-solid fa-chevron-left"></i> VOLTAR</button>
         </div>
         
-        <input type="text" id="inputPesquisa" class="search-bar" placeholder="🔍 Buscar lançamento (ex: Aluguel)" onkeyup="renderizar()">
+        <input type="text" id="inputPesquisa" class="search-bar" placeholder="🔍 Buscar lançamento (ex: Financiamento)" onkeyup="renderizar()">
         
         <div id="tabelaCorpo"></div>
     </main>
@@ -254,16 +255,26 @@
         <input type="text" id="desc" placeholder="Descrição Personalizada">
         
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <div><span class="label-mini">Valor Total da Compra</span><input type="number" id="valor" placeholder="0,00" step="0.01" inputmode="decimal"></div>
-            <div id="campoPago"><span class="label-mini">Já Pagou Algum Valor?</span><input type="number" id="pago" placeholder="0,00" step="0.01" inputmode="decimal"></div>
+            <div><span class="label-mini">Valor Total</span><input type="number" id="valor" placeholder="0,00" step="0.01" inputmode="decimal"></div>
+            <div id="campoPago"><span class="label-mini">Valor Pago (Opcional)</span><input type="number" id="pago" placeholder="0,00" step="0.01" inputmode="decimal"></div>
         </div>
 
-        <div id="campoParcelas" style="margin-bottom: 12px;">
-            <span class="label-mini" style="color:var(--warning)">Repetir / Parcelar em quantos meses?</span>
-            <input type="number" id="parcelas" value="1" min="1" inputmode="numeric" placeholder="Ex: 5">
+        <div id="blocoParcelamento" class="bloco-parcelas hidden">
+            <span class="label-mini" style="color:var(--warning); text-align:center; display:block; margin-bottom:10px;">Opções de Parcelamento / Financiamento</span>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div>
+                    <span class="label-mini" style="color:#94a3b8">Total de Parcelas</span>
+                    <input type="number" id="parcelas" value="1" min="1" inputmode="numeric" placeholder="Ex: 48" style="margin-bottom:0;">
+                </div>
+                <div>
+                    <span class="label-mini" style="color:var(--success)">Quantas já pagou?</span>
+                    <input type="number" id="parcelasPagas" value="0" min="0" inputmode="numeric" placeholder="Ex: 5" style="margin-bottom:0;">
+                </div>
+            </div>
+            <p style="font-size: 0.65rem; color: #94a3b8; margin: 10px 0 0 0; text-align: center;">O sistema gerará as parcelas e dará baixa nas já pagas.</p>
         </div>
 
-        <span class="label-mini">Data (Primeiro Vencimento)</span>
+        <span class="label-mini">Data (Referência / 1ª Parcela)</span>
         <input type="date" id="data">
         
         <input type="hidden" id="editIndex">
@@ -277,15 +288,15 @@
         let filtroAtual = "Tudo";
         let dataVisualizacao = new Date();
 
+        // 1. Atualização das opções: Adicionado Financiamento em "Divida"
         const opcoesSubmenu = {
             "Receita": ["💰 Salário", "🚀 Freelance", "✨ Outros"],
             "Fixo": ["🏠 Aluguel", "⚡ Energia", "🌐 Internet", "🎬 Streamings"],
             "Variavel": ["🛒 Mercado", "🍕 Alimentação", "⛽ Combustível", "🚗 Transporte"],
-            "Divida": ["💳 Cartão", "🤝 Empréstimo", "🧾 Boleto"],
+            "Divida": ["💳 Cartão", "🤝 Empréstimo", "🏢 Financiamento", "🧾 Boleto"],
             "Reserva": ["🏦 Investimentos", "📦 Caixinha", "🛡️ Reserva Emergência"]
         };
 
-        // Lógica de Mês
         function mudarMes(delta) {
             dataVisualizacao.setMonth(dataVisualizacao.getMonth() + delta);
             renderizar();
@@ -296,7 +307,6 @@
             return `${meses[dataObj.getMonth()]} ${dataObj.getFullYear()}`;
         }
 
-        // Funções de Interface UI
         function toggleSidebar() {
             const sidebar = document.getElementById('profileSidebar');
             sidebar.classList.toggle('open');
@@ -323,7 +333,6 @@
             renderizar();
         }
 
-        // Funções de Lógica e Renderização
         function renderizar() {
             document.getElementById('mesDisplay').innerText = formatarMesAno(dataVisualizacao);
             const prefixoMes = `${dataVisualizacao.getFullYear()}-${String(dataVisualizacao.getMonth() + 1).padStart(2, '0')}`;
@@ -353,7 +362,6 @@
                              (filtroAtual === r.tipo) || 
                              (filtroAtual === "Gasto" && (r.tipo === "Fixo" || r.tipo === "Variavel"));
                 
-                // Aplica a Barra de Pesquisa
                 if (termoBusca !== "" && !r.desc.toLowerCase().includes(termoBusca)) exibir = false;
 
                 if(exibir) {
@@ -375,7 +383,6 @@
                 }
             });
 
-            // Atualização dos Painéis do Mês
             const saldoLivre = sRec - (sGas + sDiv);
             document.getElementById('totalReceitas').innerText = ocultarBits(sRec);
             document.getElementById('totalGastos').innerText = ocultarBits(sGas);
@@ -383,7 +390,6 @@
             document.getElementById('totalReserva').innerText = ocultarBits(sRes);
             document.getElementById('totalSaldo').innerText = ocultarBits(saldoLivre);
 
-            // Atualização Gráficos Inferiores (Baseado no Mês)
             const pSaida = sRec > 0 ? Math.min(((sGas + sDiv) / sRec) * 100, 100) : 0;
             const pRes = sRec > 0 ? Math.min((sRes / sRec) * 100, 100) : 0;
             document.getElementById('fillSaida').style.width = pSaida + '%';
@@ -391,28 +397,19 @@
             document.getElementById('fillRes').style.width = pRes + '%';
             document.getElementById('labelPercRes').innerText = pRes.toFixed(1) + '%';
 
-            // Atualização do Painel Lateral
             document.getElementById('contadorRegistros').innerText = registros.length + " no total";
             const statusFluxoEl = document.getElementById('statusFluxo');
-            if (saldoLivre > 0) {
-                statusFluxoEl.innerText = "POSITIVO";
-                statusFluxoEl.style.color = "var(--success)";
-            } else if (saldoLivre < 0) {
-                statusFluxoEl.innerText = "ALERTA";
-                statusFluxoEl.style.color = "var(--danger)";
-            } else {
-                statusFluxoEl.innerText = "ZERADO";
-                statusFluxoEl.style.color = "var(--text)";
-            }
+            if (saldoLivre > 0) { statusFluxoEl.innerText = "POSITIVO"; statusFluxoEl.style.color = "var(--success)"; } 
+            else if (saldoLivre < 0) { statusFluxoEl.innerText = "ALERTA"; statusFluxoEl.style.color = "var(--danger)"; } 
+            else { statusFluxoEl.innerText = "ZERADO"; statusFluxoEl.style.color = "var(--text)"; }
         }
 
-        // Funções do Modal e Lógica de Salvar com Parcelas
         function openModal(idx = null) {
             document.getElementById('modalForm').classList.add('open');
             document.getElementById('overlay').style.display = 'block';
             if(idx !== null) {
                 const r = registros[idx];
-                document.getElementById('modalTitle').innerText = "Editar";
+                document.getElementById('modalTitle').innerText = "Editar Parcela";
                 document.getElementById('editIndex').value = idx;
                 document.getElementById('tipo').value = r.tipo;
                 atualizarSubmenu();
@@ -421,11 +418,10 @@
                 document.getElementById('pago').value = r.pago;
                 document.getElementById('data').value = r.data;
                 document.getElementById('btnExcluir').classList.remove('hidden');
-                document.getElementById('campoParcelas').classList.add('hidden'); // Oculta parcelas ao editar
+                document.getElementById('blocoParcelamento').classList.add('hidden'); // Esconde parcelamento na edição
             } else {
                 document.getElementById('modalTitle').innerText = "Nova Operação";
                 document.getElementById('btnExcluir').classList.add('hidden');
-                document.getElementById('campoParcelas').classList.remove('hidden');
                 resetForm();
                 atualizarSubmenu();
             }
@@ -438,9 +434,22 @@
             const sub = document.getElementById('submenu');
             sub.innerHTML = '';
             opcoesSubmenu[tipo].forEach(opt => sub.innerHTML += `<option value="${opt}">${opt}</option>`);
+            
             const fieldPago = document.getElementById('campoPago');
-            if(tipo === 'Receita' || tipo === 'Reserva') fieldPago.classList.add('hidden');
-            else fieldPago.classList.remove('hidden');
+            const blocoParcela = document.getElementById('blocoParcelamento');
+            
+            // O Bloco de parcelamento APENAS aparece para Dívidas
+            if(tipo === 'Receita' || tipo === 'Reserva') {
+                fieldPago.classList.add('hidden');
+                blocoParcela.classList.add('hidden');
+            } else if (tipo === 'Divida') {
+                fieldPago.classList.remove('hidden');
+                blocoParcela.classList.remove('hidden');
+            } else {
+                fieldPago.classList.remove('hidden');
+                blocoParcela.classList.add('hidden');
+            }
+            definirDescricao();
         }
 
         function definirDescricao() { document.getElementById('desc').value = document.getElementById('submenu').value.split(' ').slice(1).join(' '); }
@@ -451,34 +460,37 @@
             const valorTotal = parseFloat(document.getElementById('valor').value) || 0;
             const dataBase = document.getElementById('data').value;
             let pago = parseFloat(document.getElementById('pago').value) || 0;
-            let parcelas = parseInt(document.getElementById('parcelas').value) || 1;
             const editIdx = document.getElementById('editIndex').value;
+            
+            // Variáveis de Parcelamento
+            let parcelas = parseInt(document.getElementById('parcelas').value) || 1;
+            let parcelasPagas = parseInt(document.getElementById('parcelasPagas').value) || 0;
 
-            if(!desc || valorTotal <= 0 || !dataBase) return alert("Preencha as informações corretamente.");
+            if(!desc || valorTotal <= 0 || !dataBase) return alert("Preencha o valor e a data!");
             if(tipo === 'Receita' || tipo === 'Reserva') pago = valorTotal;
 
             if (editIdx !== "") {
-                // Se for edição, salva apenas o item atual
+                // Modo Edição: Altera apenas 1 lançamento
                 registros[editIdx] = { tipo, desc, valor: valorTotal, pago, data: dataBase };
             } else {
-                // Se for Novo Registro, verifica se tem parcelas
-                if (parcelas > 1) {
+                // Modo Criação
+                if (tipo === 'Divida' && parcelas > 1) {
+                    // Lógica de Parcelamento Inteligente
                     const valorParcela = valorTotal / parcelas;
-                    // Corrige o fuso horário para evitar bugs no avanço de mês
-                    let dataObj = new Date(dataBase + "T12:00:00"); 
+                    let dataObj = new Date(dataBase + "T12:00:00"); // T12 para evitar bug de fuso horário
                     
                     for (let i = 1; i <= parcelas; i++) {
                         let novaData = new Date(dataObj.getFullYear(), dataObj.getMonth() + (i - 1), dataObj.getDate());
                         let dataFormatada = novaData.toISOString().split('T')[0];
                         let descParcela = `${desc} (${i}/${parcelas})`;
                         
-                        // Considera o valor pago apenas na primeira parcela se a pessoa colocou algo no ato
-                        let pagoParcela = (i === 1) ? Math.min(pago, valorParcela) : 0; 
-                        if (tipo === 'Receita' || tipo === 'Reserva') pagoParcela = valorParcela;
+                        // Se a parcela atual for menor ou igual à quantidade já paga, dá baixa automática
+                        let pagoParcela = (i <= parcelasPagas) ? valorParcela : 0; 
                         
                         registros.push({ tipo, desc: descParcela, valor: valorParcela, pago: pagoParcela, data: dataFormatada });
                     }
                 } else {
+                    // Inserção normal
                     registros.push({ tipo, desc, valor: valorTotal, pago, data: dataBase });
                 }
             }
@@ -495,7 +507,6 @@
             } 
         }
 
-        // Funções de Backup e Segurança
         function exportarDados() {
             if(registros.length === 0) return alert("Nenhum dado para exportar.");
             let csvContent = "data:text/csv;charset=utf-8,Tipo,Descricao,Valor Total,Valor Pago,Data\n";
@@ -505,9 +516,7 @@
             link.setAttribute("href", encodedUri);
             link.setAttribute("download", "Backup_Gêneses.csv");
             document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            closeAll();
+            link.click(); document.body.removeChild(link); closeAll();
         }
 
         function importarDados(event) {
@@ -521,21 +530,17 @@
                     if (lines[i].trim() === '') continue;
                     const cols = lines[i].split(',');
                     if (cols.length >= 5) {
-                        novosRegistros.push({
-                            tipo: cols[0], desc: cols[1], valor: parseFloat(cols[2]), pago: parseFloat(cols[3]), data: cols[4].trim()
-                        });
+                        novosRegistros.push({ tipo: cols[0], desc: cols[1], valor: parseFloat(cols[2]), pago: parseFloat(cols[3]), data: cols[4].trim() });
                     }
                 }
                 if (novosRegistros.length > 0) {
-                    if(confirm(`Encontrados ${novosRegistros.length} registros no backup. Deseja aplicar e substituir seus dados atuais?`)) {
-                        registros = novosRegistros;
-                        localStorage.setItem('foton_db', JSON.stringify(registros));
-                        renderizar(); closeAll(); alert("Backup Restaurado com Sucesso!");
+                    if(confirm(`Encontrados ${novosRegistros.length} registros. Deseja substituir os atuais?`)) {
+                        registros = novosRegistros; localStorage.setItem('foton_db', JSON.stringify(registros));
+                        renderizar(); closeAll(); alert("Restaurado com Sucesso!");
                     }
-                } else { alert("Arquivo inválido ou corrompido."); }
+                } else { alert("Arquivo corrompido."); }
             };
-            reader.readAsText(file);
-            event.target.value = ''; // Reseta o input de arquivo
+            reader.readAsText(file); event.target.value = '';
         }
 
         function toggleFantasma() { modoFantasma = !modoFantasma; document.getElementById('eyeIcon').className = modoFantasma ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'; renderizar(); }
@@ -548,6 +553,7 @@
             document.getElementById('valor').value = ""; 
             document.getElementById('pago').value = ""; 
             document.getElementById('parcelas').value = "1";
+            document.getElementById('parcelasPagas').value = "0";
             document.getElementById('desc').value = ""; 
             document.getElementById('data').value = new Date().toISOString().split('T')[0]; 
         }
