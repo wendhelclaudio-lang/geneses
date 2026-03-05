@@ -69,6 +69,7 @@
         .balance-card { padding: 15px 20px 25px; text-align: center; }
         .balance-card small { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; }
         .balance-card h1 { font-size: 2.2rem; margin: 5px 0 0; font-weight: 800; }
+        .trend-icon { font-size: 1rem; vertical-align: middle; margin-left: 5px; }
 
         .quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 20px; }
         .mini-card { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid #1f2937; cursor: pointer; transition: 0.2s; }
@@ -165,7 +166,7 @@
 
     <div class="balance-card">
         <small>Saldo Disponível do Mês</small>
-        <h1 id="totalSaldo">R$ 0,00</h1>
+        <h1 id="totalSaldo">R$ 0,00 <i id="saldoTrend" class="fa-solid fa-circle-check trend-icon"></i></h1>
     </div>
 
     <div class="quick-stats">
@@ -196,7 +197,7 @@
             <div class="chart-track"><div id="fillSaida" class="chart-fill" style="background:var(--danger)"></div></div>
         </div>
         <div class="chart-bar-group">
-            <div class="chart-label"><span>Taxa Acúmulo</span><span id="labelPercRes">0%</span></div>
+            <div class="chart-label"><span>Taxa Acúmulo Patrimonial</span><span id="labelPercRes">0%</span></div>
             <div class="chart-track"><div id="fillRes" class="chart-fill" style="background:var(--reserve)"></div></div>
         </div>
     </section>
@@ -233,9 +234,9 @@
                 <div><span class="label-mini">Pagas</span><input type="number" id="parcelasPagas" value="0" min="0"></div>
             </div>
         </div>
-        <span class="label-mini">Data</span><input type="date" id="data">
-        <input type="hidden" id="editIndex"><button class="btn-confirm" onclick="salvar()">SALVAR</button>
-        <button id="btnExcluir" class="btn-delete hidden" onclick="excluirRegistro()">EXCLUIR</button>
+        <span class="label-mini">Data Referência</span><input type="date" id="data">
+        <input type="hidden" id="editIndex"><button class="btn-confirm" onclick="salvar()">SALVAR OPERAÇÃO</button>
+        <button id="btnExcluir" class="btn-delete hidden" onclick="excluirRegistro()">EXCLUIR REGISTRO</button>
     </div>
 
     <script>
@@ -244,9 +245,9 @@
 
         const opcoesSubmenu = {
             "Receita": ["💰 Salário", "🚀 Freelance", "✨ Outros Recebíveis"],
-            "Fixo": ["🏠 Aluguel", "⚡ Energia", "🎬 Streamings"],
-            "Variavel": ["🛒 Mercado", "🍕 Alimentação", "🚗 Transporte"],
-            "Divida": ["🏢 Financiamento", "💳 Cartão", "🤝 Empréstimo", "🧾 Boleto"],
+            "Fixo": ["🏠 Aluguel", "⚡ Energia", "🌐 Internet", "🎬 Streamings"],
+            "Variavel": ["🛒 Mercado", "🍕 Alimentação", "⛽ Combustível", "🚗 Transporte"],
+            "Divida": ["💳 Cartão", "🏢 Financiamento", "🤝 Empréstimo", "🧾 Boleto"],
             "Reserva": ["🏦 Investimentos", "📦 Caixinha", "🛡️ Reserva Emergência"]
         };
 
@@ -284,9 +285,9 @@
                 const vT = parseFloat(r.valor), vP = parseFloat(r.pago), falta = vT - vP;
                 const isPago = vP >= vT;
 
-                // NOVA REGRA: Receita só entra no saldo se isPago (Confirmado) for verdadeiro
+                // Lógica de Soma conforme as regras solicitadas
                 if(r.tipo === 'Receita') {
-                    if(isPago) sRec += vT; 
+                    if(isPago) sRec += vT; // Apenas entra no saldo se confirmado
                 } else if(r.tipo === 'Divida') {
                     sDiv += falta;
                 } else if(r.tipo === 'Reserva') {
@@ -306,19 +307,23 @@
                     let icon = r.tipo === 'Receita' ? 'fa-money-bill-trend-up' : (r.tipo === 'Divida' ? 'fa-barcode' : (r.tipo === 'Reserva' ? 'fa-vault' : 'fa-cart-shopping'));
                     let color = r.tipo === 'Receita' ? 'var(--success)' : (r.tipo === 'Divida' ? 'var(--danger)' : (r.tipo === 'Reserva' ? 'var(--reserve)' : 'var(--warning)'));
                     let extraInfo = r.forma ? ` • ${r.forma}` : '';
-                    
-                    // STATUS TEXT CORRIGIDO
                     let statusLabel = isPago ? (r.tipo === 'Receita' ? 'RECEBIDO' : 'LIQUIDADO') : 'PENDENTE';
                     
                     corpo.innerHTML += `<div class="transaction-item" onclick="openModal(${idxO})"><div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div><div class="details"><strong>${r.desc}</strong><span>${r.data.split('-').reverse().join('/')} • ${r.tipo}${extraInfo}</span></div><div class="amount"><strong>${ocultarBits(vT)}</strong><span class="status-debt" style="color:${isPago ? 'var(--success)' : 'var(--danger)'}">${statusLabel}</span></div></div>`;
                 }
             });
 
+            const saldoLivre = sRec - (sGas + sDiv);
             document.getElementById('totalReceitas').innerText = ocultarBits(sRec);
             document.getElementById('totalGastos').innerText = ocultarBits(sGas);
             document.getElementById('totalDividas').innerText = ocultarBits(sDiv);
             document.getElementById('totalReserva').innerText = ocultarBits(sRes);
-            document.getElementById('totalSaldo').innerText = ocultarBits(sRec - (sGas + sDiv));
+            document.getElementById('totalSaldo').innerText = ocultarBits(saldoLivre);
+
+            // Tendência do Saldo
+            const trend = document.getElementById('saldoTrend');
+            if (saldoLivre > 0) { trend.className = "fa-solid fa-circle-check trend-icon"; trend.style.color = "var(--success)"; }
+            else { trend.className = "fa-solid fa-circle-exclamation trend-icon"; trend.style.color = "var(--danger)"; }
             
             const pSaida = sRec > 0 ? Math.min(((sGas + sDiv) / sRec) * 100, 100) : 0;
             const pRes = sRec > 0 ? Math.min((sRes / sRec) * 100, 100) : 0;
@@ -349,17 +354,17 @@
 
                 if (r.tipo === 'Receita') {
                     resumo.classList.remove('hidden');
-                    document.getElementById('resumoTitulo').innerText = "Resumo Receitas (Mês)";
+                    document.getElementById('resumoTitulo').innerText = "Recebido no Mês";
                     const recs = registros.filter(reg => reg.tipo === 'Receita' && reg.data.startsWith(prefixoMes) && reg.pago >= reg.valor);
                     const porForma = (f) => recs.filter(x => x.forma === f).reduce((a,b) => a+b.valor, 0);
-                    document.getElementById('resumoConteudo').innerHTML = `<div class="resumo-item">Pix<strong>${ocultarBits(porForma('Pix'))}</strong></div><div class="resumo-item">Dinheiro<strong>${ocultarBits(porForma('Dinheiro'))}</strong></div><div class="resumo-item">Cartão<strong>${ocultarBits(porForma('Cartão'))}</strong></div><div class="resumo-item">Total Recebido<strong>${ocultarBits(recs.reduce((a,b)=>a+b.valor,0))}</strong></div>`;
+                    document.getElementById('resumoConteudo').innerHTML = `<div class="resumo-item">Pix<strong>${ocultarBits(porForma('Pix'))}</strong></div><div class="resumo-item">Dinheiro<strong>${ocultarBits(porForma('Dinheiro'))}</strong></div><div class="resumo-item">Cartão<strong>${ocultarBits(porForma('Cartão'))}</strong></div><div class="resumo-item">Total<strong>${ocultarBits(recs.reduce((a,b)=>a+b.valor,0))}</strong></div>`;
                 } else if (r.desc.includes('(')) {
                     resumo.classList.remove('hidden');
-                    document.getElementById('resumoTitulo').innerText = "Resumo do Contrato";
+                    document.getElementById('resumoTitulo').innerText = "Status da Dívida";
                     const base = r.desc.split('(')[0].trim();
                     const vinc = registros.filter(reg => reg.desc.startsWith(base));
                     const tV = vinc.reduce((a,c)=>a+c.valor, 0), tP = vinc.reduce((a,c)=>a+c.pago, 0);
-                    document.getElementById('resumoConteudo').innerHTML = `<div class="resumo-item">Total Contrato<strong>${ocultarBits(tV)}</strong></div><div class="resumo-item">Total Pago<strong>${ocultarBits(tP)}</strong></div><div class="resumo-item">Restante<strong>${ocultarBits(tV-tP)}</strong></div><div class="resumo-item">Faltam<strong>${vinc.filter(x=>x.pago<x.valor).length} parc.</strong></div>`;
+                    document.getElementById('resumoConteudo').innerHTML = `<div class="resumo-item">Total Original<strong>${ocultarBits(tV)}</strong></div><div class="resumo-item">Total Pago<strong>${ocultarBits(tP)}</strong></div><div class="resumo-item">Restante<strong>${ocultarBits(tV-tP)}</strong></div><div class="resumo-item">Parcelas Falta<strong>${vinc.filter(x=>x.pago<x.valor).length}</strong></div>`;
                 } else { resumo.classList.add('hidden'); }
             } else {
                 document.getElementById('btnExcluir').classList.add('hidden');
