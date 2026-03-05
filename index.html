@@ -12,7 +12,7 @@
             --bg: #090b14;
             --card: rgba(22, 28, 45, 0.7);
             --card-solid: #161c2d;
-            --accent: #8b5cf6; /* Roxo Neon */
+            --accent: #8b5cf6;
             --accent-glow: rgba(139, 92, 246, 0.4);
             --text: #f8fafc;
             --text-muted: #94a3b8;
@@ -33,11 +33,13 @@
             backdrop-filter: blur(10px);
         }
 
-        /* TELA DE LOCK (LOGIN) - CORRIGIDA */
+        /* TELA DE LOCK (LOGIN) - 100% COMPATÍVEL */
         #lockScreen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100dvh;
+            position: fixed; top: 0; left: 0; width: 100%; 
+            height: 100vh; /* Fallback para celulares antigos */
+            height: 100dvh; /* Medida exata para celulares modernos */
             background: var(--bg); z-index: 9999; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; transition: opacity 0.4s ease;
+            align-items: center; justify-content: center; 
             padding: 20px; box-sizing: border-box; overflow-y: auto;
         }
         .lock-header { text-align: center; margin-bottom: 25px; margin-top: 10px; }
@@ -64,7 +66,7 @@
         .bio-btn:active, .bio-btn:hover { color: var(--accent); filter: drop-shadow(0 0 10px var(--accent-glow)); }
 
         /* APP PRINCIPAL */
-        #appScreen { display: none; opacity: 0; transition: opacity 0.5s ease; }
+        #appScreen { display: none; } /* Será ativado via JS */
 
         header {
             padding: 20px; display: flex; justify-content: space-between;
@@ -323,23 +325,27 @@
             }
         }
 
+        // Função de Desbloqueio Instantâneo 
         function unlockApp() {
-            document.getElementById('lockScreen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('lockScreen').style.display = 'none';
-                document.getElementById('appScreen').style.display = 'block';
-                setTimeout(() => { document.getElementById('appScreen').style.opacity = '1'; }, 50);
-            }, 400);
-            renderizar(); // Renderiza dados após desbloquear
+            document.getElementById('lockScreen').style.display = 'none';
+            document.getElementById('appScreen').style.display = 'block';
+            
+            // Proteção contra travamento caso o banco de dados interno do celular esteja corrompido
+            try {
+                renderizar();
+            } catch (error) {
+                console.error("Erro ao carregar dados antigos. Formatando banco de dados para evitar travamento:", error);
+                localStorage.removeItem('foton_db'); // Limpa dados quebrados
+                registros = [];
+                renderizar();
+            }
         }
-
 
         // LÓGICA DO APLICATIVO
         let registros = JSON.parse(localStorage.getItem('foton_db')) || [];
         let modoFantasma = true; // Inicia com o saldo oculto por segurança
         let filtroAtual = 'Todos';
 
-        // Novos Ícones/Emojis atualizados
         const opcoesSubmenu = {
             "Receita": ["💸 Salário Principal", "👨‍💻 Trabalho Freelance", "🎁 Entrada Extra", "📈 Rendimentos"],
             "Fixo": ["🏡 Aluguel / Moradia", "💡 Energia Elétrica", "💧 Água / Saneamento", "🌍 Internet", "📺 Assinaturas/Stream"],
@@ -364,12 +370,3 @@
                 else if (tipo === 'Reserva') document.getElementById('cardReserva').classList.add('active-card');
             }
             
-            renderizar();
-        }
-
-        function renderizar() {
-            const corpo = document.getElementById('tabelaCorpo');
-            corpo.innerHTML = '';
-            let sRec = 0, sGas = 0, sDiv = 0, sRes = 0;
-
-            co
