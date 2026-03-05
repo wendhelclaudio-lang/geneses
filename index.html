@@ -164,7 +164,7 @@
     </div>
 
     <div class="balance-card">
-        <small>Saldo do Mês</small>
+        <small>Saldo Disponível do Mês</small>
         <h1 id="totalSaldo">R$ 0,00</h1>
     </div>
 
@@ -217,7 +217,7 @@
         <span class="label-mini">Categoria</span><select id="submenu" onchange="definirDescricao()"></select>
         
         <div id="blocoRecebimento" class="hidden">
-            <span class="label-mini">Como você recebeu?</span>
+            <span class="label-mini">Forma de Recebimento</span>
             <select id="formaRecebimento"><option value="Pix">Pix</option><option value="Dinheiro">Dinheiro</option><option value="Cartão">Cartão</option><option value="Outros">Outros</option></select>
         </div>
 
@@ -284,7 +284,16 @@
                 const vT = parseFloat(r.valor), vP = parseFloat(r.pago), falta = vT - vP;
                 const isPago = vP >= vT;
 
-                if(r.tipo === 'Receita') sRec += vT; else if(r.tipo === 'Divida') sDiv += falta; else if(r.tipo === 'Reserva') sRes += vT; else sGas += vP;
+                // NOVA REGRA: Receita só entra no saldo se isPago (Confirmado) for verdadeiro
+                if(r.tipo === 'Receita') {
+                    if(isPago) sRec += vT; 
+                } else if(r.tipo === 'Divida') {
+                    sDiv += falta;
+                } else if(r.tipo === 'Reserva') {
+                    sRes += vT;
+                } else {
+                    sGas += vP;
+                }
 
                 let exibir = (filtroAtual === "Tudo") || (filtroAtual === r.tipo) || (filtroAtual === "Gasto" && (r.tipo === "Fixo" || r.tipo === "Variavel"));
                 if (termoBusca !== "" && !r.desc.toLowerCase().includes(termoBusca)) exibir = false;
@@ -297,6 +306,8 @@
                     let icon = r.tipo === 'Receita' ? 'fa-money-bill-trend-up' : (r.tipo === 'Divida' ? 'fa-barcode' : (r.tipo === 'Reserva' ? 'fa-vault' : 'fa-cart-shopping'));
                     let color = r.tipo === 'Receita' ? 'var(--success)' : (r.tipo === 'Divida' ? 'var(--danger)' : (r.tipo === 'Reserva' ? 'var(--reserve)' : 'var(--warning)'));
                     let extraInfo = r.forma ? ` • ${r.forma}` : '';
+                    
+                    // STATUS TEXT CORRIGIDO
                     let statusLabel = isPago ? (r.tipo === 'Receita' ? 'RECEBIDO' : 'LIQUIDADO') : 'PENDENTE';
                     
                     corpo.innerHTML += `<div class="transaction-item" onclick="openModal(${idxO})"><div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div><div class="details"><strong>${r.desc}</strong><span>${r.data.split('-').reverse().join('/')} • ${r.tipo}${extraInfo}</span></div><div class="amount"><strong>${ocultarBits(vT)}</strong><span class="status-debt" style="color:${isPago ? 'var(--success)' : 'var(--danger)'}">${statusLabel}</span></div></div>`;
@@ -339,9 +350,9 @@
                 if (r.tipo === 'Receita') {
                     resumo.classList.remove('hidden');
                     document.getElementById('resumoTitulo').innerText = "Resumo Receitas (Mês)";
-                    const recs = registros.filter(reg => reg.tipo === 'Receita' && reg.data.startsWith(prefixoMes));
+                    const recs = registros.filter(reg => reg.tipo === 'Receita' && reg.data.startsWith(prefixoMes) && reg.pago >= reg.valor);
                     const porForma = (f) => recs.filter(x => x.forma === f).reduce((a,b) => a+b.valor, 0);
-                    document.getElementById('resumoConteudo').innerHTML = `<div class="resumo-item">Pix<strong>${ocultarBits(porForma('Pix'))}</strong></div><div class="resumo-item">Dinheiro<strong>${ocultarBits(porForma('Dinheiro'))}</strong></div><div class="resumo-item">Cartão<strong>${ocultarBits(porForma('Cartão'))}</strong></div><div class="resumo-item">Total<strong>${ocultarBits(recs.reduce((a,b)=>a+b.valor,0))}</strong></div>`;
+                    document.getElementById('resumoConteudo').innerHTML = `<div class="resumo-item">Pix<strong>${ocultarBits(porForma('Pix'))}</strong></div><div class="resumo-item">Dinheiro<strong>${ocultarBits(porForma('Dinheiro'))}</strong></div><div class="resumo-item">Cartão<strong>${ocultarBits(porForma('Cartão'))}</strong></div><div class="resumo-item">Total Recebido<strong>${ocultarBits(recs.reduce((a,b)=>a+b.valor,0))}</strong></div>`;
                 } else if (r.desc.includes('(')) {
                     resumo.classList.remove('hidden');
                     document.getElementById('resumoTitulo').innerText = "Resumo do Contrato";
@@ -378,7 +389,7 @@
             if(!desc || vT <= 0 || !dBase) return alert("Preencha tudo!");
 
             if(editIdx !== "") { 
-                registros[editIdx] = { ...registros[editIdx], tipo: t, desc, valor: vT, pago: (isP || t === 'Receita') ? vT : 0, data: dBase, forma: t==='Receita' ? forma : null }; 
+                registros[editIdx] = { ...registros[editIdx], tipo: t, desc, valor: vT, pago: isP ? vT : 0, data: dBase, forma: t==='Receita' ? forma : null }; 
             } else {
                 if (t === 'Divida' && parseInt(document.getElementById('parcelas').value) > 1) {
                     const p = parseInt(document.getElementById('parcelas').value), pP = parseInt(document.getElementById('parcelasPagas').value);
@@ -388,7 +399,7 @@
                         registros.push({ tipo: t, desc: `${desc} (${i}/${p})`, valor: vParc, pago: (i <= pP) ? vParc : 0, data: nD });
                     }
                 } else { 
-                    registros.push({ tipo: t, desc, valor: vT, pago: (isP || t === 'Receita') ? vT : 0, data: dBase, forma: t==='Receita' ? forma : null }); 
+                    registros.push({ tipo: t, desc, valor: vT, pago: isP ? vT : 0, data: dBase, forma: t==='Receita' ? forma : null }); 
                 }
             }
             localStorage.setItem('foton_db', JSON.stringify(registros)); closeAll(); renderizar();
