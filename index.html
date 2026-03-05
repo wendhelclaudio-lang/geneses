@@ -57,18 +57,24 @@
         * { box-sizing: border-box; outline: none; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
         body { font-family: 'Ubuntu', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; font-size: 0.95rem; }
 
-        /* TELA DE BLOQUEIO (LOGIN) */
-        #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; transition: opacity 0.5s ease, visibility 0.5s; }
+        /* TELA DE BLOQUEIO (LOGIN REFINADO) */
+        #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3, 7, 18, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; transition: opacity 0.5s ease, visibility 0.5s; }
+        [data-theme="light"] #lock-screen, [data-theme="santander"] #lock-screen, [data-theme="itau"] #lock-screen, [data-theme="bradesco"] #lock-screen, [data-theme="nubank"] #lock-screen { background: rgba(255, 255, 255, 0.85); }
         .lock-avatar { width: 100px; height: 100px; border-radius: 25px; background: linear-gradient(135deg, var(--accent), #0a192f); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: white; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); background-size: cover; background-position: center;}
         .lock-title { font-size: 1.5rem; margin-bottom: 5px; color: var(--text); font-weight: 700; text-align: center;}
-        .lock-subtitle { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 40px; text-align: center;}
-        .lock-input { width: 100%; max-width: 300px; background: var(--input-bg); border: 2px solid var(--border); padding: 18px; border-radius: 14px; color: var(--text); font-size: 1.2rem; text-align: center; letter-spacing: 5px; margin-bottom: 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
-        .lock-input:focus { border-color: var(--accent); }
+        .lock-subtitle { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 30px; text-align: center;}
+        .lock-input { width: 100%; max-width: 300px; background: var(--input-bg); border: 2px solid var(--border); padding: 18px; border-radius: 14px; color: var(--text); font-size: 1.2rem; text-align: center; letter-spacing: 5px; margin-bottom: 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); transition: all 0.3s; }
+        .lock-input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
         .btn-login { width: 100%; max-width: 300px; background: var(--accent); color: #fff; border: none; padding: 18px; border-radius: 14px; font-weight: 800; font-size: 1.1rem; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 15px; }
+        .btn-login:active { transform: scale(0.98); }
+        
+        .btn-forgot { background: none; border: none; color: var(--accent); font-family: 'Ubuntu'; font-size: 0.85rem; cursor: pointer; margin-bottom: 20px; font-weight: 600;}
+        .btn-forgot:active { opacity: 0.7; }
+
         .btn-google { width: 100%; max-width: 300px; background: var(--card); color: var(--text); border: 1px solid var(--border); padding: 16px; border-radius: 14px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 10px; cursor: pointer; font-size: 0.95rem; }
         .btn-google i { color: #DB4437; font-size: 1.2rem; }
 
-        /* TOAST NOTIFICATION (Avisos bonitos) */
+        /* TOAST NOTIFICATION */
         #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: 90%; max-width: 350px;}
         .toast { background: var(--card); color: var(--text); padding: 16px 20px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 15px; font-weight: 500; font-size: 0.9rem; animation: slideUp 0.3s ease forwards; border-left: 5px solid var(--accent); }
         .toast.success { border-left-color: var(--success); }
@@ -180,9 +186,12 @@
         <h2 class="lock-title">Bem-vindo(a)</h2>
         <p class="lock-subtitle" id="loginSubtitle">Insira sua senha para acessar</p>
         <input type="password" id="inputSenha" class="lock-input" placeholder="••••" inputmode="numeric" onkeypress="if(event.key === 'Enter') checkLogin()">
+        
         <button class="btn-confirm" style="max-width: 300px; margin-top: 0; box-shadow: 0 5px 15px rgba(0,0,0,0.3);" onclick="checkLogin()">ENTRAR</button>
         
-        <div style="margin: 20px 0; width: 100%; max-width: 300px; display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 0.8rem;">
+        <button class="btn-forgot" onclick="recuperarSenha()">Esqueci minha senha</button>
+        
+        <div style="margin: 10px 0 20px 0; width: 100%; max-width: 300px; display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 0.8rem;">
             <div style="flex: 1; height: 1px; background: var(--border);"></div>
             OU
             <div style="flex: 1; height: 1px; background: var(--border);"></div>
@@ -228,7 +237,7 @@
         
         <div class="sidebar-menu">
             <div class="menu-item" onclick="configurarSenha()">
-                <div><i class="fa-solid fa-lock" style="color: var(--warning)"></i> <span>Configurar Senha</span></div>
+                <div><i class="fa-solid fa-lock" style="color: var(--warning)"></i> <span>Configurar Segurança</span></div>
             </div>
 
             <input type="file" id="fotoPerfilInput" accept="image/*" style="display: none;" onchange="carregarNovaFoto(event)">
@@ -401,7 +410,8 @@
             moeda: savedConfig.moeda || "R$",
             metaMensal: parseFloat(savedConfig.metaMensal) || 0,
             fotoPerfil: savedConfig.fotoPerfil || null,
-            senhaHash: savedConfig.senhaHash || null
+            senhaHash: savedConfig.senhaHash || null,
+            telefoneRec: savedConfig.telefoneRec || null // Para recuperação de senha
         };
 
         // SISTEMA DE TOAST NOTIFICATIONS
@@ -426,20 +436,24 @@
 
         // SISTEMA DE LOGIN E SEGURANÇA LOCAL
         function checkAppSecurity() {
-            if(appConfig.senhaHash) {
+            // Se tem senha configurada E a sessão ainda não foi validada nesta visita
+            if(appConfig.senhaHash && !sessionStorage.getItem('isLoggedIn')) {
                 document.getElementById('lock-screen').classList.remove('hidden');
                 document.getElementById('statusSeguranca').innerText = "ATIVADA";
                 document.getElementById('statusSeguranca').style.color = "var(--success)";
             } else {
                 document.getElementById('lock-screen').classList.add('hidden');
-                document.getElementById('statusSeguranca').innerText = "DESATIVADA";
-                document.getElementById('statusSeguranca').style.color = "var(--warning)";
+                document.getElementById('statusSeguranca').innerText = appConfig.senhaHash ? "ATIVADA" : "DESATIVADA";
+                document.getElementById('statusSeguranca').style.color = appConfig.senhaHash ? "var(--success)" : "var(--warning)";
             }
         }
 
         function checkLogin() {
             const input = document.getElementById('inputSenha').value;
             if(input === appConfig.senhaHash) {
+                // Salva na sessão do navegador (não pede mais enquanto não fechar a aba)
+                sessionStorage.setItem('isLoggedIn', 'true');
+                
                 document.getElementById('lock-screen').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('lock-screen').classList.add('hidden');
@@ -456,6 +470,8 @@
             if(appConfig.senhaHash) {
                 if(confirm("Deseja remover a senha atual? O aplicativo ficará desprotegido.")) {
                     appConfig.senhaHash = null;
+                    appConfig.telefoneRec = null;
+                    sessionStorage.removeItem('isLoggedIn');
                     salvarConfig();
                     showToast("Senha Removida", "success");
                     closeAll();
@@ -463,16 +479,55 @@
             } else {
                 let novaSenha = prompt("Crie uma senha ou PIN para bloquear o aplicativo:");
                 if(novaSenha && novaSenha.trim().length > 0) {
+                    let telefone = prompt("Digite seu celular com DDD (apenas números) para recuperar a senha caso esqueça:");
+                    
                     appConfig.senhaHash = novaSenha.trim();
+                    if(telefone) appConfig.telefoneRec = telefone.replace(/\D/g, '');
+                    
+                    sessionStorage.setItem('isLoggedIn', 'true'); // Já loga ele agora
                     salvarConfig();
-                    showToast("Senha Configurada com Sucesso!", "success");
+                    showToast("Segurança Configurada com Sucesso!", "success");
                     closeAll();
                 }
             }
         }
 
+        function recuperarSenha() {
+            if(!appConfig.telefoneRec) {
+                return showToast("Nenhum telefone foi cadastrado para recuperação.", "error");
+            }
+            
+            let telConfirm = prompt("Confirme o seu número de celular (com DDD) para receber o SMS:");
+            if(telConfirm && telConfirm.replace(/\D/g, '') === appConfig.telefoneRec) {
+                
+                // SIMULAÇÃO DO ENVIO DO SMS
+                let codigoGerado = Math.floor(100000 + Math.random() * 900000).toString();
+                alert(`[SIMULAÇÃO DE SMS OFFLINE]\n\nO MeuCaixa é um sistema local que não usa servidores na nuvem. Portanto, não envia SMS real.\n\nSeu código gerado é: ${codigoGerado}`);
+                
+                let inputCodigo = prompt("Digite o código de 6 dígitos que você 'recebeu' no SMS:");
+                
+                if(inputCodigo === codigoGerado) {
+                    let novaSenha = prompt("Código correto! Digite sua NOVA senha:");
+                    if(novaSenha && novaSenha.trim().length > 0) {
+                        appConfig.senhaHash = novaSenha.trim();
+                        sessionStorage.setItem('isLoggedIn', 'true');
+                        salvarConfig();
+                        
+                        document.getElementById('lock-screen').style.opacity = '0';
+                        setTimeout(() => { document.getElementById('lock-screen').classList.add('hidden'); }, 500);
+                        
+                        showToast("Senha redefinida e Acesso Liberado!", "success");
+                    }
+                } else {
+                    showToast("Código inválido.", "error");
+                }
+            } else {
+                showToast("Telefone não confere.", "error");
+            }
+        }
+
         function simularGoogleLogin() {
-            showToast("O Login Google requer conexão Cloud (Firebase). Use a Senha Local.", "error");
+            showToast("O Login Google requer banco na nuvem. Use a senha local do MeuCaixa.", "error");
         }
 
         // LÓGICA DE TEMAS
@@ -738,21 +793,11 @@
                     registros.push({ tipo: t, desc, valor: vT, pago: valorPago, data: dBase, forma: t==='Receita' ? forma : null }); 
                 }
             }
-            localStorage.setItem('foton_db', JSON.stringify(registros)); 
-            closeAll(); 
-            renderizar();
+            localStorage.setItem('foton_db', JSON.stringify(registros)); closeAll(); renderizar();
             showToast("Operação Salva com Sucesso!", "success");
         }
 
-        function excluirRegistro() { 
-            if(confirm("Excluir este registro permanentemente?")) { 
-                registros.splice(document.getElementById('editIndex').value, 1); 
-                localStorage.setItem('foton_db', JSON.stringify(registros)); 
-                renderizar(); 
-                closeAll(); 
-                showToast("Registro Excluído.", "success");
-            } 
-        }
+        function excluirRegistro() { if(confirm("Excluir este registro permanentemente?")) { registros.splice(document.getElementById('editIndex').value, 1); localStorage.setItem('foton_db', JSON.stringify(registros)); renderizar(); closeAll(); showToast("Registro Excluído.", "success"); } }
         function exportarDados() { if(registros.length === 0) return showToast("Nenhum dado para exportar.", "error"); let csv = "Tipo,Descricao,Valor Total,Valor Pago,Data,Forma\n"; registros.forEach(r => { csv += `${r.tipo},${r.desc.replace(/,/g, '')},${r.valor},${r.pago},${r.data},${r.forma||''}\n`; }); const blob = new Blob([csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Backup_MeuCaixa.csv'; a.click(); closeAll(); showToast("Backup baixado!", "success"); }
         function importarDados(e) { const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = function(ev) { const lines = ev.target.result.split('\n'); let novos = []; for(let i=1; i<lines.length; i++){ const c = lines[i].split(','); if(c.length>=5) novos.push({ tipo: c[0], desc: c[1], valor: parseFloat(c[2]), pago: parseFloat(c[3]), data: c[4].trim(), forma: c[5]?.trim()||null }); } if(novos.length > 0){ registros = novos; localStorage.setItem('foton_db', JSON.stringify(registros)); renderizar(); closeAll(); showToast("Backup Importado!", "success"); } }; r.readAsText(f); }
         
