@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gêneses Mobile - Operacional V4</title>
+    <title>Gêneses Mobile - Operacional V2</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -12,7 +12,7 @@
             --bg: #090b14;
             --card: rgba(22, 28, 45, 0.7);
             --card-solid: #161c2d;
-            --accent: #8b5cf6; /* Roxo Neon */
+            --accent: #8b5cf6;
             --accent-glow: rgba(139, 92, 246, 0.4);
             --text: #f8fafc;
             --text-muted: #94a3b8;
@@ -32,6 +32,41 @@
             overflow-x: hidden;
             backdrop-filter: blur(10px);
         }
+
+        /* TELA DE LOCK (LOGIN) - 100% COMPATÍVEL */
+        #lockScreen {
+            position: fixed; top: 0; left: 0; width: 100%; 
+            height: 100vh; /* Fallback para celulares antigos */
+            height: 100dvh; /* Medida exata para celulares modernos */
+            background: var(--bg); z-index: 9999; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; 
+            padding: 20px; box-sizing: border-box; overflow-y: auto;
+        }
+        .lock-header { text-align: center; margin-bottom: 25px; margin-top: 10px; }
+        .lock-header i { font-size: 2.5rem; color: var(--accent); margin-bottom: 5px; filter: drop-shadow(0 0 10px var(--accent-glow)); }
+        .lock-header h2 { margin: 0; font-size: 1.3rem; letter-spacing: 2px; }
+        
+        .pin-dots { display: flex; gap: 15px; margin-bottom: 25px; height: 15px; }
+        .dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--text-muted); transition: 0.2s; }
+        .dot.filled { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+        .dot.error { background: var(--danger); border-color: var(--danger); box-shadow: 0 0 8px var(--danger); }
+
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
+        .num-btn { 
+            width: 60px; height: 60px; border-radius: 50%; background: var(--card); 
+            border: 1px solid var(--border); color: var(--text); font-size: 1.4rem; 
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+        .num-btn:active { background: var(--accent); color: white; transform: scale(0.95); }
+        
+        .bio-btn { 
+            background: none; border: none; color: var(--text-muted); font-size: 2.5rem; 
+            cursor: pointer; transition: 0.3s; padding: 10px; margin-bottom: 10px;
+        }
+        .bio-btn:active, .bio-btn:hover { color: var(--accent); filter: drop-shadow(0 0 10px var(--accent-glow)); }
+
+        /* APP PRINCIPAL */
+        #appScreen { display: none; } /* Será ativado via JS */
 
         header {
             padding: 20px; display: flex; justify-content: space-between;
@@ -124,119 +159,192 @@
 </head>
 <body>
 
-    <header>
-        <div class="user-info">
-            <span>Bem-vindo(a) de volta</span>
-            <strong>Wendel C. R. Carneiro</strong>
+    <div id="lockScreen">
+        <div class="lock-header">
+            <i class="fa-solid fa-fingerprint"></i>
+            <h2>GÊNESES</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Insira o PIN (1234) ou use a digital</p>
         </div>
-        <button class="btn-icon" onclick="toggleFantasma()">
-            <i id="eyeIcon" class="fa-solid fa-eye-slash"></i>
-        </button>
-    </header>
-
-    <div class="balance-card">
-        <small>Saldo Disponível</small>
-        <h1 id="totalSaldo">R$ 0,00</h1>
-    </div>
-
-    <div class="quick-stats">
-        <div id="cardReceita" class="mini-card" onclick="setFiltro('Receita')">
-            <div class="mini-card-header"><i class="fa-solid fa-arrow-trend-up" style="color:var(--success)"></i></div>
-            <span>Entradas</span><strong id="totalReceitas">R$ 0,00</strong>
-        </div>
-        <div id="cardGastos" class="mini-card" onclick="setFiltro('Gastos')">
-            <div class="mini-card-header"><i class="fa-solid fa-arrow-trend-down" style="color:var(--warning)"></i></div>
-            <span>Gastos</span><strong id="totalGastos">R$ 0,00</strong>
-        </div>
-        <div id="cardDivida" class="mini-card" onclick="setFiltro('Divida')">
-            <div class="mini-card-header"><i class="fa-solid fa-file-invoice-dollar" style="color:var(--danger)"></i></div>
-            <span>Dívidas</span><strong id="totalDividas">R$ 0,00</strong>
-        </div>
-        <div id="cardReserva" class="mini-card" onclick="setFiltro('Reserva')">
-            <div class="mini-card-header"><i class="fa-solid fa-shield-halved" style="color:var(--reserve)"></i></div>
-            <span>Patrimônio</span><strong id="totalReserva">R$ 0,00</strong>
-        </div>
-    </div>
-
-    <main>
-        <div class="section-header">
-            <h3 id="tituloExtrato">Extrato Biótico</h3>
-            <button id="btnVoltarFiltro" class="btn-voltar hidden" onclick="setFiltro('Todos')">
-                <i class="fa-solid fa-chevron-left"></i> Voltar
-            </button>
-        </div>
-        <div id="tabelaCorpo"></div>
-    </main>
-
-    <section class="bottom-charts">
-        <div class="section-header" style="margin-top:0;"><h3>Performance Mensal</h3></div>
         
-        <div class="chart-bar-group">
-            <div class="chart-label"><span>Comprometimento de Renda</span><span id="labelPercSaida">0%</span></div>
-            <div class="chart-track"><div id="fillSaida" class="chart-fill" style="background: linear-gradient(90deg, var(--warning), var(--danger))"></div></div>
+        <div class="pin-dots" id="pinDots">
+            <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
         </div>
 
-        <div class="chart-bar-group">
-            <div class="chart-label"><span>Taxa de Acúmulo</span><span id="labelPercRes">0%</span></div>
-            <div class="chart-track"><div id="fillRes" class="chart-fill" style="background: linear-gradient(90deg, var(--reserve), var(--accent))"></div></div>
+        <div class="numpad">
+            <div class="num-btn" onclick="addPin('1')">1</div>
+            <div class="num-btn" onclick="addPin('2')">2</div>
+            <div class="num-btn" onclick="addPin('3')">3</div>
+            <div class="num-btn" onclick="addPin('4')">4</div>
+            <div class="num-btn" onclick="addPin('5')">5</div>
+            <div class="num-btn" onclick="addPin('6')">6</div>
+            <div class="num-btn" onclick="addPin('7')">7</div>
+            <div class="num-btn" onclick="addPin('8')">8</div>
+            <div class="num-btn" onclick="addPin('9')">9</div>
+            <div></div>
+            <div class="num-btn" onclick="addPin('0')">0</div>
+            <div class="num-btn" onclick="clearPin()" style="background: transparent; border: none; color: var(--danger);"><i class="fa-solid fa-delete-left"></i></div>
         </div>
-    </section>
 
-    <button class="fab" onclick="openModal()"><i class="fa-solid fa-plus"></i></button>
-    <div class="overlay" id="overlay" onclick="closeModal()"></div>
+        <button class="bio-btn" onclick="unlockApp()"><i class="fa-solid fa-fingerprint"></i></button>
+    </div>
 
-    <div class="modal" id="modalForm">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
-            <h2 id="modalTitle" style="margin:0; font-size:1.3rem;">Nova Operação</h2>
-            <div class="btn-icon" style="border:none; background:rgba(0,0,0,0.2);" onclick="closeModal()">
-                <i class="fa-solid fa-xmark"></i>
+    <div id="appScreen">
+        <header>
+            <div class="user-info">
+                <span>Bem-vindo(a) de volta</span>
+                <strong>Wendel C. R. Carneiro</strong>
+            </div>
+            <button class="btn-icon" onclick="toggleFantasma()">
+                <i id="eyeIcon" class="fa-solid fa-eye-slash"></i>
+            </button>
+        </header>
+
+        <div class="balance-card">
+            <small>Saldo Disponível</small>
+            <h1 id="totalSaldo">R$ 0,00</h1>
+        </div>
+
+        <div class="quick-stats">
+            <div id="cardReceita" class="mini-card" onclick="setFiltro('Receita')">
+                <div class="mini-card-header"><i class="fa-solid fa-arrow-trend-up" style="color:var(--success)"></i></div>
+                <span>Entradas</span><strong id="totalReceitas">R$ 0,00</strong>
+            </div>
+            <div id="cardGastos" class="mini-card" onclick="setFiltro('Gastos')">
+                <div class="mini-card-header"><i class="fa-solid fa-arrow-trend-down" style="color:var(--warning)"></i></div>
+                <span>Gastos</span><strong id="totalGastos">R$ 0,00</strong>
+            </div>
+            <div id="cardDivida" class="mini-card" onclick="setFiltro('Divida')">
+                <div class="mini-card-header"><i class="fa-solid fa-file-invoice-dollar" style="color:var(--danger)"></i></div>
+                <span>Dívidas</span><strong id="totalDividas">R$ 0,00</strong>
+            </div>
+            <div id="cardReserva" class="mini-card" onclick="setFiltro('Reserva')">
+                <div class="mini-card-header"><i class="fa-solid fa-shield-halved" style="color:var(--reserve)"></i></div>
+                <span>Patrimônio</span><strong id="totalReserva">R$ 0,00</strong>
             </div>
         </div>
-        
-        <span class="label-mini">Tipo de Movimentação</span>
-        <select id="tipo" onchange="atualizarSubmenu()">
-            <option value="Receita">Receita</option>
-            <option value="Fixo">Gasto Fixo</option>
-            <option value="Variavel">Gasto Variável</option>
-            <option value="Divida">Dívida / Boleto</option>
-            <option value="Reserva">Patrimônio / Reserva</option>
-        </select>
 
-        <span class="label-mini">Categoria</span>
-        <select id="submenu" onchange="definirDescricao()"></select>
-        
-        <span class="label-mini">Descrição</span>
-        <input type="text" id="desc" placeholder="Ex: Conta de Luz">
-        
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-            <div><span class="label-mini">Valor Total</span><input type="number" id="valor" placeholder="R$ 0,00" step="0.01" inputmode="decimal"></div>
-            <div id="campoPago"><span class="label-mini">Valor Pago</span><input type="number" id="pago" placeholder="R$ 0,00" step="0.01" inputmode="decimal"></div>
+        <main>
+            <div class="section-header">
+                <h3 id="tituloExtrato">Extrato Biótico</h3>
+                <button id="btnVoltarFiltro" class="btn-voltar hidden" onclick="setFiltro('Todos')">
+                    <i class="fa-solid fa-chevron-left"></i> Voltar
+                </button>
+            </div>
+            <div id="tabelaCorpo"></div>
+        </main>
+
+        <section class="bottom-charts">
+            <div class="section-header" style="margin-top:0;"><h3>Performance Mensal</h3></div>
+            
+            <div class="chart-bar-group">
+                <div class="chart-label"><span>Comprometimento de Renda</span><span id="labelPercSaida">0%</span></div>
+                <div class="chart-track"><div id="fillSaida" class="chart-fill" style="background: linear-gradient(90deg, var(--warning), var(--danger))"></div></div>
+            </div>
+
+            <div class="chart-bar-group">
+                <div class="chart-label"><span>Taxa de Acúmulo</span><span id="labelPercRes">0%</span></div>
+                <div class="chart-track"><div id="fillRes" class="chart-fill" style="background: linear-gradient(90deg, var(--reserve), var(--accent))"></div></div>
+            </div>
+        </section>
+
+        <button class="fab" onclick="openModal()"><i class="fa-solid fa-plus"></i></button>
+        <div class="overlay" id="overlay" onclick="closeModal()"></div>
+
+        <div class="modal" id="modalForm">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
+                <h2 id="modalTitle" style="margin:0; font-size:1.3rem;">Nova Operação</h2>
+                <div class="btn-icon" style="border:none; background:rgba(0,0,0,0.2);" onclick="closeModal()">
+                    <i class="fa-solid fa-xmark"></i>
+                </div>
+            </div>
+            
+            <span class="label-mini">Tipo de Movimentação</span>
+            <select id="tipo" onchange="atualizarSubmenu()">
+                <option value="Receita">Receita</option>
+                <option value="Fixo">Gasto Fixo</option>
+                <option value="Variavel">Gasto Variável</option>
+                <option value="Divida">Dívida / Boleto</option>
+                <option value="Reserva">Patrimônio / Reserva</option>
+            </select>
+
+            <span class="label-mini">Categoria</span>
+            <select id="submenu" onchange="definirDescricao()"></select>
+            
+            <span class="label-mini">Descrição</span>
+            <input type="text" id="desc" placeholder="Ex: Conta de Luz">
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                <div><span class="label-mini">Valor Total</span><input type="number" id="valor" placeholder="R$ 0,00" step="0.01" inputmode="decimal"></div>
+                <div id="campoPago"><span class="label-mini">Valor Pago</span><input type="number" id="pago" placeholder="R$ 0,00" step="0.01" inputmode="decimal"></div>
+            </div>
+
+            <span class="label-mini">Data da Operação</span>
+            <input type="date" id="data">
+            <input type="hidden" id="editIndex">
+            
+            <button class="btn-confirm" onclick="salvar()">Salvar Movimentação</button>
+            <button id="btnExcluir" class="btn-delete hidden" onclick="excluirRegistro()">Excluir Registro</button>
         </div>
-
-        <span class="label-mini">Data da Operação</span>
-        <input type="date" id="data">
-        <input type="hidden" id="editIndex">
-        
-        <button class="btn-confirm" onclick="salvar()">Salvar Movimentação</button>
-        <button id="btnExcluir" class="btn-delete hidden" onclick="excluirRegistro()">Excluir Registro</button>
     </div>
 
     <script>
-        // LÓGICA DO APLICATIVO (SEM SENHA)
-        let registros = [];
-        let modoFantasma = true; // Inicia com o saldo oculto
-        let filtroAtual = 'Todos';
+        // LÓGICA DE LOGIN (PIN)
+        let pinAttempt = "";
+        const correctPin = "1234"; // Mude este valor para alterar a senha
+        const dots = document.querySelectorAll('.dot');
 
-        // Carregamento blindado para evitar erros de leitura antigos
-        try {
-            const data = localStorage.getItem('foton_db');
-            if (data) registros = JSON.parse(data);
-            if (!Array.isArray(registros)) registros = [];
-        } catch (error) {
-            console.error("Dados antigos corrompidos. Resetando o banco.");
-            registros = [];
-            localStorage.removeItem('foton_db');
+        function addPin(num) {
+            if (pinAttempt.length < 4) {
+                pinAttempt += num;
+                updateDots();
+                if (pinAttempt.length === 4) checkPin();
+            }
         }
+
+        function clearPin() {
+            pinAttempt = pinAttempt.slice(0, -1);
+            updateDots();
+        }
+
+        function updateDots() {
+            dots.forEach((dot, index) => {
+                dot.className = 'dot';
+                if (index < pinAttempt.length) dot.classList.add('filled');
+            });
+        }
+
+        function checkPin() {
+            if (pinAttempt === correctPin) {
+                unlockApp();
+            } else {
+                dots.forEach(dot => dot.classList.add('error'));
+                setTimeout(() => {
+                    pinAttempt = "";
+                    updateDots();
+                }, 400);
+            }
+        }
+
+        // Função de Desbloqueio Instantâneo 
+        function unlockApp() {
+            document.getElementById('lockScreen').style.display = 'none';
+            document.getElementById('appScreen').style.display = 'block';
+            
+            // Proteção contra travamento caso o banco de dados interno do celular esteja corrompido
+            try {
+                renderizar();
+            } catch (error) {
+                console.error("Erro ao carregar dados antigos. Formatando banco de dados para evitar travamento:", error);
+                localStorage.removeItem('foton_db'); // Limpa dados quebrados
+                registros = [];
+                renderizar();
+            }
+        }
+
+        // LÓGICA DO APLICATIVO
+        let registros = JSON.parse(localStorage.getItem('foton_db')) || [];
+        let modoFantasma = true; // Inicia com o saldo oculto por segurança
+        let filtroAtual = 'Todos';
 
         const opcoesSubmenu = {
             "Receita": ["💸 Salário Principal", "👨‍💻 Trabalho Freelance", "🎁 Entrada Extra", "📈 Rendimentos"],
@@ -261,102 +369,3 @@
                 else if (tipo === 'Divida') document.getElementById('cardDivida').classList.add('active-card');
                 else if (tipo === 'Reserva') document.getElementById('cardReserva').classList.add('active-card');
             }
-            
-            renderizar();
-        }
-
-        function renderizar() {
-            const corpo = document.getElementById('tabelaCorpo');
-            corpo.innerHTML = '';
-            let sRec = 0, sGas = 0, sDiv = 0, sRes = 0;
-
-            const ordenados = [...registros].sort((a, b) => {
-                const dataA = a.data ? new Date(a.data) : new Date();
-                const dataB = b.data ? new Date(b.data) : new Date();
-                return dataB - dataA;
-            });
-
-            ordenados.forEach(r => {
-                const vTotal = parseFloat(r.valor) || 0;
-                const vPago = parseFloat(r.pago) || 0;
-                const falta = vTotal - vPago;
-                if(r.tipo === 'Receita') { sRec += vTotal; }
-                else if(r.tipo === 'Divida') { sDiv += falta; }
-                else if(r.tipo === 'Reserva') { sRes += vTotal; }
-                else { sGas += vPago; }
-            });
-
-            document.getElementById('totalReceitas').innerText = ocultarBits(sRec);
-            document.getElementById('totalGastos').innerText = ocultarBits(sGas);
-            document.getElementById('totalDividas').innerText = ocultarBits(sDiv);
-            document.getElementById('totalReserva').innerText = ocultarBits(sRes);
-            document.getElementById('totalSaldo').innerText = ocultarBits(sRec - (sGas + sDiv));
-
-            if(ordenados.length === 0 && filtroAtual === 'Todos') {
-                corpo.innerHTML = `<div style="text-align:center; padding: 30px; color: var(--text-muted); font-size: 0.8rem;">Nenhuma movimentação registrada.</div>`;
-            }
-
-            ordenados.forEach(r => {
-                const idxOriginal = registros.indexOf(r);
-                const vTotal = parseFloat(r.valor) || 0;
-                const vPago = parseFloat(r.pago) || 0;
-                const falta = vTotal - vPago;
-                const dataExibicao = r.data ? r.data.split('-').reverse().join('/') : '--/--/----';
-                
-                let icon = 'fa-receipt', color = 'var(--text)';
-                let categoriaFiltro = '';
-
-                if(r.tipo === 'Receita') { icon='fa-arrow-trend-up'; color='var(--success)'; categoriaFiltro = 'Receita'; }
-                else if(r.tipo === 'Divida') { icon='fa-file-invoice-dollar'; color='var(--danger)'; categoriaFiltro = 'Divida'; }
-                else if(r.tipo === 'Reserva') { icon='fa-shield-halved'; color='var(--reserve)'; categoriaFiltro = 'Reserva'; }
-                else { icon='fa-bag-shopping'; color='var(--warning)'; categoriaFiltro = 'Gastos'; } 
-
-                if(filtroAtual !== 'Todos' && filtroAtual !== categoriaFiltro) return;
-
-                const statusColor = vPago >= vTotal ? 'var(--success)' : 'var(--danger)';
-                const statusText = vPago >= vTotal ? 'PAGO' : `FALTA: ${ocultarBits(falta)}`;
-
-                corpo.innerHTML += `
-                    <div class="transaction-item" onclick="openModal(${idxOriginal})">
-                        <div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div>
-                        <div class="details">
-                            <strong>${r.desc || 'Sem Descrição'}</strong>
-                            <span>${dataExibicao} • ${r.tipo}</span>
-                        </div>
-                        <div class="amount">
-                            <strong>${ocultarBits(vTotal)}</strong>
-                            <span class="status-debt" style="color:${statusColor}">${statusText}</span>
-                        </div>
-                    </div>`;
-            });
-
-            const nomesFiltro = {
-                'Todos': 'Movimentações Recentes', 'Receita': 'Histórico: Entradas',
-                'Gastos': 'Histórico: Gastos', 'Divida': 'Histórico: Dívidas', 'Reserva': 'Histórico: Patrimônio'
-            };
-            document.getElementById('tituloExtrato').innerText = nomesFiltro[filtroAtual];
-
-            const percSaida = sRec > 0 ? Math.min(( (sGas + sDiv) / sRec) * 100, 100) : 0;
-            const percRes = sRec > 0 ? Math.min((sRes / sRec) * 100, 100) : 0;
-
-            document.getElementById('fillSaida').style.width = percSaida + '%';
-            document.getElementById('labelPercSaida').innerText = percSaida.toFixed(1) + '%';
-            
-            document.getElementById('fillRes').style.width = percRes + '%';
-            document.getElementById('labelPercRes').innerText = percRes.toFixed(1) + '%';
-        }
-
-        function openModal(idx = null) {
-            document.getElementById('modalForm').classList.add('open');
-            document.getElementById('overlay').style.display = 'block';
-            if(idx !== null) {
-                const r = registros[idx];
-                document.getElementById('modalTitle').innerText = "Editar Operação";
-                document.getElementById('editIndex').value = idx;
-                document.getElementById('tipo').value = r.tipo;
-                atualizarSubmenu();
-                document.getElementById('desc').value = r.desc || '';
-                document.getElementById('valor').value = r.valor || '';
-                document.getElementById('pago').value = r.pago || '';
-                document.getElementById('data').value = r.data || new Date().toISOString().split('T')[0];
-                document.getElementById('btnExcluir').class
