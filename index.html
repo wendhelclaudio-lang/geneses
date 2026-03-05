@@ -8,7 +8,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#030712">
+    <meta name="theme-color" content="#0a192f">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -22,67 +22,10 @@
             --danger: #ef4444;
             --warning: #f59e0b;
             --reserve: #8b5cf6;
-            --santander-red: #ec1c24;
         }
 
-        * { box-sizing: border-box; outline: none; }
+        * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
-
-        /* --- SPLASH SCREEN CYBER-BANKING --- */
-        #splash-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #0a192f 0%, #030712 100%);
-            display: flex; flex-direction: column; justify-content: center;
-            align-items: center; z-index: 9999; transition: all 1s cubic-bezier(0.65, 0, 0.35, 1);
-        }
-        
-        /* Círculos de Radar */
-        .radar {
-            position: relative; width: 150px; height: 150px;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .radar-circle {
-            position: absolute; border: 2px solid rgba(0, 242, 255, 0.1);
-            border-radius: 50%; animation: radar-spin 4s linear infinite;
-        }
-        .radar-circle:nth-child(1) { width: 100%; height: 100%; border-top-color: var(--accent); }
-        .radar-circle:nth-child(2) { width: 80%; height: 80%; border-bottom-color: var(--santander-red); animation-direction: reverse; }
-        
-        .splash-logo {
-            width: 70px; height: 70px; background: var(--santander-red);
-            border-radius: 18px; display: flex; justify-content: center;
-            align-items: center; color: white; font-size: 1.8rem; font-weight: 900;
-            box-shadow: 0 0 40px rgba(236, 28, 36, 0.5); z-index: 10;
-            animation: logo-float 2s ease-in-out infinite;
-        }
-
-        /* Barra de Scanner Crucial */
-        .scanner-bar {
-            position: absolute; width: 180px; height: 2px;
-            background: var(--accent); box-shadow: 0 0 15px var(--accent);
-            top: 50%; transform: translateY(-50%);
-            animation: scan 2s ease-in-out infinite;
-            z-index: 11; opacity: 0.5;
-        }
-
-        .splash-loading-text {
-            margin-top: 40px; font-family: monospace; font-size: 0.65rem;
-            color: var(--accent); text-transform: uppercase; letter-spacing: 2px;
-        }
-
-        @keyframes radar-spin { 100% { transform: rotate(360deg); } }
-        @keyframes logo-float { 
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-10px) scale(1.05); }
-        }
-        @keyframes scan {
-            0%, 100% { top: 20%; opacity: 0; }
-            50% { top: 80%; opacity: 1; }
-        }
-
-        /* Saída da Splash */
-        #splash-screen.fade-out { opacity: 0; visibility: hidden; transform: scale(1.2); }
-        /* ---------------------------------- */
 
         header {
             background: var(--bg); padding: 15px 20px; display: flex; justify-content: space-between;
@@ -112,6 +55,7 @@
         .status-panel { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid #1f2937; }
         .status-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 10px; align-items: center; }
         .status-row:last-child { margin-bottom: 0; }
+        .status-label { color: #94a3b8; }
 
         .sidebar-menu { display: flex; flex-direction: column; gap: 10px; flex: 1; }
         .menu-item { padding: 15px; border-radius: 12px; background: rgba(255,255,255,0.03); display: flex; align-items: center; gap: 15px; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent; }
@@ -149,6 +93,7 @@
         .details { flex: 1; overflow: hidden; }
         .details strong { display: block; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .details span { font-size: 0.7rem; color: #6b7280; }
+        
         .amount { text-align: right; min-width: 90px; }
         .amount strong { display: block; font-size: 0.85rem; }
         .amount .status-debt { font-size: 0.6rem; font-weight: 800; display: block; margin-top: 2px; }
@@ -166,6 +111,7 @@
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; backdrop-filter: blur(3px); }
 
         input, select { width: 100%; background: #1f2937; border: 1px solid #374151; padding: 14px; border-radius: 12px; color: white; margin-bottom: 12px; font-size: 1rem; }
+        
         .btn-confirm { background: var(--accent); color: var(--bg); width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; margin-top: 10px; }
         .btn-delete { background: none; color: var(--danger); width: 100%; padding: 12px; border: 1px solid var(--danger); border-radius: 12px; margin-top: 15px; font-weight: 700; }
 
@@ -180,16 +126,6 @@
     </style>
 </head>
 <body>
-
-    <div id="splash-screen">
-        <div class="radar">
-            <div class="radar-circle"></div>
-            <div class="radar-circle"></div>
-            <div class="scanner-bar"></div>
-            <div class="splash-logo">WC</div>
-        </div>
-        <div class="splash-loading-text" id="status-text">Iniciando Protocolo Fóton</div>
-    </div>
 
     <header>
         <div class="profile-section" onclick="toggleSidebar()">
@@ -244,10 +180,12 @@
             <h3 id="txtExtrato">Operações</h3>
             <button id="btnVoltar" class="hidden" onclick="filtrarExtrato('Tudo')"><i class="fa-solid fa-chevron-left"></i> VOLTAR</button>
         </div>
+        
         <div id="subFiltros" class="submenu-divida hidden">
             <button class="sub-btn active" id="btnPendente" onclick="setSubFiltro('Pendente')">PENDENTES</button>
             <button class="sub-btn" id="btnPago" onclick="setSubFiltro('Pago')">LIQUIDADAS</button>
         </div>
+        
         <input type="text" id="inputPesquisa" class="search-bar" placeholder="🔍 Buscar lançamento" onkeyup="renderizar()">
         <div id="tabelaCorpo"></div>
     </main>
@@ -268,22 +206,27 @@
 
     <div class="modal" id="modalForm">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2 id="modalTitle" style="margin:0; font-size:1.2rem;">Nova Operação</h2><i class="fa-solid fa-circle-xmark" style="font-size:1.5rem; color:#374151;" onclick="closeModal()"></i></div>
+        
         <div id="blocoResumoGeral" class="resumo-quitacao hidden">
             <h4 id="resumoTitulo">Resumo</h4>
             <div id="resumoConteudo" class="resumo-grid"></div>
         </div>
+
         <span class="label-mini">Tipo</span>
         <select id="tipo" onchange="atualizarSubmenu()"><option value="Receita">Receita</option><option value="Fixo">Gasto Fixo</option><option value="Variavel">Gasto Variável</option><option value="Divida">Dívida / Boleto</option><option value="Reserva">Patrimônio</option></select>
         <span class="label-mini">Categoria</span><select id="submenu" onchange="definirDescricao()"></select>
+        
         <div id="blocoRecebimento" class="hidden">
             <span class="label-mini">Forma de Recebimento</span>
             <select id="formaRecebimento"><option value="Pix">Pix</option><option value="Dinheiro">Dinheiro</option><option value="Cartão">Cartão</option><option value="Outros">Outros</option></select>
         </div>
+
         <input type="text" id="desc" placeholder="Descrição Personalizada">
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
             <div><span class="label-mini">Valor</span><input type="number" id="valor" placeholder="0,00" step="0.01" inputmode="decimal"></div>
             <div id="campoPago"><span class="label-mini">Confirmado?</span><select id="selectPago"><option value="0">Não</option><option value="1">Sim</option></select></div>
         </div>
+
         <div id="blocoParcelamento" class="bloco-parcelas hidden">
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                 <div><span class="label-mini">Total Parcelas</span><input type="number" id="parcelas" value="1" min="1"></div>
@@ -301,35 +244,11 @@
 
         const opcoesSubmenu = {
             "Receita": ["💰 Salário", "🚀 Freelance", "✨ Outros Recebíveis"],
-            "Fixo": ["🏠 Aluguel", "⚡ Energia", "🌐 Internet", "🎬 Streamings"],
-            "Variavel": ["🛒 Mercado", "🍕 Alimentação", "⛽ Combustível", "🚗 Transporte"],
+            "Fixo": ["🏠 Aluguel", "⚡ Energia", "🎬 Streamings"],
+            "Variavel": ["🛒 Mercado", "🍕 Alimentação", "🚗 Transporte"],
             "Divida": ["🏢 Financiamento", "💳 Cartão", "🤝 Empréstimo", "🧾 Boleto"],
             "Reserva": ["🏦 Investimentos", "📦 Caixinha", "🛡️ Reserva Emergência"]
         };
-
-        // LÓGICA DE ABERTURA TECNOLÓGICA
-        window.addEventListener('load', () => {
-            const statusText = document.getElementById('status-text');
-            const messages = [
-                "Localizando Hardware...",
-                "Validando Protocolo...",
-                "Descriptografando Ativos...",
-                "Acesso Concedido"
-            ];
-            
-            let i = 0;
-            const interval = setInterval(() => {
-                if(i < messages.length) {
-                    statusText.innerText = messages[i];
-                    i++;
-                } else {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        document.getElementById('splash-screen').classList.add('fade-out');
-                    }, 500);
-                }
-            }, 600);
-        });
 
         function mudarMes(delta) { dataVisualizacao.setMonth(dataVisualizacao.getMonth() + delta); renderizar(); }
         function formatarMesAno(d) { const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']; return `${meses[d.getMonth()]} ${d.getFullYear()}`; }
@@ -343,25 +262,38 @@
             renderizar();
         }
 
-        function setSubFiltro(s) { subFiltro = s; document.getElementById('btnPendente').classList.toggle('active', s === 'Pendente'); document.getElementById('btnPago').classList.toggle('active', s === 'Pago'); renderizar(); }
+        function setSubFiltro(s) {
+            subFiltro = s;
+            document.getElementById('btnPendente').classList.toggle('active', s === 'Pendente');
+            document.getElementById('btnPago').classList.toggle('active', s === 'Pago');
+            renderizar();
+        }
 
         function renderizar() {
             document.getElementById('mesDisplay').innerText = formatarMesAno(dataVisualizacao);
             const prefixoMes = `${dataVisualizacao.getFullYear()}-${String(dataVisualizacao.getMonth() + 1).padStart(2, '0')}`;
+            const termoBusca = document.getElementById('inputPesquisa').value.toLowerCase();
             const corpo = document.getElementById('tabelaCorpo'); corpo.innerHTML = '';
             let sRec=0, sGas=0, sDiv=0, sRes=0;
+            
             const ordenados = [...registros].sort((a, b) => new Date(b.data) - new Date(a.data));
             const registrosDoMes = ordenados.filter(r => r.data.startsWith(prefixoMes));
-            const termoBusca = document.getElementById('inputPesquisa').value.toLowerCase();
 
             registrosDoMes.forEach(r => {
                 const idxO = registros.indexOf(r);
-                const vT = parseFloat(r.valor), vP = parseFloat(r.pago), falta = vT - vP, isPago = vP >= vT;
+                const vT = parseFloat(r.valor), vP = parseFloat(r.pago), falta = vT - vP;
+                const isPago = vP >= vT;
 
-                if(r.tipo === 'Receita') { if(isPago) sRec += vT; } 
-                else if(r.tipo === 'Divida') { sDiv += falta; } 
-                else if(r.tipo === 'Reserva') { sRes += vT; } 
-                else { sGas += vP; }
+                // NOVA REGRA: Receita só entra no saldo se isPago (Confirmado) for verdadeiro
+                if(r.tipo === 'Receita') {
+                    if(isPago) sRec += vT; 
+                } else if(r.tipo === 'Divida') {
+                    sDiv += falta;
+                } else if(r.tipo === 'Reserva') {
+                    sRes += vT;
+                } else {
+                    sGas += vP;
+                }
 
                 let exibir = (filtroAtual === "Tudo") || (filtroAtual === r.tipo) || (filtroAtual === "Gasto" && (r.tipo === "Fixo" || r.tipo === "Variavel"));
                 if (termoBusca !== "" && !r.desc.toLowerCase().includes(termoBusca)) exibir = false;
@@ -369,11 +301,16 @@
                     if (subFiltro === "Pendente" && isPago) exibir = false;
                     if (subFiltro === "Pago" && !isPago) exibir = false;
                 }
+
                 if(exibir) {
                     let icon = r.tipo === 'Receita' ? 'fa-money-bill-trend-up' : (r.tipo === 'Divida' ? 'fa-barcode' : (r.tipo === 'Reserva' ? 'fa-vault' : 'fa-cart-shopping'));
                     let color = r.tipo === 'Receita' ? 'var(--success)' : (r.tipo === 'Divida' ? 'var(--danger)' : (r.tipo === 'Reserva' ? 'var(--reserve)' : 'var(--warning)'));
+                    let extraInfo = r.forma ? ` • ${r.forma}` : '';
+                    
+                    // STATUS TEXT CORRIGIDO
                     let statusLabel = isPago ? (r.tipo === 'Receita' ? 'RECEBIDO' : 'LIQUIDADO') : 'PENDENTE';
-                    corpo.innerHTML += `<div class="transaction-item" onclick="openModal(${idxO})"><div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div><div class="details"><strong>${r.desc}</strong><span>${r.data.split('-').reverse().join('/')} • ${r.tipo}</span></div><div class="amount"><strong>${ocultarBits(vT)}</strong><span class="status-debt" style="color:${isPago ? 'var(--success)' : 'var(--danger)'}">${statusLabel}</span></div></div>`;
+                    
+                    corpo.innerHTML += `<div class="transaction-item" onclick="openModal(${idxO})"><div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div><div class="details"><strong>${r.desc}</strong><span>${r.data.split('-').reverse().join('/')} • ${r.tipo}${extraInfo}</span></div><div class="amount"><strong>${ocultarBits(vT)}</strong><span class="status-debt" style="color:${isPago ? 'var(--success)' : 'var(--danger)'}">${statusLabel}</span></div></div>`;
                 }
             });
 
@@ -397,29 +334,42 @@
             document.getElementById('overlay').style.display = 'block';
             const resumo = document.getElementById('blocoResumoGeral');
             const prefixoMes = `${dataVisualizacao.getFullYear()}-${String(dataVisualizacao.getMonth() + 1).padStart(2, '0')}`;
+            
             if(idx !== null) {
                 const r = registros[idx];
-                document.getElementById('editIndex').value = idx; document.getElementById('tipo').value = r.tipo;
-                atualizarSubmenu(); document.getElementById('desc').value = r.desc;
+                document.getElementById('editIndex').value = idx;
+                document.getElementById('tipo').value = r.tipo;
+                atualizarSubmenu();
+                document.getElementById('desc').value = r.desc;
                 document.getElementById('valor').value = r.valor;
                 document.getElementById('selectPago').value = (r.pago >= r.valor) ? "1" : "0";
                 document.getElementById('data').value = r.data;
+                document.getElementById('formaRecebimento').value = r.forma || "Pix";
                 document.getElementById('btnExcluir').classList.remove('hidden');
+
                 if (r.tipo === 'Receita') {
                     resumo.classList.remove('hidden');
+                    document.getElementById('resumoTitulo').innerText = "Resumo Receitas (Mês)";
                     const recs = registros.filter(reg => reg.tipo === 'Receita' && reg.data.startsWith(prefixoMes) && reg.pago >= reg.valor);
-                    document.getElementById('resumoConteudo').innerHTML = `<div class="resumo-item">Total Recebido<strong>${ocultarBits(recs.reduce((a,b)=>a+b.valor,0))}</strong></div>`;
+                    const porForma = (f) => recs.filter(x => x.forma === f).reduce((a,b) => a+b.valor, 0);
+                    document.getElementById('resumoConteudo').innerHTML = `<div class="resumo-item">Pix<strong>${ocultarBits(porForma('Pix'))}</strong></div><div class="resumo-item">Dinheiro<strong>${ocultarBits(porForma('Dinheiro'))}</strong></div><div class="resumo-item">Cartão<strong>${ocultarBits(porForma('Cartão'))}</strong></div><div class="resumo-item">Total Recebido<strong>${ocultarBits(recs.reduce((a,b)=>a+b.valor,0))}</strong></div>`;
                 } else if (r.desc.includes('(')) {
                     resumo.classList.remove('hidden');
+                    document.getElementById('resumoTitulo').innerText = "Resumo do Contrato";
                     const base = r.desc.split('(')[0].trim();
                     const vinc = registros.filter(reg => reg.desc.startsWith(base));
                     const tV = vinc.reduce((a,c)=>a+c.valor, 0), tP = vinc.reduce((a,c)=>a+c.pago, 0);
-                    document.getElementById('resumoConteudo').innerHTML = `<div class="resumo-item">Contrato Total<strong>${ocultarBits(tV)}</strong></div><div class="resumo-item">Pago<strong>${ocultarBits(tP)}</strong></div><div class="resumo-item">Restante<strong>${ocultarBits(tV-tP)}</strong></div><div class="resumo-item">Faltam<strong>${vinc.filter(x=>x.pago<x.valor).length} parc.</strong></div>`;
-                }
-            } else { resetForm(); atualizarSubmenu(); }
+                    document.getElementById('resumoConteudo').innerHTML = `<div class="resumo-item">Total Contrato<strong>${ocultarBits(tV)}</strong></div><div class="resumo-item">Total Pago<strong>${ocultarBits(tP)}</strong></div><div class="resumo-item">Restante<strong>${ocultarBits(tV-tP)}</strong></div><div class="resumo-item">Faltam<strong>${vinc.filter(x=>x.pago<x.valor).length} parc.</strong></div>`;
+                } else { resumo.classList.add('hidden'); }
+            } else {
+                document.getElementById('btnExcluir').classList.add('hidden');
+                resumo.classList.add('hidden');
+                resetForm(); atualizarSubmenu();
+            }
         }
 
         function closeModal() { document.getElementById('modalForm').classList.remove('open'); document.getElementById('overlay').style.display = 'none'; }
+        
         function atualizarSubmenu() {
             const t = document.getElementById('tipo').value;
             const sub = document.getElementById('submenu'); sub.innerHTML = '';
@@ -428,28 +378,40 @@
             document.getElementById('blocoRecebimento').classList.toggle('hidden', t !== 'Receita');
             definirDescricao();
         }
+
         function definirDescricao() { document.getElementById('desc').value = document.getElementById('submenu').value.split(' ').slice(1).join(' '); }
+        
         function salvar() {
             const t = document.getElementById('tipo').value, desc = document.getElementById('desc').value, vT = parseFloat(document.getElementById('valor').value) || 0, dBase = document.getElementById('data').value, editIdx = document.getElementById('editIndex').value;
+            const forma = document.getElementById('formaRecebimento').value;
             const isP = document.getElementById('selectPago').value === "1";
-            if(!desc || vT <= 0 || !dBase) return alert("Erro!");
-            if(editIdx !== "") { registros[editIdx] = { ...registros[editIdx], tipo: t, desc, valor: vT, pago: isP ? vT : 0, data: dBase }; } 
-            else {
-                const p = parseInt(document.getElementById('parcelas').value), pP = parseInt(document.getElementById('parcelasPagas').value);
-                if (t === 'Divida' && p > 1) {
+
+            if(!desc || vT <= 0 || !dBase) return alert("Preencha tudo!");
+
+            if(editIdx !== "") { 
+                registros[editIdx] = { ...registros[editIdx], tipo: t, desc, valor: vT, pago: isP ? vT : 0, data: dBase, forma: t==='Receita' ? forma : null }; 
+            } else {
+                if (t === 'Divida' && parseInt(document.getElementById('parcelas').value) > 1) {
+                    const p = parseInt(document.getElementById('parcelas').value), pP = parseInt(document.getElementById('parcelasPagas').value);
+                    const vParc = vT / p; let dObj = new Date(dBase + "T12:00:00");
                     for (let i = 1; i <= p; i++) {
-                        let nD = new Date(new Date(dBase+"T12:00:00").setMonth(new Date(dBase+"T12:00:00").getMonth()+(i-1))).toISOString().split('T')[0];
-                        registros.push({ tipo: t, desc: `${desc} (${i}/${p})`, valor: vT/p, pago: (i <= pP) ? vT/p : 0, data: nD });
+                        let nD = new Date(dObj.getFullYear(), dObj.getMonth() + (i - 1), dObj.getDate()).toISOString().split('T')[0];
+                        registros.push({ tipo: t, desc: `${desc} (${i}/${p})`, valor: vParc, pago: (i <= pP) ? vParc : 0, data: nD });
                     }
-                } else { registros.push({ tipo: t, desc, valor: vT, pago: (t==='Reserva' || isP) ? vT : 0, data: dBase }); }
+                } else { 
+                    registros.push({ tipo: t, desc, valor: vT, pago: isP ? vT : 0, data: dBase, forma: t==='Receita' ? forma : null }); 
+                }
             }
             localStorage.setItem('foton_db', JSON.stringify(registros)); closeAll(); renderizar();
         }
+
         function excluirRegistro() { if(confirm("Excluir?")) { registros.splice(document.getElementById('editIndex').value, 1); localStorage.setItem('foton_db', JSON.stringify(registros)); renderizar(); closeAll(); } }
-        function exportarDados() { let csv = "Tipo,Descricao,Valor,Pago,Data\n"; registros.forEach(r => csv += `${r.tipo},${r.desc},${r.valor},${r.pago},${r.data}\n`); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); a.download = 'Backup.csv'; a.click(); }
-        function importarDados(e) { const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = function(ev) { const lines = ev.target.result.split('\n'); let novos = []; for(let i=1; i<lines.length; i++){ const c = lines[i].split(','); if(c.length>=4) novos.push({ tipo: c[0], desc: c[1], valor: parseFloat(c[2]), pago: parseFloat(c[3]), data: c[4].trim() }); } registros = novos; localStorage.setItem('foton_db', JSON.stringify(registros)); renderizar(); closeAll(); }; r.readAsText(f); }
+        function exportarDados() { if(registros.length === 0) return; let csv = "Tipo,Descricao,Valor Total,Valor Pago,Data,Forma\n"; registros.forEach(r => { csv += `${r.tipo},${r.desc.replace(/,/g, '')},${r.valor},${r.pago},${r.data},${r.forma||''}\n`; }); const blob = new Blob([csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Backup_Genesas.csv'; a.click(); closeAll(); }
+        function importarDados(e) { const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = function(ev) { const lines = ev.target.result.split('\n'); let novos = []; for(let i=1; i<lines.length; i++){ const c = lines[i].split(','); if(c.length>=5) novos.push({ tipo: c[0], desc: c[1], valor: parseFloat(c[2]), pago: parseFloat(c[3]), data: c[4].trim(), forma: c[5]?.trim()||null }); } if(novos.length > 0){ registros = novos; localStorage.setItem('foton_db', JSON.stringify(registros)); renderizar(); closeAll(); } }; r.readAsText(f); }
         function toggleFantasma() { modoFantasma = !modoFantasma; document.getElementById('eyeIcon').className = modoFantasma ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'; renderizar(); }
         function ocultarBits(v) { return modoFantasma ? "R$ ••••" : "R$ " + v.toLocaleString('pt-BR', {minimumFractionDigits: 2}); }
+        function otimizarTerminal() { closeAll(); }
+        function limparTerminal() { if(confirm("Resetar tudo?")) { localStorage.removeItem('foton_db'); location.reload(); } }
         function resetForm() { document.getElementById('editIndex').value = ""; document.getElementById('valor').value = ""; document.getElementById('parcelas').value = "1"; document.getElementById('parcelasPagas').value = "0"; document.getElementById('desc').value = ""; document.getElementById('data').value = new Date().toISOString().split('T')[0]; }
         window.onload = renderizar;
     </script>
