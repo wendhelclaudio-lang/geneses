@@ -8,7 +8,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#0a192f">
+    <meta name="theme-color" content="#030712">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -22,10 +22,43 @@
             --danger: #ef4444;
             --warning: #f59e0b;
             --reserve: #8b5cf6;
+            --santander-red: #ec1c24;
         }
 
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
+
+        /* --- ANIMAÇÃO DE ABERTURA (SPLASH SCREEN) --- */
+        #splash-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+        .splash-logo {
+            width: 80px; height: 80px; background: var(--santander-red);
+            border-radius: 20px; display: flex; justify-content: center;
+            align-items: center; color: white; font-size: 2rem; font-weight: bold;
+            box-shadow: 0 0 30px rgba(236, 28, 36, 0.4);
+            animation: pulse 2s infinite ease-in-out;
+        }
+        .splash-loader {
+            margin-top: 30px; width: 40px; height: 40px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top: 3px solid var(--santander-red);
+            border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        .splash-text {
+            margin-top: 15px; font-size: 0.7rem; color: #94a3b8;
+            letter-spacing: 3px; text-transform: uppercase; font-weight: bold;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        /* ------------------------------------------- */
 
         header {
             background: var(--bg); padding: 15px 20px; display: flex; justify-content: space-between;
@@ -64,6 +97,7 @@
 
         .month-selector { display: flex; justify-content: space-between; align-items: center; padding: 20px 20px 0; }
         .month-selector button { background: rgba(255,255,255,0.05); border: 1px solid #1f2937; color: var(--text); width: 35px; height: 35px; border-radius: 10px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .month-selector button:active { background: #1f2937; }
         .month-selector span { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; }
 
         .balance-card { padding: 15px 20px 25px; text-align: center; }
@@ -72,6 +106,7 @@
 
         .quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 20px; }
         .mini-card { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid #1f2937; cursor: pointer; transition: 0.2s; }
+        .mini-card:active { transform: scale(0.95); background: #1f2937; }
         .mini-card i { font-size: 0.8rem; margin-bottom: 5px; }
         .mini-card span { display: block; font-size: 0.65rem; color: #94a3b8; }
         .mini-card strong { font-size: 0.9rem; }
@@ -126,6 +161,12 @@
     </style>
 </head>
 <body>
+
+    <div id="splash-screen">
+        <div class="splash-logo">WC</div>
+        <div class="splash-loader"></div>
+        <div class="splash-text">Sincronizando Ativos</div>
+    </div>
 
     <header>
         <div class="profile-section" onclick="toggleSidebar()">
@@ -244,11 +285,20 @@
 
         const opcoesSubmenu = {
             "Receita": ["💰 Salário", "🚀 Freelance", "✨ Outros Recebíveis"],
-            "Fixo": ["🏠 Aluguel", "⚡ Energia", "🎬 Streamings"],
-            "Variavel": ["🛒 Mercado", "🍕 Alimentação", "🚗 Transporte"],
+            "Fixo": ["🏠 Aluguel", "⚡ Energia", "🌐 Internet", "🎬 Streamings"],
+            "Variavel": ["🛒 Mercado", "🍕 Alimentação", "⛽ Combustível", "🚗 Transporte"],
             "Divida": ["🏢 Financiamento", "💳 Cartão", "🤝 Empréstimo", "🧾 Boleto"],
             "Reserva": ["🏦 Investimentos", "📦 Caixinha", "🛡️ Reserva Emergência"]
         };
+
+        // LÓGICA DA SPLASH SCREEN
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => { splash.style.visibility = 'hidden'; }, 800);
+            }, 2500); // Tempo da animação em milissegundos
+        });
 
         function mudarMes(delta) { dataVisualizacao.setMonth(dataVisualizacao.getMonth() + delta); renderizar(); }
         function formatarMesAno(d) { const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']; return `${meses[d.getMonth()]} ${d.getFullYear()}`; }
@@ -284,16 +334,10 @@
                 const vT = parseFloat(r.valor), vP = parseFloat(r.pago), falta = vT - vP;
                 const isPago = vP >= vT;
 
-                // NOVA REGRA: Receita só entra no saldo se isPago (Confirmado) for verdadeiro
-                if(r.tipo === 'Receita') {
-                    if(isPago) sRec += vT; 
-                } else if(r.tipo === 'Divida') {
-                    sDiv += falta;
-                } else if(r.tipo === 'Reserva') {
-                    sRes += vT;
-                } else {
-                    sGas += vP;
-                }
+                if(r.tipo === 'Receita') { if(isPago) sRec += vT; } 
+                else if(r.tipo === 'Divida') { sDiv += falta; } 
+                else if(r.tipo === 'Reserva') { sRes += vT; } 
+                else { sGas += vP; }
 
                 let exibir = (filtroAtual === "Tudo") || (filtroAtual === r.tipo) || (filtroAtual === "Gasto" && (r.tipo === "Fixo" || r.tipo === "Variavel"));
                 if (termoBusca !== "" && !r.desc.toLowerCase().includes(termoBusca)) exibir = false;
@@ -306,10 +350,7 @@
                     let icon = r.tipo === 'Receita' ? 'fa-money-bill-trend-up' : (r.tipo === 'Divida' ? 'fa-barcode' : (r.tipo === 'Reserva' ? 'fa-vault' : 'fa-cart-shopping'));
                     let color = r.tipo === 'Receita' ? 'var(--success)' : (r.tipo === 'Divida' ? 'var(--danger)' : (r.tipo === 'Reserva' ? 'var(--reserve)' : 'var(--warning)'));
                     let extraInfo = r.forma ? ` • ${r.forma}` : '';
-                    
-                    // STATUS TEXT CORRIGIDO
                     let statusLabel = isPago ? (r.tipo === 'Receita' ? 'RECEBIDO' : 'LIQUIDADO') : 'PENDENTE';
-                    
                     corpo.innerHTML += `<div class="transaction-item" onclick="openModal(${idxO})"><div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div><div class="details"><strong>${r.desc}</strong><span>${r.data.split('-').reverse().join('/')} • ${r.tipo}${extraInfo}</span></div><div class="amount"><strong>${ocultarBits(vT)}</strong><span class="status-debt" style="color:${isPago ? 'var(--success)' : 'var(--danger)'}">${statusLabel}</span></div></div>`;
                 }
             });
@@ -413,7 +454,8 @@
         function otimizarTerminal() { closeAll(); }
         function limparTerminal() { if(confirm("Resetar tudo?")) { localStorage.removeItem('foton_db'); location.reload(); } }
         function resetForm() { document.getElementById('editIndex').value = ""; document.getElementById('valor').value = ""; document.getElementById('parcelas').value = "1"; document.getElementById('parcelasPagas').value = "0"; document.getElementById('desc').value = ""; document.getElementById('data').value = new Date().toISOString().split('T')[0]; }
-        window.onload = renderizar;
+        
+        window.onload = () => { renderizar(); };
     </script>
 </body>
 </html>
