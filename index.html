@@ -3,562 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Comando de Ativos Mobile</title>
-    
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#0a192f">
-
+    <title>Gêneses Mobile</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        :root {
-            --bg: #030712;
-            --card: #111827;
-            --accent: #00f2ff;
-            --text: #f3f4f6;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --reserve: #8b5cf6;
-        }
-
-        * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
-
-        header {
-            background: var(--bg); padding: 15px 20px; display: flex; justify-content: space-between;
-            align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #1f2937;
-        }
-        
-        .profile-section { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-        .avatar { 
-            width: 40px; height: 40px; border-radius: 12px; 
-            background: linear-gradient(135deg, var(--accent), #0a192f);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; color: var(--bg); border: 2px solid #1f2937;
-        }
-        
-        .user-info span { font-size: 0.65rem; color: #94a3b8; letter-spacing: 1px; display: block; text-transform: uppercase; }
-        .user-info strong { font-size: 0.9rem; color: var(--text); }
-
-        .sidebar {
-            position: fixed; top: 0; right: -100%; width: 85%; max-width: 350px; height: 100%;
-            background: var(--card); z-index: 3000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 30px 20px; border-left: 1px solid var(--accent); box-shadow: -10px 0 30px rgba(0,0,0,0.8);
-            display: flex; flex-direction: column; overflow-y: auto;
-        }
-        .sidebar.open { right: 0; }
-        .sidebar-header { margin-bottom: 25px; text-align: center; position: relative; }
-        
-        .status-panel { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid #1f2937; }
-        .status-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 10px; align-items: center; }
-        .status-row:last-child { margin-bottom: 0; }
-        .status-label { color: #94a3b8; }
-
-        .sidebar-menu { display: flex; flex-direction: column; gap: 10px; flex: 1; }
-        .menu-item { 
-            padding: 15px; border-radius: 12px; background: rgba(255,255,255,0.03);
-            display: flex; align-items: center; gap: 15px; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent;
-        }
-        .menu-item:active { background: #1f2937; }
-        .menu-item i { color: var(--accent); font-size: 1.1rem; width: 25px; text-align: center; }
-
-        .month-selector { display: flex; justify-content: space-between; align-items: center; padding: 20px 20px 0; }
-        .month-selector button {
-            background: rgba(255,255,255,0.05); border: 1px solid #1f2937; color: var(--text);
-            width: 35px; height: 35px; border-radius: 10px; font-size: 1rem; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .month-selector button:active { background: #1f2937; }
-        .month-selector span { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; }
-
-        .balance-card { padding: 15px 20px 25px; text-align: center; }
-        .balance-card small { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; }
-        .balance-card h1 { font-size: 2.2rem; margin: 5px 0 0; font-weight: 800; }
-
-        .quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 20px; }
-        .mini-card { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid #1f2937; cursor: pointer; transition: 0.2s; }
-        .mini-card:active { transform: scale(0.95); background: #1f2937; }
-        .mini-card i { font-size: 0.8rem; margin-bottom: 5px; }
-        .mini-card span { display: block; font-size: 0.65rem; color: #94a3b8; }
-        .mini-card strong { font-size: 0.9rem; }
-
-        main { padding: 0 20px 20px; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 15px; }
-        .section-header h3 { font-size: 0.9rem; color: #94a3b8; text-transform: uppercase; margin: 0; }
-        
-        #btnVoltar { background: rgba(0, 242, 255, 0.1); color: var(--accent); border: 1px solid var(--accent); padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; }
-
-        .search-bar { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid #1f2937; padding: 12px 15px; border-radius: 12px; color: white; margin-bottom: 15px; font-size: 0.9rem; outline: none; }
-        .search-bar:focus { border-color: var(--accent); }
-
-        .transaction-item { background: var(--card); padding: 15px; border-radius: 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; border: 1px solid #1f2937; }
-        .icon-box { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #1f2937; min-width: 40px; }
-        .details { flex: 1; overflow: hidden; }
-        .details strong { display: block; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .details span { font-size: 0.7rem; color: #6b7280; }
-        
-        .amount { text-align: right; min-width: 90px; }
-        .amount strong { display: block; font-size: 0.85rem; }
-        .amount .status-debt { font-size: 0.6rem; font-weight: 800; display: block; margin-top: 2px; }
-
-        .bottom-charts { padding: 20px; background: #070b14; border-top: 1px solid #1f2937; margin-bottom: 100px; }
-        .chart-bar-group { margin-bottom: 15px; }
-        .chart-label { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 5px; color: #94a3b8; }
-        .chart-track { background: #1f2937; height: 6px; border-radius: 10px; overflow: hidden; }
-        .chart-fill { height: 100%; width: 0%; transition: 1s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
-
-        .fab { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; border-radius: 20px; background: var(--accent); color: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 10px 20px rgba(0, 242, 255, 0.3); border: none; z-index: 1000; }
-
-        .modal { position: fixed; bottom: -100%; left: 0; width: 100%; height: 92%; background: var(--card); border-radius: 30px 30px 0 0; z-index: 2000; padding: 25px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; }
+        :root { --bg: #030712; --card: #111827; --accent: #00f2ff; --text: #f3f4f6; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
+        header { padding: 15px; border-bottom: 1px solid #1f2937; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--bg); z-index: 10; }
+        .balance-card { padding: 20px; text-align: center; }
+        .month-selector { display: flex; justify-content: space-around; align-items: center; padding: 10px; background: #070b14; }
+        .quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; }
+        .mini-card { background: var(--card); padding: 12px; border-radius: 12px; border: 1px solid #1f2937; }
+        .transaction-item { background: var(--card); padding: 12px; border-radius: 12px; margin: 8px 15px; display: flex; align-items: center; gap: 10px; border: 1px solid #1f2937; }
+        .details { flex: 1; }
+        .amount { text-align: right; }
+        .fab { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 15px; background: var(--accent); border: none; font-size: 1.5rem; z-index: 20; }
+        .modal { position: fixed; bottom: -100%; left: 0; width: 100%; height: 85%; background: var(--card); border-radius: 20px 20px 0 0; padding: 20px; transition: 0.3s; z-index: 30; overflow-y: auto; }
         .modal.open { bottom: 0; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; backdrop-filter: blur(3px); }
-
-        input, select { width: 100%; background: #1f2937; border: 1px solid #374151; padding: 14px; border-radius: 12px; color: white; margin-bottom: 12px; font-size: 1rem; }
-        
-        .btn-confirm { background: var(--accent); color: var(--bg); width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; margin-top: 10px; }
-        .btn-delete { background: none; color: var(--danger); width: 100%; padding: 12px; border: 1px solid var(--danger); border-radius: 12px; margin-top: 15px; font-weight: 700; }
-
-        .label-mini { font-size: 0.65rem; color: var(--accent); font-weight: 800; margin-bottom: 5px; display: block; text-transform: uppercase; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; z-index: 25; }
+        input, select { width: 100%; background: #1f2937; border: 1px solid #374151; padding: 12px; border-radius: 10px; color: white; margin-bottom: 10px; }
+        .btn-save { width: 100%; padding: 15px; background: var(--accent); border: none; border-radius: 10px; font-weight: bold; }
         .hidden { display: none !important; }
-
-        /* Estilo do Bloco de Parcelamento */
-        .bloco-parcelas {
-            background: rgba(245, 158, 11, 0.05); padding: 15px; border-radius: 12px; 
-            border: 1px dashed var(--warning); margin-bottom: 15px;
-        }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="profile-section" onclick="toggleSidebar()">
-            <div class="avatar">WC</div>
-            <div class="user-info">
-                <span>COMANDO DE ATIVOS</span>
-                <strong>WENDEL CARNEIRO</strong>
-            </div>
-        </div>
-        <button onclick="toggleFantasma()" style="background:none; border:1px solid #1f2937; color:white; padding:8px; border-radius:10px;">
-            <i id="eyeIcon" class="fa-solid fa-eye"></i>
-        </button>
-    </header>
+<header onclick="toggleSidebar()">
+    <div><small>PROTOCOLO FÓTON</small><br><strong>WENDEL CARNEIRO</strong></div>
+    <i id="eyeIcon" class="fa-solid fa-eye" onclick="event.stopPropagation(); toggleFantasma()"></i>
+</header>
 
-    <div class="sidebar" id="profileSidebar">
-        <div style="text-align: right; margin-bottom: 10px;">
-            <i class="fa-solid fa-xmark" style="font-size: 1.5rem; cursor: pointer; color: #94a3b8;" onclick="toggleSidebar()"></i>
-        </div>
-        <div class="sidebar-header">
-            <div class="avatar" style="width: 65px; height: 65px; font-size: 1.5rem; margin: 0 auto 10px;">WC</div>
-            <h2 style="margin:0; font-size: 1.1rem;">Painel de Comando</h2>
-            <span style="color: var(--accent); font-size: 0.75rem;">Operacional</span>
-        </div>
+<div class="month-selector">
+    <button onclick="mudarMes(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+    <strong id="mesDisplay">Mês Ano</strong>
+    <button onclick="mudarMes(1)"><i class="fa-solid fa-chevron-right"></i></button>
+</div>
 
-        <div class="status-panel">
-            <div class="status-row">
-                <span class="status-label">Conexão Terminal</span>
-                <strong style="color: var(--success); font-size: 0.75rem;"><i class="fa-solid fa-circle" style="font-size: 0.5rem; vertical-align: middle;"></i> SEGURO</strong>
-            </div>
-            <div class="status-row">
-                <span class="status-label">Volume de Dados</span>
-                <strong id="contadorRegistros" style="color: var(--text);">0 registros</strong>
-            </div>
-            <div class="status-row">
-                <span class="status-label">Saúde do Mês</span>
-                <strong id="statusFluxo" style="color: var(--accent);">ESTÁVEL</strong>
-            </div>
-        </div>
-        
-        <div class="sidebar-menu">
-            <div class="menu-item" onclick="toggleFantasma()">
-                <i class="fa-solid fa-ghost"></i> <span>Modo Privacidade</span>
-            </div>
-            <div class="menu-item" onclick="exportarDados()">
-                <i class="fa-solid fa-file-export"></i> <span>Exportar Backup (CSV)</span>
-            </div>
-            <input type="file" id="fileInput" accept=".csv" style="display: none;" onchange="importarDados(event)">
-            <div class="menu-item" onclick="document.getElementById('fileInput').click()">
-                <i class="fa-solid fa-file-import"></i> <span>Importar Backup</span>
-            </div>
-            <div class="menu-item" onclick="otimizarTerminal()">
-                <i class="fa-solid fa-bolt"></i> <span>Otimizar Performance</span>
-            </div>
-            <div class="menu-item" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.2);" onclick="limparTerminal()">
-                <i class="fa-solid fa-trash" style="color: var(--danger);"></i> <span>Resetar Sistema</span>
-            </div>
-        </div>
+<div class="balance-card">
+    <small>SALDO DO MÊS</small>
+    <h1 id="totalSaldo">R$ 0,00</h1>
+</div>
+
+<div class="quick-stats">
+    <div class="mini-card" onclick="setFiltro('Receita')"><span>Entradas</span><br><strong id="totalReceitas">R$ 0,00</strong></div>
+    <div class="mini-card" onclick="setFiltro('Gasto')"><span>Gastos</span><br><strong id="totalGastos">R$ 0,00</strong></div>
+    <div class="mini-card" onclick="setFiltro('Divida')"><span>Dívidas</span><br><strong id="totalDividas">R$ 0,00</strong></div>
+    <div class="mini-card" onclick="setFiltro('Reserva')"><span>Patrimônio</span><br><strong id="totalReserva">R$ 0,00</strong></div>
+</div>
+
+<main id="tabelaCorpo"></main>
+
+<button class="fab" onclick="openModal()"><i class="fa-solid fa-plus"></i></button>
+<div class="overlay" id="overlay" onclick="closeModal()"></div>
+
+<div class="modal" id="modalForm">
+    <h2 id="modalTitle">Nova Operação</h2>
+    <select id="tipo" onchange="toggleParcelas()">
+        <option value="Receita">Receita</option>
+        <option value="Fixo">Gasto Fixo</option>
+        <option value="Variavel">Variável</option>
+        <option value="Divida">Dívida / Boleto</option>
+        <option value="Reserva">Patrimônio</option>
+    </select>
+    <input type="text" id="desc" placeholder="Descrição">
+    <input type="number" id="valor" placeholder="Valor Total" step="0.01">
+    
+    <div id="blocoDivida" class="hidden">
+        <label><small>Parcelar em quantas vezes?</small></label>
+        <input type="number" id="parcelas" value="1">
+        <label><small>Quantas parcelas já pagou?</small></label>
+        <input type="number" id="parcelasPagas" value="0">
     </div>
 
-    <div class="month-selector">
-        <button onclick="mudarMes(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-        <span id="mesDisplay">Mês Ano</span>
-        <button onclick="mudarMes(1)"><i class="fa-solid fa-chevron-right"></i></button>
-    </div>
+    <input type="date" id="data">
+    <input type="hidden" id="editIdx">
+    <button class="btn-save" onclick="salvar()">SALVAR</button>
+    <button id="btnDel" class="hidden" onclick="excluir()" style="width:100%; margin-top:10px; background:none; border:1px solid var(--danger); color:var(--danger); padding:10px; border-radius:10px;">EXCLUIR</button>
+</div>
 
-    <div class="balance-card">
-        <small>Saldo Disponível do Mês</small>
-        <h1 id="totalSaldo">R$ 0,00</h1>
-    </div>
+<script>
+    let registros = JSON.parse(localStorage.getItem('foton_db')) || [];
+    let dataVis = new Date();
+    let modoF = false, filtro = "Tudo";
 
-    <div class="quick-stats">
-        <div class="mini-card" onclick="filtrarExtrato('Receita')"><i class="fa-solid fa-arrow-up" style="color:var(--success)"></i><span>Entradas</span><strong id="totalReceitas">R$ 0,00</strong></div>
-        <div class="mini-card" onclick="filtrarExtrato('Gasto')"><i class="fa-solid fa-arrow-down" style="color:var(--warning)"></i><span>Gastos</span><strong id="totalGastos">R$ 0,00</strong></div>
-        <div class="mini-card" onclick="filtrarExtrato('Divida')"><i class="fa-solid fa-barcode" style="color:var(--danger)"></i><span>Dívidas</span><strong id="totalDividas">R$ 0,00</strong></div>
-        <div class="mini-card" onclick="filtrarExtrato('Reserva')"><i class="fa-solid fa-vault" style="color:var(--reserve)"></i><span>Patrimônio Salvo</span><strong id="totalReserva">R$ 0,00</strong></div>
-    </div>
+    function toggleParcelas() {
+        document.getElementById('blocoDivida').classList.toggle('hidden', document.getElementById('tipo').value !== 'Divida');
+    }
 
-    <main>
-        <div class="section-header">
-            <h3 id="txtExtrato">Operações do Mês</h3>
-            <button id="btnVoltar" class="hidden" onclick="filtrarExtrato('Tudo')"><i class="fa-solid fa-chevron-left"></i> VOLTAR</button>
-        </div>
-        
-        <input type="text" id="inputPesquisa" class="search-bar" placeholder="🔍 Buscar lançamento (ex: Financiamento)" onkeyup="renderizar()">
-        
-        <div id="tabelaCorpo"></div>
-    </main>
+    function salvar() {
+        const t = document.getElementById('tipo').value, d = document.getElementById('desc').value;
+        const v = parseFloat(document.getElementById('valor').value), dt = document.getElementById('data').value;
+        const p = parseInt(document.getElementById('parcelas').value) || 1, pp = parseInt(document.getElementById('parcelasPagas').value) || 0;
+        const idx = document.getElementById('editIdx').value;
 
-    <section class="bottom-charts">
-        <div class="section-header" style="margin-top:0;"><h3>Performance do Mês</h3></div>
-        <div class="chart-bar-group">
-            <div class="chart-label"><span>Comprometimento de Renda</span><span id="labelPercSaida">0%</span></div>
-            <div class="chart-track"><div id="fillSaida" class="chart-fill" style="background:var(--danger)"></div></div>
-        </div>
-        <div class="chart-bar-group">
-            <div class="chart-label"><span>Taxa de Acúmulo (Patrimônio)</span><span id="labelPercRes">0%</span></div>
-            <div class="chart-track"><div id="fillRes" class="chart-fill" style="background:var(--reserve)"></div></div>
-        </div>
-    </section>
+        if(!d || !v || !dt) return alert("Preencha tudo!");
 
-    <button class="fab" onclick="openModal()"><i class="fa-solid fa-plus"></i></button>
-    <div class="overlay" id="overlay" onclick="closeAll()"></div>
-
-    <div class="modal" id="modalForm">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2 id="modalTitle" style="margin:0; font-size:1.2rem;">Nova Operação</h2>
-            <i class="fa-solid fa-circle-xmark" style="font-size:1.5rem; color:#374151;" onclick="closeModal()"></i>
-        </div>
-        
-        <span class="label-mini">Tipo</span>
-        <select id="tipo" onchange="atualizarSubmenu()">
-            <option value="Receita">Receita</option>
-            <option value="Fixo">Gasto Fixo</option>
-            <option value="Variavel">Gasto Variável</option>
-            <option value="Divida">Dívida / Boleto</option>
-            <option value="Reserva">Patrimônio</option>
-        </select>
-
-        <span class="label-mini">Categoria</span>
-        <select id="submenu" onchange="definirDescricao()"></select>
-        <input type="text" id="desc" placeholder="Descrição Personalizada">
-        
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <div><span class="label-mini">Valor Total</span><input type="number" id="valor" placeholder="0,00" step="0.01" inputmode="decimal"></div>
-            <div id="campoPago"><span class="label-mini">Valor Pago (Opcional)</span><input type="number" id="pago" placeholder="0,00" step="0.01" inputmode="decimal"></div>
-        </div>
-
-        <div id="blocoParcelamento" class="bloco-parcelas hidden">
-            <span class="label-mini" style="color:var(--warning); text-align:center; display:block; margin-bottom:10px;">Opções de Parcelamento / Financiamento</span>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <div>
-                    <span class="label-mini" style="color:#94a3b8">Total de Parcelas</span>
-                    <input type="number" id="parcelas" value="1" min="1" inputmode="numeric" placeholder="Ex: 48" style="margin-bottom:0;">
-                </div>
-                <div>
-                    <span class="label-mini" style="color:var(--success)">Quantas já pagou?</span>
-                    <input type="number" id="parcelasPagas" value="0" min="0" inputmode="numeric" placeholder="Ex: 5" style="margin-bottom:0;">
-                </div>
-            </div>
-            <p style="font-size: 0.65rem; color: #94a3b8; margin: 10px 0 0 0; text-align: center;">O sistema gerará as parcelas e dará baixa nas já pagas.</p>
-        </div>
-
-        <span class="label-mini">Data (Referência / 1ª Parcela)</span>
-        <input type="date" id="data">
-        
-        <input type="hidden" id="editIndex">
-        <button class="btn-confirm" onclick="salvar()">SALVAR OPERAÇÃO</button>
-        <button id="btnExcluir" class="btn-delete hidden" onclick="excluirRegistro()">EXCLUIR REGISTRO</button>
-    </div>
-
-    <script>
-        let registros = JSON.parse(localStorage.getItem('foton_db')) || [];
-        let modoFantasma = false;
-        let filtroAtual = "Tudo";
-        let dataVisualizacao = new Date();
-
-        // 1. Atualização das opções: Adicionado Financiamento em "Divida"
-        const opcoesSubmenu = {
-            "Receita": ["💰 Salário", "🚀 Freelance", "✨ Outros"],
-            "Fixo": ["🏠 Aluguel", "⚡ Energia", "🌐 Internet", "🎬 Streamings"],
-            "Variavel": ["🛒 Mercado", "🍕 Alimentação", "⛽ Combustível", "🚗 Transporte"],
-            "Divida": ["💳 Cartão", "🤝 Empréstimo", "🏢 Financiamento", "🧾 Boleto"],
-            "Reserva": ["🏦 Investimentos", "📦 Caixinha", "🛡️ Reserva Emergência"]
-        };
-
-        function mudarMes(delta) {
-            dataVisualizacao.setMonth(dataVisualizacao.getMonth() + delta);
-            renderizar();
-        }
-
-        function formatarMesAno(dataObj) {
-            const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-            return `${meses[dataObj.getMonth()]} ${dataObj.getFullYear()}`;
-        }
-
-        function toggleSidebar() {
-            const sidebar = document.getElementById('profileSidebar');
-            sidebar.classList.toggle('open');
-            document.getElementById('overlay').style.display = sidebar.classList.contains('open') ? 'block' : 'none';
-        }
-
-        function closeAll() {
-            closeModal();
-            document.getElementById('profileSidebar').classList.remove('open');
-            document.getElementById('overlay').style.display = 'none';
-        }
-
-        function filtrarExtrato(categoria) {
-            filtroAtual = categoria;
-            const btn = document.getElementById('btnVoltar');
-            const txt = document.getElementById('txtExtrato');
-            if(categoria === 'Tudo') {
-                btn.classList.add('hidden');
-                txt.innerText = "Operações do Mês";
-            } else {
-                btn.classList.remove('hidden');
-                txt.innerText = categoria === 'Gasto' ? "Filtro: Gastos" : "Filtro: " + categoria;
+        if(idx !== "") {
+            registros[idx] = { t, d, v, dt, p: 1, pp: 0 };
+        } else if(t === 'Divida' && p > 1) {
+            const vP = v / p;
+            let dObj = new Date(dt + "T12:00:00");
+            for(let i=1; i<=p; i++) {
+                let nD = new Date(dObj.getFullYear(), dObj.getMonth()+(i-1), dObj.getDate()).toISOString().split('T')[0];
+                registros.push({ t, d: `${d} (${i}/${p})`, v: vP, dt: nD, pago: (i <= pp) });
             }
-            renderizar();
+        } else {
+            registros.push({ t, d, v, dt, pago: (t==='Receita' || t==='Reserva') });
         }
+        localStorage.setItem('foton_db', JSON.stringify(registros));
+        closeModal(); renderizar();
+    }
 
-        function renderizar() {
-            document.getElementById('mesDisplay').innerText = formatarMesAno(dataVisualizacao);
-            const prefixoMes = `${dataVisualizacao.getFullYear()}-${String(dataVisualizacao.getMonth() + 1).padStart(2, '0')}`;
-            const termoBusca = document.getElementById('inputPesquisa').value.toLowerCase();
+    function renderizar() {
+        const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+        document.getElementById('mesDisplay').innerText = `${meses[dataVis.getMonth()]} ${dataVis.getFullYear()}`;
+        const prefix = `${dataVis.getFullYear()}-${String(dataVis.getMonth()+1).padStart(2,'0')}`;
+        
+        const corpo = document.getElementById('tabelaCorpo'); corpo.innerHTML = '';
+        let sRec=0, sGas=0, sDiv=0, sRes=0;
 
-            const corpo = document.getElementById('tabelaCorpo');
-            corpo.innerHTML = '';
-            let sRec = 0, sGas = 0, sDiv = 0, sRes = 0;
-            
-            const ordenados = [...registros].sort((a, b) => new Date(b.data) - new Date(a.data));
-            const registrosDoMes = ordenados.filter(r => r.data.startsWith(prefixoMes));
-
-            if(registrosDoMes.length === 0) {
-                corpo.innerHTML = '<div style="text-align:center; padding: 20px; color:#6b7280; font-size:0.8rem;">Nenhum registro encontrado neste mês.</div>';
-            }
-
-            registrosDoMes.forEach(r => {
-                const idxOriginal = registros.indexOf(r);
-                const vTotal = parseFloat(r.valor), vPago = parseFloat(r.pago), falta = vTotal - vPago;
+        registros.sort((a,b) => new Date(b.dt) - new Date(a.dt)).forEach((r, idx) => {
+            const v = parseFloat(r.v);
+            if(r.dt.startsWith(prefix)) {
+                if(r.t==='Receita') sRec+=v; else if(r.t==='Divida') sDiv+=(r.pago?0:v); else if(r.t==='Reserva') sRes+=v; else sGas+=v;
                 
-                if(r.tipo === 'Receita') sRec += vTotal;
-                else if(r.tipo === 'Divida') sDiv += falta;
-                else if(r.tipo === 'Reserva') sRes += vTotal;
-                else sGas += vPago;
-
-                let exibir = (filtroAtual === "Tudo") || 
-                             (filtroAtual === r.tipo) || 
-                             (filtroAtual === "Gasto" && (r.tipo === "Fixo" || r.tipo === "Variavel"));
-                
-                if (termoBusca !== "" && !r.desc.toLowerCase().includes(termoBusca)) exibir = false;
-
-                if(exibir) {
-                    let icon = r.tipo === 'Receita' ? 'fa-arrow-up' : (r.tipo === 'Divida' ? 'fa-barcode' : (r.tipo === 'Reserva' ? 'fa-vault' : 'fa-cart-shopping'));
-                    let color = r.tipo === 'Receita' ? 'var(--success)' : (r.tipo === 'Divida' ? 'var(--danger)' : (r.tipo === 'Reserva' ? 'var(--reserve)' : 'var(--warning)'));
-                    
-                    corpo.innerHTML += `
-                        <div class="transaction-item" onclick="openModal(${idxOriginal})">
-                            <div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div>
-                            <div class="details">
-                                <strong>${r.desc}</strong>
-                                <span>${r.data.split('-').reverse().join('/')} • ${r.tipo}</span>
-                            </div>
-                            <div class="amount">
-                                <strong>${ocultarBits(vTotal)}</strong>
-                                <span class="status-debt" style="color:${vPago >= vTotal ? 'var(--success)' : 'var(--danger)'}">${vPago >= vTotal ? 'LIQUIDADO' : 'FALTA: '+ocultarBits(falta)}</span>
-                            </div>
-                        </div>`;
-                }
-            });
-
-            const saldoLivre = sRec - (sGas + sDiv);
-            document.getElementById('totalReceitas').innerText = ocultarBits(sRec);
-            document.getElementById('totalGastos').innerText = ocultarBits(sGas);
-            document.getElementById('totalDividas').innerText = ocultarBits(sDiv);
-            document.getElementById('totalReserva').innerText = ocultarBits(sRes);
-            document.getElementById('totalSaldo').innerText = ocultarBits(saldoLivre);
-
-            const pSaida = sRec > 0 ? Math.min(((sGas + sDiv) / sRec) * 100, 100) : 0;
-            const pRes = sRec > 0 ? Math.min((sRes / sRec) * 100, 100) : 0;
-            document.getElementById('fillSaida').style.width = pSaida + '%';
-            document.getElementById('labelPercSaida').innerText = pSaida.toFixed(1) + '%';
-            document.getElementById('fillRes').style.width = pRes + '%';
-            document.getElementById('labelPercRes').innerText = pRes.toFixed(1) + '%';
-
-            document.getElementById('contadorRegistros').innerText = registros.length + " no total";
-            const statusFluxoEl = document.getElementById('statusFluxo');
-            if (saldoLivre > 0) { statusFluxoEl.innerText = "POSITIVO"; statusFluxoEl.style.color = "var(--success)"; } 
-            else if (saldoLivre < 0) { statusFluxoEl.innerText = "ALERTA"; statusFluxoEl.style.color = "var(--danger)"; } 
-            else { statusFluxoEl.innerText = "ZERADO"; statusFluxoEl.style.color = "var(--text)"; }
-        }
-
-        function openModal(idx = null) {
-            document.getElementById('modalForm').classList.add('open');
-            document.getElementById('overlay').style.display = 'block';
-            if(idx !== null) {
-                const r = registros[idx];
-                document.getElementById('modalTitle').innerText = "Editar Parcela";
-                document.getElementById('editIndex').value = idx;
-                document.getElementById('tipo').value = r.tipo;
-                atualizarSubmenu();
-                document.getElementById('desc').value = r.desc;
-                document.getElementById('valor').value = r.valor;
-                document.getElementById('pago').value = r.pago;
-                document.getElementById('data').value = r.data;
-                document.getElementById('btnExcluir').classList.remove('hidden');
-                document.getElementById('blocoParcelamento').classList.add('hidden'); // Esconde parcelamento na edição
-            } else {
-                document.getElementById('modalTitle').innerText = "Nova Operação";
-                document.getElementById('btnExcluir').classList.add('hidden');
-                resetForm();
-                atualizarSubmenu();
-            }
-        }
-
-        function closeModal() { document.getElementById('modalForm').classList.remove('open'); document.getElementById('overlay').style.display = 'none'; }
-        
-        function atualizarSubmenu() {
-            const tipo = document.getElementById('tipo').value;
-            const sub = document.getElementById('submenu');
-            sub.innerHTML = '';
-            opcoesSubmenu[tipo].forEach(opt => sub.innerHTML += `<option value="${opt}">${opt}</option>`);
-            
-            const fieldPago = document.getElementById('campoPago');
-            const blocoParcela = document.getElementById('blocoParcelamento');
-            
-            // O Bloco de parcelamento APENAS aparece para Dívidas
-            if(tipo === 'Receita' || tipo === 'Reserva') {
-                fieldPago.classList.add('hidden');
-                blocoParcela.classList.add('hidden');
-            } else if (tipo === 'Divida') {
-                fieldPago.classList.remove('hidden');
-                blocoParcela.classList.remove('hidden');
-            } else {
-                fieldPago.classList.remove('hidden');
-                blocoParcela.classList.add('hidden');
-            }
-            definirDescricao();
-        }
-
-        function definirDescricao() { document.getElementById('desc').value = document.getElementById('submenu').value.split(' ').slice(1).join(' '); }
-        
-        function salvar() {
-            const tipo = document.getElementById('tipo').value;
-            const desc = document.getElementById('desc').value;
-            const valorTotal = parseFloat(document.getElementById('valor').value) || 0;
-            const dataBase = document.getElementById('data').value;
-            let pago = parseFloat(document.getElementById('pago').value) || 0;
-            const editIdx = document.getElementById('editIndex').value;
-            
-            // Variáveis de Parcelamento
-            let parcelas = parseInt(document.getElementById('parcelas').value) || 1;
-            let parcelasPagas = parseInt(document.getElementById('parcelasPagas').value) || 0;
-
-            if(!desc || valorTotal <= 0 || !dataBase) return alert("Preencha o valor e a data!");
-            if(tipo === 'Receita' || tipo === 'Reserva') pago = valorTotal;
-
-            if (editIdx !== "") {
-                // Modo Edição: Altera apenas 1 lançamento
-                registros[editIdx] = { tipo, desc, valor: valorTotal, pago, data: dataBase };
-            } else {
-                // Modo Criação
-                if (tipo === 'Divida' && parcelas > 1) {
-                    // Lógica de Parcelamento Inteligente
-                    const valorParcela = valorTotal / parcelas;
-                    let dataObj = new Date(dataBase + "T12:00:00"); // T12 para evitar bug de fuso horário
-                    
-                    for (let i = 1; i <= parcelas; i++) {
-                        let novaData = new Date(dataObj.getFullYear(), dataObj.getMonth() + (i - 1), dataObj.getDate());
-                        let dataFormatada = novaData.toISOString().split('T')[0];
-                        let descParcela = `${desc} (${i}/${parcelas})`;
-                        
-                        // Se a parcela atual for menor ou igual à quantidade já paga, dá baixa automática
-                        let pagoParcela = (i <= parcelasPagas) ? valorParcela : 0; 
-                        
-                        registros.push({ tipo, desc: descParcela, valor: valorParcela, pago: pagoParcela, data: dataFormatada });
-                    }
-                } else {
-                    // Inserção normal
-                    registros.push({ tipo, desc, valor: valorTotal, pago, data: dataBase });
+                if(filtro === "Tudo" || filtro === r.t || (filtro === "Gasto" && (r.t==='Fixo'||r.t==='Variavel'))) {
+                    corpo.innerHTML += `<div class="transaction-item" onclick="openModal(${registros.indexOf(r)})">
+                        <div class="details"><strong>${r.d}</strong><br><small>${r.dt.split('-').reverse().join('/')}</small></div>
+                        <div class="amount"><strong>${modoF?'R$ •••':v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</strong><br>
+                        <small style="color:${r.pago? 'var(--success)':'var(--danger)'}">${r.pago?'PAGO':'PENDENTE'}</small></div>
+                    </div>`;
                 }
             }
-            
-            localStorage.setItem('foton_db', JSON.stringify(registros));
-            closeAll(); renderizar();
-        }
+        });
+        document.getElementById('totalReceitas').innerText = sRec.toLocaleString('pt-BR');
+        document.getElementById('totalGastos').innerText = sGas.toLocaleString('pt-BR');
+        document.getElementById('totalDividas').innerText = sDiv.toLocaleString('pt-BR');
+        document.getElementById('totalReserva').innerText = sRes.toLocaleString('pt-BR');
+        document.getElementById('totalSaldo').innerText = (sRec - (sGas + sDiv)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+    }
 
-        function excluirRegistro() { 
-            if(confirm("Confirma a exclusão deste registro?")) { 
-                registros.splice(document.getElementById('editIndex').value, 1); 
-                localStorage.setItem('foton_db', JSON.stringify(registros)); 
-                closeAll(); renderizar(); 
-            } 
+    function mudarMes(n) { dataVis.setMonth(dataVis.getMonth() + n); renderizar(); }
+    function openModal(idx=null) {
+        document.getElementById('modalForm').classList.add('open');
+        document.getElementById('overlay').style.display='block';
+        if(idx!==null) {
+            const r = registros[idx];
+            document.getElementById('editIdx').value = idx;
+            document.getElementById('desc').value = r.d;
+            document.getElementById('valor').value = r.v;
+            document.getElementById('tipo').value = r.t;
+            document.getElementById('data').value = r.dt;
+            document.getElementById('btnDel').classList.remove('hidden');
+        } else {
+            document.getElementById('editIdx').value = "";
+            document.getElementById('btnDel').classList.add('hidden');
+            document.getElementById('data').value = new Date().toISOString().split('T')[0];
         }
-
-        function exportarDados() {
-            if(registros.length === 0) return alert("Nenhum dado para exportar.");
-            let csvContent = "data:text/csv;charset=utf-8,Tipo,Descricao,Valor Total,Valor Pago,Data\n";
-            registros.forEach(r => { csvContent += `${r.tipo},${r.desc.replace(/,/g, '')},${r.valor},${r.pago},${r.data}\n`; });
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "Backup_Gêneses.csv");
-            document.body.appendChild(link);
-            link.click(); document.body.removeChild(link); closeAll();
-        }
-
-        function importarDados(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const lines = e.target.result.split('\n');
-                let novosRegistros = [];
-                for (let i = 1; i < lines.length; i++) {
-                    if (lines[i].trim() === '') continue;
-                    const cols = lines[i].split(',');
-                    if (cols.length >= 5) {
-                        novosRegistros.push({ tipo: cols[0], desc: cols[1], valor: parseFloat(cols[2]), pago: parseFloat(cols[3]), data: cols[4].trim() });
-                    }
-                }
-                if (novosRegistros.length > 0) {
-                    if(confirm(`Encontrados ${novosRegistros.length} registros. Deseja substituir os atuais?`)) {
-                        registros = novosRegistros; localStorage.setItem('foton_db', JSON.stringify(registros));
-                        renderizar(); closeAll(); alert("Restaurado com Sucesso!");
-                    }
-                } else { alert("Arquivo corrompido."); }
-            };
-            reader.readAsText(file); event.target.value = '';
-        }
-
-        function toggleFantasma() { modoFantasma = !modoFantasma; document.getElementById('eyeIcon').className = modoFantasma ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'; renderizar(); }
-        function ocultarBits(v) { return modoFantasma ? "R$ ••••" : "R$ " + v.toLocaleString('pt-BR', {minimumFractionDigits: 2}); }
-        function otimizarTerminal() { alert("Processamento Otimizado."); closeAll(); }
-        function limparTerminal() { if(confirm("ATENÇÃO: Apagar TODOS os dados salvos?")) { localStorage.removeItem('foton_db'); location.reload(); } }
-        
-        function resetForm() { 
-            document.getElementById('editIndex').value = ""; 
-            document.getElementById('valor').value = ""; 
-            document.getElementById('pago').value = ""; 
-            document.getElementById('parcelas').value = "1";
-            document.getElementById('parcelasPagas').value = "0";
-            document.getElementById('desc').value = ""; 
-            document.getElementById('data').value = new Date().toISOString().split('T')[0]; 
-        }
-
-        window.onload = () => { renderizar(); };
-    </script>
+    }
+    function closeModal() { document.getElementById('modalForm').classList.remove('open'); document.getElementById('overlay').style.display='none'; }
+    function excluir() { registros.splice(document.getElementById('editIdx').value, 1); localStorage.setItem('foton_db', JSON.stringify(registros)); closeModal(); renderizar(); }
+    function toggleFantasma() { modoF = !modoF; renderizar(); }
+    window.onload = renderizar;
+</script>
 </body>
 </html>
