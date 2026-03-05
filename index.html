@@ -11,9 +11,6 @@
     <meta name="theme-color" content="#0a192f">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
         /* VARIÁVEIS DO TEMA ESCURO (PADRÃO) */
@@ -25,7 +22,8 @@
             --text-muted: #94a3b8;
             --border: #1f2937;
             --input-bg: #1f2937;
-            --hover-bg: rgba(255,255,255,0.05);
+            --input-border: #374151;
+            
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
@@ -36,20 +34,21 @@
         [data-theme="light"] {
             --bg: #f8fafc;
             --card: #ffffff;
-            --accent: #0284c7;
+            --accent: #0284c7; 
             --text: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
             --input-bg: #f1f5f9;
-            --hover-bg: rgba(0,0,0,0.05);
+            --input-border: #cbd5e1;
+            
             --success: #059669;
             --danger: #dc2626;
             --warning: #d97706;
             --reserve: #7c3aed;
         }
 
-        * { box-sizing: border-box; outline: none; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
-        body { font-family: 'Ubuntu', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
+        * { box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
 
         header {
             background: var(--bg); padding: 15px 20px; display: flex; justify-content: space-between;
@@ -62,11 +61,10 @@
             background: linear-gradient(135deg, var(--accent), #0a192f);
             display: flex; align-items: center; justify-content: center;
             font-weight: bold; color: #ffffff; border: 2px solid var(--border);
+            font-size: 1.2rem;
         }
+        [data-theme="light"] .avatar { background: linear-gradient(135deg, var(--accent), #e0f2fe); border-color: var(--border); }
         
-        /* Ajuste do avatar no tema claro */
-        [data-theme="light"] .avatar { background: linear-gradient(135deg, var(--accent), #bae6fd); }
-
         .user-info span { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; display: block; text-transform: uppercase; }
         .user-info strong { font-size: 0.9rem; color: var(--text); }
 
@@ -80,23 +78,30 @@
         .sidebar.open { right: 0; }
         .sidebar-header { margin-bottom: 25px; text-align: center; position: relative; }
         
-        .status-panel { background: var(--hover-bg); padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid var(--border); }
+        .status-panel { background: rgba(125, 125, 125, 0.05); padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid var(--border); }
         .status-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 10px; align-items: center; }
         .status-row:last-child { margin-bottom: 0; }
         .status-label { color: var(--text-muted); }
 
-        .sidebar-menu { display: flex; flex-direction: column; gap: 10px; flex: 1; }
-        .menu-item { padding: 15px; border-radius: 12px; background: var(--hover-bg); display: flex; align-items: center; gap: 15px; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent; color: var(--text); }
+        .sidebar-menu { display: flex; flex-direction: column; gap: 10px; flex: 1; margin-bottom: 20px;}
+        .menu-item { padding: 15px; border-radius: 12px; background: rgba(125, 125, 125, 0.05); display: flex; align-items: center; justify-content: space-between; gap: 15px; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent; color: var(--text); }
         .menu-item:active { background: var(--border); }
+        .menu-item div { display: flex; align-items: center; gap: 15px; }
         .menu-item i { color: var(--accent); font-size: 1.1rem; width: 25px; text-align: center; }
 
         .month-selector { display: flex; justify-content: space-between; align-items: center; padding: 20px 20px 0; }
-        .month-selector button { background: var(--hover-bg); border: 1px solid var(--border); color: var(--text); width: 35px; height: 35px; border-radius: 10px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .month-selector button { background: rgba(125, 125, 125, 0.05); border: 1px solid var(--border); color: var(--text); width: 35px; height: 35px; border-radius: 10px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .month-selector span { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; }
 
         .balance-card { padding: 15px 20px 25px; text-align: center; }
         .balance-card small { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; }
         .balance-card h1 { font-size: 2.2rem; margin: 5px 0 0; font-weight: 800; color: var(--text); }
+
+        /* Meta de Economia */
+        .goal-container { padding: 0 20px 15px; }
+        .goal-label { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; }
+        .goal-track { width: 100%; height: 8px; background: var(--border); border-radius: 10px; overflow: hidden; }
+        .goal-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--success)); width: 0%; transition: width 1s ease; }
 
         .quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 20px; }
         .mini-card { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); cursor: pointer; transition: 0.2s; }
@@ -116,6 +121,8 @@
         .sub-btn.active { background: rgba(0, 242, 255, 0.1); border-color: var(--accent); color: var(--accent); }
         [data-theme="light"] .sub-btn.active { background: #e0f2fe; }
 
+        .search-bar { width: 100%; background: rgba(125, 125, 125, 0.05); border: 1px solid var(--border); padding: 12px 15px; border-radius: 12px; color: var(--text); margin-bottom: 15px; font-size: 0.9rem; outline: none; }
+
         .transaction-item { background: var(--card); padding: 15px; border-radius: 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); }
         .icon-box { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--bg); min-width: 40px; border: 1px solid var(--border); }
         .details { flex: 1; overflow: hidden; }
@@ -132,21 +139,21 @@
         .chart-track { background: var(--bg); height: 6px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
         .chart-fill { height: 100%; width: 0%; transition: 1s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
 
-        .fab { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; border-radius: 20px; background: var(--accent); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); border: none; z-index: 1000; cursor: pointer; }
+        .fab { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; border-radius: 20px; background: var(--accent); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); border: none; z-index: 1000; }
 
         .modal { position: fixed; bottom: -100%; left: 0; width: 100%; height: 92%; background: var(--card); border-radius: 30px 30px 0 0; z-index: 2000; padding: 25px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; border-top: 1px solid var(--border); }
         .modal.open { bottom: 0; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; backdrop-filter: blur(3px); }
 
-        input, select { width: 100%; background: var(--input-bg); border: 1px solid var(--border); padding: 14px; border-radius: 12px; color: var(--text); margin-bottom: 12px; font-family: 'Ubuntu', sans-serif; font-size: 1rem; }
+        input, select { width: 100%; background: var(--input-bg); border: 1px solid var(--input-border); padding: 14px; border-radius: 12px; color: var(--text); margin-bottom: 12px; font-size: 1rem; }
         
-        .btn-confirm { background: var(--accent); color: #ffffff; width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; font-family: 'Ubuntu', sans-serif; margin-top: 10px; cursor: pointer; }
-        .btn-delete { background: none; color: var(--danger); width: 100%; padding: 12px; border: 1px solid var(--danger); border-radius: 12px; margin-top: 15px; font-weight: 700; font-family: 'Ubuntu', sans-serif; cursor: pointer; }
+        .btn-confirm { background: var(--accent); color: #ffffff; width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; margin-top: 10px; }
+        .btn-delete { background: none; color: var(--danger); width: 100%; padding: 12px; border: 1px solid var(--danger); border-radius: 12px; margin-top: 15px; font-weight: 700; }
 
         .label-mini { font-size: 0.65rem; color: var(--accent); font-weight: 800; margin-bottom: 5px; display: block; text-transform: uppercase; }
         .hidden { display: none !important; }
 
-        .bloco-parcelas, .resumo-quitacao { background: var(--hover-bg); padding: 15px; border-radius: 12px; border: 1px dashed var(--accent); margin-bottom: 15px; }
+        .bloco-parcelas, .resumo-quitacao { background: rgba(125, 125, 125, 0.05); padding: 15px; border-radius: 12px; border: 1px dashed var(--accent); margin-bottom: 15px; }
         .resumo-quitacao h4 { margin: 0 0 10px 0; font-size: 0.75rem; color: var(--accent); text-transform: uppercase; }
         .resumo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .resumo-item { font-size: 0.7rem; color: var(--text-muted); }
@@ -160,10 +167,10 @@
             <div class="avatar"><i class="fa-solid fa-coins"></i></div>
             <div class="user-info">
                 <span>MEUCAIXA</span>
-                <strong id="userNameDisplay">WENDEL CARNEIRO</strong>
+                <strong id="headerUserName">WENDEL CARNEIRO</strong>
             </div>
         </div>
-        <button onclick="toggleFantasma()" style="background:none; border:1px solid var(--border); color:var(--text); padding:8px; border-radius:10px; cursor:pointer;">
+        <button onclick="toggleFantasma()" style="background:none; border:1px solid var(--border); color:var(--text); padding:8px; border-radius:10px;">
             <i id="eyeIcon" class="fa-solid fa-eye"></i>
         </button>
     </header>
@@ -180,15 +187,45 @@
             <div class="status-row"><span class="status-label">Dados</span><strong id="contadorRegistros" style="color: var(--text);">0</strong></div>
             <div class="status-row"><span class="status-label">Saúde</span><strong id="statusFluxo" style="color: var(--text);">ESTÁVEL</strong></div>
         </div>
+        
         <div class="sidebar-menu">
-            <div class="menu-item" onclick="mudarNome()"><i class="fa-solid fa-user-pen"></i> <span>Mudar Nome</span></div>
-            <div class="menu-item" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i> <span>Alternar Tema</span></div>
+            <div class="menu-item" onclick="mudarNome()">
+                <div><i class="fa-solid fa-user-pen"></i> <span>Mudar Nome</span></div>
+            </div>
             
-            <div class="menu-item" onclick="toggleFantasma()"><i class="fa-solid fa-ghost"></i> <span>Privacidade</span></div>
-            <div class="menu-item" onclick="exportarDados()"><i class="fa-solid fa-file-export"></i> <span>Exportar CSV</span></div>
+            <div class="menu-item" onclick="configurarMeta()">
+                <div><i class="fa-solid fa-bullseye" style="color: var(--success)"></i> <span>Meta de Economia</span></div>
+            </div>
+
+            <div class="menu-item" onclick="toggleTheme()">
+                <div><i class="fa-solid fa-circle-half-stroke"></i> <span>Alternar Tema</span></div>
+            </div>
+
+            <div class="menu-item" onclick="mudarMoeda()">
+                <div><i class="fa-solid fa-money-bill-transfer" style="color: var(--warning)"></i> <span>Símbolo da Moeda</span></div>
+                <span id="currentCurrencyDisplay" style="font-size: 0.7rem; color: var(--text-muted)">R$</span>
+            </div>
+            
+            <div class="menu-item" onclick="toggleFantasma()">
+                <div><i class="fa-solid fa-ghost"></i> <span>Privacidade</span></div>
+            </div>
+            
+            <div class="menu-item" onclick="exportarDados()">
+                <div><i class="fa-solid fa-file-export"></i> <span>Exportar CSV</span></div>
+            </div>
+            
             <input type="file" id="fileInput" accept=".csv" style="display: none;" onchange="importarDados(event)">
-            <div class="menu-item" onclick="document.getElementById('fileInput').click()"><i class="fa-solid fa-file-import"></i> <span>Importar Backup</span></div>
-            <div class="menu-item" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.2);" onclick="limparTerminal()"><i class="fa-solid fa-trash" style="color: var(--danger);"></i> <span>Resetar Banco</span></div>
+            <div class="menu-item" onclick="document.getElementById('fileInput').click()">
+                <div><i class="fa-solid fa-file-import"></i> <span>Importar Backup</span></div>
+            </div>
+            
+            <div class="menu-item" style="border-color: rgba(239, 68, 68, 0.2);" onclick="limparMesAtual()">
+                <div><i class="fa-solid fa-calendar-minus" style="color: var(--danger);"></i> <span>Limpar Mês Atual</span></div>
+            </div>
+            
+            <div class="menu-item" style="border-color: rgba(239, 68, 68, 0.2);" onclick="limparTerminal()">
+                <div><i class="fa-solid fa-trash" style="color: var(--danger);"></i> <span style="color: var(--danger);">Resetar Banco</span></div>
+            </div>
         </div>
     </div>
 
@@ -201,6 +238,16 @@
     <div class="balance-card">
         <small>Saldo Disponível do Mês</small>
         <h1 id="totalSaldo">R$ 0,00</h1>
+    </div>
+
+    <div class="goal-container hidden" id="goalContainer">
+        <div class="goal-label">
+            <span>Meta de Patrimônio: <span id="goalValueDisplay">R$ 0,00</span></span>
+            <span id="goalPercentDisplay">0%</span>
+        </div>
+        <div class="goal-track">
+            <div class="goal-fill" id="goalProgressBar"></div>
+        </div>
     </div>
 
     <div class="quick-stats">
@@ -233,16 +280,17 @@
             <div class="chart-label"><span>Taxa Acúmulo</span><span id="labelPercRes">0%</span></div>
             <div class="chart-track"><div id="fillRes" class="chart-fill" style="background:var(--reserve)"></div></div>
         </div>
+        <div class="chart-bar-group">
+            <div class="chart-label"><span>Impacto de Dívidas</span><span id="labelPercDivida">0%</span></div>
+            <div class="chart-track"><div id="fillDivida" class="chart-fill" style="background:var(--warning)"></div></div>
+        </div>
     </section>
 
     <button class="fab" onclick="openModal()"><i class="fa-solid fa-plus"></i></button>
     <div class="overlay" id="overlay" onclick="closeAll()"></div>
 
     <div class="modal" id="modalForm">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2 id="modalTitle" style="margin:0; font-size:1.2rem; color: var(--text);">Nova Operação</h2>
-            <i class="fa-solid fa-circle-xmark" style="font-size:1.5rem; color:var(--text-muted); cursor:pointer;" onclick="closeModal()"></i>
-        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2 id="modalTitle" style="margin:0; font-size:1.2rem; color: var(--text);">Nova Operação</h2><i class="fa-solid fa-circle-xmark" style="font-size:1.5rem; color:var(--text-muted);" onclick="closeModal()"></i></div>
         
         <div id="blocoResumoGeral" class="resumo-quitacao hidden">
             <h4 id="resumoTitulo">Resumo</h4>
@@ -250,41 +298,18 @@
         </div>
 
         <span class="label-mini">Tipo</span>
-        <select id="tipo" onchange="atualizarSubmenu()">
-            <option value="Receita">Receita</option>
-            <option value="Fixo">Gasto Fixo</option>
-            <option value="Variavel">Gasto Variável</option>
-            <option value="Divida">Dívida / Boleto</option>
-            <option value="Reserva">Patrimônio</option>
-        </select>
-
-        <span class="label-mini">Categoria</span>
-        <select id="submenu" onchange="definirDescricao()"></select>
+        <select id="tipo" onchange="atualizarSubmenu()"><option value="Receita">Receita</option><option value="Fixo">Gasto Fixo</option><option value="Variavel">Gasto Variável</option><option value="Divida">Dívida / Boleto</option><option value="Reserva">Patrimônio</option></select>
+        <span class="label-mini">Categoria</span><select id="submenu" onchange="definirDescricao()"></select>
         
         <div id="blocoRecebimento" class="hidden">
             <span class="label-mini">Forma de Recebimento</span>
-            <select id="formaRecebimento">
-                <option value="Pix">Pix</option>
-                <option value="Dinheiro">Dinheiro</option>
-                <option value="Cartão">Cartão</option>
-                <option value="Outros">Outros</option>
-            </select>
+            <select id="formaRecebimento"><option value="Pix">Pix</option><option value="Dinheiro">Dinheiro</option><option value="Cartão">Cartão</option><option value="Outros">Outros</option></select>
         </div>
 
         <input type="text" id="desc" placeholder="Descrição Personalizada">
-        
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <div>
-                <span class="label-mini">Valor</span>
-                <input type="number" id="valor" placeholder="0,00" step="0.01" inputmode="decimal">
-            </div>
-            <div id="campoPago">
-                <span class="label-mini">Confirmado?</span>
-                <select id="selectPago">
-                    <option value="0">Não</option>
-                    <option value="1">Sim</option>
-                </select>
-            </div>
+            <div><span class="label-mini">Valor</span><input type="number" id="valor" placeholder="0,00" step="0.01" inputmode="decimal"></div>
+            <div id="campoPago"><span class="label-mini">Confirmado?</span><select id="selectPago"><option value="0">Não</option><option value="1">Sim</option></select></div>
         </div>
 
         <div id="blocoParcelamento" class="bloco-parcelas hidden">
@@ -293,83 +318,99 @@
                 <div><span class="label-mini">Pagas</span><input type="number" id="parcelasPagas" value="0" min="0"></div>
             </div>
         </div>
-
-        <span class="label-mini">Data</span>
-        <input type="date" id="data">
-        
-        <input type="hidden" id="editIndex">
-        <button class="btn-confirm" onclick="salvar()">SALVAR</button>
+        <span class="label-mini">Data</span><input type="date" id="data">
+        <input type="hidden" id="editIndex"><button class="btn-confirm" onclick="salvar()">SALVAR</button>
         <button id="btnExcluir" class="btn-delete hidden" onclick="excluirRegistro()">EXCLUIR</button>
     </div>
 
     <script>
         let registros = JSON.parse(localStorage.getItem('foton_db')) || [];
         let modoFantasma = false, filtroAtual = "Tudo", subFiltro = "Pendente", dataVisualizacao = new Date();
+        
+        // CONFIGURAÇÕES DO USUÁRIO
+        let appConfig = JSON.parse(localStorage.getItem('meucaixa_config')) || {
+            nome: "WENDEL CARNEIRO",
+            moeda: "R$",
+            metaMensal: 0
+        };
 
-        // 1. CHECAR TEMA AO INICIAR
+        // Lógica de Tema
         function checkTheme() {
             const savedTheme = localStorage.getItem('meucaixa_theme');
-            if (savedTheme) {
-                document.documentElement.setAttribute('data-theme', savedTheme);
-            }
+            if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
         }
         checkTheme();
 
-        // 2. FUNÇÃO DE ALTERNAR TEMA
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('meucaixa_theme', newTheme);
-            closeAll(); // Fecha o menu para ver a mudança
+            closeAll();
         }
 
-        // 3. FUNÇÃO DE CONFIGURAR NOME
-        function carregarNome() {
-            let nomeSalvo = localStorage.getItem('meucaixa_username');
-            if(nomeSalvo) {
-                document.getElementById('userNameDisplay').innerText = nomeSalvo;
+        // FUNÇÕES DE CONFIGURAÇÃO (NOVAS OPÇÕES)
+        function salvarConfig() {
+            localStorage.setItem('meucaixa_config', JSON.stringify(appConfig));
+            carregarConfig();
+            renderizar();
+        }
+
+        function carregarConfig() {
+            document.getElementById('headerUserName').innerText = appConfig.nome;
+            document.getElementById('currentCurrencyDisplay').innerText = appConfig.moeda;
+            
+            if(appConfig.metaMensal > 0) {
+                document.getElementById('goalContainer').classList.remove('hidden');
+                document.getElementById('goalValueDisplay').innerText = formatarMoeda(appConfig.metaMensal);
+            } else {
+                document.getElementById('goalContainer').classList.add('hidden');
             }
         }
 
         function mudarNome() {
-            let novoNome = prompt("Como deseja ser chamado no MeuCaixa?");
-            if (novoNome && novoNome.trim() !== "") {
-                localStorage.setItem('meucaixa_username', novoNome.trim().toUpperCase());
-                carregarNome();
+            let novo = prompt("Digite o nome do usuário:");
+            if (novo) { appConfig.nome = novo.trim().toUpperCase(); salvarConfig(); closeAll(); }
+        }
+
+        function mudarMoeda() {
+            let moedas = ["R$", "$", "€", "£"];
+            let idx = moedas.indexOf(appConfig.moeda);
+            appConfig.moeda = moedas[(idx + 1) % moedas.length];
+            salvarConfig();
+        }
+
+        function configurarMeta() {
+            let meta = prompt("Qual a sua meta de patrimônio/reserva para este mês?", appConfig.metaMensal);
+            if (meta !== null) { 
+                appConfig.metaMensal = parseFloat(meta) || 0; 
+                salvarConfig(); 
+                closeAll();
+            }
+        }
+
+        function limparMesAtual() {
+            if(confirm("Deseja apagar APENAS os registros do mês atual que está visualizando?")) {
+                const prefixoMes = `${dataVisualizacao.getFullYear()}-${String(dataVisualizacao.getMonth() + 1).padStart(2, '0')}`;
+                registros = registros.filter(r => !r.data.startsWith(prefixoMes));
+                localStorage.setItem('foton_db', JSON.stringify(registros));
+                renderizar();
                 closeAll();
             }
         }
 
         const opcoesSubmenu = {
-            "Receita": ["💰 Salário", "🚀 Freelance", "✨ Outros Recebíveis"],
-            "Fixo": ["🏠 Aluguel", "⚡ Energia", "🌐 Internet", "🎬 Streamings"],
-            "Variavel": ["🛒 Mercado", "🍕 Alimentação", "⛽ Combustível", "🚗 Transporte"],
+            "Receita": ["💰 Salário", "🚀 Freelance", "✨ Rendimentos"],
+            "Fixo": ["🏠 Aluguel", "⚡ Energia", "🌐 Internet", "🎬 Streamings", "🏫 Mensalidade"],
+            "Variavel": ["🛒 Mercado", "🍕 Alimentação", "⛽ Combustível", "🚗 Transporte", "💊 Saúde"],
             "Divida": ["🏢 Financiamento", "💳 Cartão", "🤝 Empréstimo", "🧾 Boleto"],
-            "Reserva": ["🏦 Investimentos", "📦 Caixinha", "🛡️ Reserva Emergência"]
+            "Reserva": ["🏦 Investimentos", "📦 Caixinha", "🛡️ Reserva Emergência", "🪙 Cripto"]
         };
 
-        function mudarMes(delta) { 
-            dataVisualizacao.setMonth(dataVisualizacao.getMonth() + delta); 
-            renderizar(); 
-        }
-
-        function formatarMesAno(d) { 
-            const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']; 
-            return `${meses[d.getMonth()]} ${d.getFullYear()}`; 
-        }
-
-        function toggleSidebar() { 
-            const s = document.getElementById('profileSidebar'); 
-            s.classList.toggle('open'); 
-            document.getElementById('overlay').style.display = s.classList.contains('open') ? 'block' : 'none'; 
-        }
-
-        function closeAll() { 
-            document.getElementById('modalForm').classList.remove('open'); 
-            document.getElementById('profileSidebar').classList.remove('open'); 
-            document.getElementById('overlay').style.display = 'none'; 
-        }
+        function mudarMes(delta) { dataVisualizacao.setMonth(dataVisualizacao.getMonth() + delta); renderizar(); }
+        function formatarMesAno(d) { const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']; return `${meses[d.getMonth()]} ${d.getFullYear()}`; }
+        function toggleSidebar() { const s = document.getElementById('profileSidebar'); s.classList.toggle('open'); document.getElementById('overlay').style.display = s.classList.contains('open') ? 'block' : 'none'; }
+        function closeAll() { closeModal(); document.getElementById('profileSidebar').classList.remove('open'); document.getElementById('overlay').style.display = 'none'; }
         
         function filtrarExtrato(c) {
             filtroAtual = c;
@@ -388,9 +429,7 @@
         function renderizar() {
             document.getElementById('mesDisplay').innerText = formatarMesAno(dataVisualizacao);
             const prefixoMes = `${dataVisualizacao.getFullYear()}-${String(dataVisualizacao.getMonth() + 1).padStart(2, '0')}`;
-            const corpo = document.getElementById('tabelaCorpo'); 
-            corpo.innerHTML = '';
-            
+            const corpo = document.getElementById('tabelaCorpo'); corpo.innerHTML = '';
             let sRec=0, sGas=0, sDiv=0, sRes=0;
             
             const ordenados = [...registros].sort((a, b) => new Date(b.data) - new Date(a.data));
@@ -398,53 +437,26 @@
 
             registrosDoMes.forEach(r => {
                 const idxO = registros.indexOf(r);
-                const vT = parseFloat(r.valor) || 0;
-                const vP = parseFloat(r.pago) || 0;
-                const falta = vT - vP;
-                const isPago = vP >= vT && vT > 0;
+                const vT = parseFloat(r.valor), vP = parseFloat(r.pago), falta = vT - vP;
+                const isPago = vP >= vT;
 
-                if(r.tipo === 'Receita') {
-                    if(isPago) sRec += vT; 
-                } else if(r.tipo === 'Divida') {
-                    sDiv += falta;
-                } else if(r.tipo === 'Reserva') {
-                    sRes += vT;
-                } else {
-                    sGas += vP;
-                }
+                if(r.tipo === 'Receita') { if(isPago) sRec += vT; } 
+                else if(r.tipo === 'Divida') { sDiv += falta; } 
+                else if(r.tipo === 'Reserva') { sRes += vT; } 
+                else { sGas += vP; }
 
                 let exibir = (filtroAtual === "Tudo") || (filtroAtual === r.tipo) || (filtroAtual === "Gasto" && (r.tipo === "Fixo" || r.tipo === "Variavel"));
-                
                 if (filtroAtual !== "Tudo") {
                     if (subFiltro === "Pendente" && isPago) exibir = false;
                     if (subFiltro === "Pago" && !isPago) exibir = false;
                 }
 
                 if(exibir) {
-                    let icon = '';
-                    if (r.tipo === 'Receita') icon = 'fa-arrow-up';
-                    else if (r.tipo === 'Divida') icon = 'fa-barcode';
-                    else if (r.tipo === 'Reserva') icon = 'fa-vault';
-                    else icon = 'fa-arrow-down';
-
+                    let icon = r.tipo === 'Receita' ? 'fa-arrow-up' : (r.tipo === 'Divida' ? 'fa-barcode' : (r.tipo === 'Reserva' ? 'fa-vault' : 'fa-arrow-down'));
                     let color = r.tipo === 'Receita' ? 'var(--success)' : (r.tipo === 'Divida' ? 'var(--danger)' : (r.tipo === 'Reserva' ? 'var(--reserve)' : 'var(--warning)'));
-                    let extraInfo = r.forma ? ` • ${r.forma}` : '';
                     let statusLabel = isPago ? (r.tipo === 'Receita' ? 'RECEBIDO' : 'LIQUIDADO') : 'PENDENTE';
                     
-                    corpo.innerHTML += `
-                        <div class="transaction-item" onclick="openModal(${idxO})">
-                            <div class="icon-box" style="color:${color};">
-                                <i class="fa-solid ${icon}"></i>
-                            </div>
-                            <div class="details">
-                                <strong style="color: var(--text);">${r.desc}</strong>
-                                <span style="color: var(--text-muted);">${r.data.split('-').reverse().join('/')} • ${r.tipo}${extraInfo}</span>
-                            </div>
-                            <div class="amount">
-                                <strong style="color: var(--text);">${ocultarBits(vT)}</strong>
-                                <span class="status-debt" style="color:${isPago ? 'var(--success)' : 'var(--danger)'}">${statusLabel}</span>
-                            </div>
-                        </div>`;
+                    corpo.innerHTML += `<div class="transaction-item" onclick="openModal(${idxO})"><div class="icon-box" style="color:${color}; border: 1px solid var(--border);"><i class="fa-solid ${icon}"></i></div><div class="details"><strong style="color: var(--text);">${r.desc}</strong><span style="color: var(--text-muted);">${r.data.split('-').reverse().join('/')} • ${r.tipo}</span></div><div class="amount"><strong style="color: var(--text);">${ocultarBits(vT)}</strong><span class="status-debt" style="color:${isPago ? 'var(--success)' : 'var(--danger)'}">${statusLabel}</span></div></div>`;
                 }
             });
 
@@ -454,13 +466,25 @@
             document.getElementById('totalReserva').innerText = ocultarBits(sRes);
             document.getElementById('totalSaldo').innerText = ocultarBits(sRec - (sGas + sDiv));
             
+            // LÓGICA DE GRÁFICOS
             const pSaida = sRec > 0 ? Math.min(((sGas + sDiv) / sRec) * 100, 100) : 0;
             const pRes = sRec > 0 ? Math.min((sRes / sRec) * 100, 100) : 0;
+            const pDivida = sRec > 0 ? Math.min((sDiv / sRec) * 100, 100) : 0; // Novo gráfico de impacto de dívida
+            
             document.getElementById('fillSaida').style.width = pSaida + '%';
             document.getElementById('labelPercSaida').innerText = pSaida.toFixed(1) + '%';
             document.getElementById('fillRes').style.width = pRes + '%';
             document.getElementById('labelPercRes').innerText = pRes.toFixed(1) + '%';
+            document.getElementById('fillDivida').style.width = pDivida + '%';
+            document.getElementById('labelPercDivida').innerText = pDivida.toFixed(1) + '%';
             document.getElementById('contadorRegistros').innerText = registros.length;
+
+            // ATUALIZAR META
+            if(appConfig.metaMensal > 0) {
+                const progresso = Math.min((sRes / appConfig.metaMensal) * 100, 100);
+                document.getElementById('goalProgressBar').style.width = progresso + '%';
+                document.getElementById('goalPercentDisplay').innerText = progresso.toFixed(1) + '%';
+            }
         }
 
         function openModal(idx = null) {
@@ -474,13 +498,11 @@
                 document.getElementById('editIndex').value = idx;
                 document.getElementById('tipo').value = r.tipo;
                 atualizarSubmenu();
-                
                 document.getElementById('desc').value = r.desc;
                 document.getElementById('valor').value = r.valor;
-                document.getElementById('selectPago').value = (r.pago >= r.valor && r.valor > 0) ? "1" : "0";
+                document.getElementById('selectPago').value = (r.pago >= r.valor) ? "1" : "0";
                 document.getElementById('data').value = r.data;
                 document.getElementById('formaRecebimento').value = r.forma || "Pix";
-                
                 document.getElementById('btnExcluir').classList.remove('hidden');
 
                 if (r.tipo === 'Receita') {
@@ -488,174 +510,72 @@
                     document.getElementById('resumoTitulo').innerText = "Resumo Receitas (Mês)";
                     const recs = registros.filter(reg => reg.tipo === 'Receita' && reg.data.startsWith(prefixoMes) && reg.pago >= reg.valor);
                     const porForma = (f) => recs.filter(x => x.forma === f).reduce((a,b) => a+b.valor, 0);
-                    
-                    document.getElementById('resumoConteudo').innerHTML = `
-                        <div class="resumo-item">Pix<strong>${ocultarBits(porForma('Pix'))}</strong></div>
-                        <div class="resumo-item">Dinheiro<strong>${ocultarBits(porForma('Dinheiro'))}</strong></div>
-                        <div class="resumo-item">Cartão<strong>${ocultarBits(porForma('Cartão'))}</strong></div>
-                        <div class="resumo-item">Total Recebido<strong>${ocultarBits(recs.reduce((a,b)=>a+b.valor,0))}</strong></div>`;
+                    document.getElementById('resumoConteudo').innerHTML = `<div class="resumo-item">Pix<strong>${ocultarBits(porForma('Pix'))}</strong></div><div class="resumo-item">Dinheiro<strong>${ocultarBits(porForma('Dinheiro'))}</strong></div><div class="resumo-item">Cartão<strong>${ocultarBits(porForma('Cartão'))}</strong></div><div class="resumo-item">Total Recebido<strong>${ocultarBits(recs.reduce((a,b)=>a+b.valor,0))}</strong></div>`;
                 } else if (r.desc.includes('(')) {
                     resumo.classList.remove('hidden');
                     document.getElementById('resumoTitulo').innerText = "Resumo do Contrato";
                     const base = r.desc.split('(')[0].trim();
                     const vinc = registros.filter(reg => reg.desc.startsWith(base));
-                    const tV = vinc.reduce((a,c)=>a+c.valor, 0);
-                    const tP = vinc.reduce((a,c)=>a+c.pago, 0);
-                    
-                    document.getElementById('resumoConteudo').innerHTML = `
-                        <div class="resumo-item">Total Contrato<strong>${ocultarBits(tV)}</strong></div>
-                        <div class="resumo-item">Total Pago<strong>${ocultarBits(tP)}</strong></div>
-                        <div class="resumo-item">Restante<strong>${ocultarBits(tV-tP)}</strong></div>
-                        <div class="resumo-item">Faltam<strong>${vinc.filter(x=>x.pago<x.valor).length} parc.</strong></div>`;
-                } else { 
-                    resumo.classList.add('hidden'); 
-                }
+                    const tV = vinc.reduce((a,c)=>a+c.valor, 0), tP = vinc.reduce((a,c)=>a+c.pago, 0);
+                    document.getElementById('resumoConteudo').innerHTML = `<div class="resumo-item">Total Contrato<strong>${ocultarBits(tV)}</strong></div><div class="resumo-item">Total Pago<strong>${ocultarBits(tP)}</strong></div><div class="resumo-item">Restante<strong>${ocultarBits(tV-tP)}</strong></div><div class="resumo-item">Faltam<strong>${vinc.filter(x=>x.pago<x.valor).length} parc.</strong></div>`;
+                } else { resumo.classList.add('hidden'); }
             } else {
                 document.getElementById('btnExcluir').classList.add('hidden');
                 resumo.classList.add('hidden');
-                resetForm(); 
-                atualizarSubmenu();
+                resetForm(); atualizarSubmenu();
             }
         }
         
         function atualizarSubmenu() {
             const t = document.getElementById('tipo').value;
-            const sub = document.getElementById('submenu'); 
-            sub.innerHTML = '';
-            
-            opcoesSubmenu[t].forEach(opt => {
-                sub.innerHTML += `<option value="${opt}">${opt}</option>`;
-            });
-            
+            const sub = document.getElementById('submenu'); sub.innerHTML = '';
+            opcoesSubmenu[t].forEach(opt => sub.innerHTML += `<option value="${opt}">${opt}</option>`);
             document.getElementById('blocoParcelamento').classList.toggle('hidden', t !== 'Divida');
             document.getElementById('blocoRecebimento').classList.toggle('hidden', t !== 'Receita');
             definirDescricao();
         }
 
-        function definirDescricao() { 
-            document.getElementById('desc').value = document.getElementById('submenu').value.split(' ').slice(1).join(' '); 
-        }
+        function definirDescricao() { document.getElementById('desc').value = document.getElementById('submenu').value.split(' ').slice(1).join(' '); }
         
         function salvar() {
-            const t = document.getElementById('tipo').value;
-            const desc = document.getElementById('desc').value;
-            const vT = parseFloat(document.getElementById('valor').value) || 0;
-            const dBase = document.getElementById('data').value;
-            const editIdx = document.getElementById('editIndex').value;
+            const t = document.getElementById('tipo').value, desc = document.getElementById('desc').value, vT = parseFloat(document.getElementById('valor').value) || 0, dBase = document.getElementById('data').value, editIdx = document.getElementById('editIndex').value;
             const forma = document.getElementById('formaRecebimento').value;
             const isP = document.getElementById('selectPago').value === "1";
-            
-            let valorPago = isP ? vT : 0;
 
-            if(!desc || vT <= 0 || !dBase) return alert("Preencha todos os campos!");
+            if(!desc || vT <= 0 || !dBase) return alert("Preencha tudo!");
 
             if(editIdx !== "") { 
-                registros[editIdx] = { ...registros[editIdx], tipo: t, desc, valor: vT, pago: valorPago, data: dBase, forma: t==='Receita' ? forma : null }; 
+                registros[editIdx] = { ...registros[editIdx], tipo: t, desc, valor: vT, pago: isP ? vT : 0, data: dBase, forma: t==='Receita' ? forma : null }; 
             } else {
                 if (t === 'Divida' && parseInt(document.getElementById('parcelas').value) > 1) {
-                    const p = parseInt(document.getElementById('parcelas').value);
-                    const pP = parseInt(document.getElementById('parcelasPagas').value);
-                    const vParc = vT / p; 
-                    let dObj = new Date(dBase + "T12:00:00");
-                    
+                    const p = parseInt(document.getElementById('parcelas').value), pP = parseInt(document.getElementById('parcelasPagas').value);
+                    const vParc = vT / p; let dObj = new Date(dBase + "T12:00:00");
                     for (let i = 1; i <= p; i++) {
                         let nD = new Date(dObj.getFullYear(), dObj.getMonth() + (i - 1), dObj.getDate()).toISOString().split('T')[0];
                         registros.push({ tipo: t, desc: `${desc} (${i}/${p})`, valor: vParc, pago: (i <= pP) ? vParc : 0, data: nD });
                     }
                 } else { 
-                    registros.push({ tipo: t, desc, valor: vT, pago: valorPago, data: dBase, forma: t==='Receita' ? forma : null }); 
+                    registros.push({ tipo: t, desc, valor: vT, pago: isP ? vT : 0, data: dBase, forma: t==='Receita' ? forma : null }); 
                 }
             }
-            
-            localStorage.setItem('foton_db', JSON.stringify(registros)); 
-            closeAll(); 
-            renderizar();
+            localStorage.setItem('foton_db', JSON.stringify(registros)); closeAll(); renderizar();
         }
 
-        function excluirRegistro() { 
-            if(confirm("Excluir este registro?")) { 
-                registros.splice(document.getElementById('editIndex').value, 1); 
-                localStorage.setItem('foton_db', JSON.stringify(registros)); 
-                renderizar(); 
-                closeAll(); 
-            } 
-        }
-
-        function exportarDados() { 
-            if(registros.length === 0) return; 
-            let csv = "Tipo,Descricao,Valor Total,Valor Pago,Data,Forma\n"; 
-            registros.forEach(r => { 
-                csv += `${r.tipo},${r.desc.replace(/,/g, '')},${r.valor},${r.pago},${r.data},${r.forma||''}\n`; 
-            }); 
-            const blob = new Blob([csv], { type: 'text/csv' }); 
-            const a = document.createElement('a'); 
-            a.href = URL.createObjectURL(blob); 
-            a.download = 'Backup_MeuCaixa.csv'; 
-            a.click(); 
-            closeAll(); 
-        }
-
-        function importarDados(e) { 
-            const f = e.target.files[0]; 
-            if(!f) return; 
-            const r = new FileReader(); 
-            r.onload = function(ev) { 
-                const lines = ev.target.result.split('\n'); 
-                let novos = []; 
-                for(let i=1; i<lines.length; i++){ 
-                    const c = lines[i].split(','); 
-                    if(c.length>=5) {
-                        novos.push({ 
-                            tipo: c[0], 
-                            desc: c[1], 
-                            valor: parseFloat(c[2]), 
-                            pago: parseFloat(c[3]), 
-                            data: c[4].trim(), 
-                            forma: c[5]?.trim()||null 
-                        });
-                    } 
-                } 
-                if(novos.length > 0){ 
-                    registros = novos; 
-                    localStorage.setItem('foton_db', JSON.stringify(registros)); 
-                    renderizar(); 
-                    closeAll(); 
-                } 
-            }; 
-            r.readAsText(f); 
-        }
-
-        function toggleFantasma() { 
-            modoFantasma = !modoFantasma; 
-            document.getElementById('eyeIcon').className = modoFantasma ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'; 
-            renderizar(); 
-        }
-
-        function ocultarBits(v) { 
-            return modoFantasma ? "R$ ••••" : "R$ " + v.toLocaleString('pt-BR', {minimumFractionDigits: 2}); 
-        }
-
-        function limparTerminal() { 
-            if(confirm("Tem certeza que deseja apagar todos os dados? Isso não pode ser desfeito.")) { 
-                localStorage.removeItem('foton_db'); 
-                location.reload(); 
-            } 
-        }
-
-        function resetForm() { 
-            document.getElementById('editIndex').value = ""; 
-            document.getElementById('valor').value = ""; 
-            document.getElementById('parcelas').value = "1"; 
-            document.getElementById('parcelasPagas').value = "0"; 
-            document.getElementById('desc').value = ""; 
-            document.getElementById('data').value = new Date().toISOString().split('T')[0]; 
-            document.getElementById('selectPago').value = "0"; 
-        }
+        function excluirRegistro() { if(confirm("Excluir?")) { registros.splice(document.getElementById('editIndex').value, 1); localStorage.setItem('foton_db', JSON.stringify(registros)); renderizar(); closeAll(); } }
+        function exportarDados() { if(registros.length === 0) return; let csv = "Tipo,Descricao,Valor Total,Valor Pago,Data,Forma\n"; registros.forEach(r => { csv += `${r.tipo},${r.desc.replace(/,/g, '')},${r.valor},${r.pago},${r.data},${r.forma||''}\n`; }); const blob = new Blob([csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Backup_MeuCaixa.csv'; a.click(); closeAll(); }
+        function importarDados(e) { const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = function(ev) { const lines = ev.target.result.split('\n'); let novos = []; for(let i=1; i<lines.length; i++){ const c = lines[i].split(','); if(c.length>=5) novos.push({ tipo: c[0], desc: c[1], valor: parseFloat(c[2]), pago: parseFloat(c[3]), data: c[4].trim(), forma: c[5]?.trim()||null }); } if(novos.length > 0){ registros = novos; localStorage.setItem('foton_db', JSON.stringify(registros)); renderizar(); closeAll(); } }; r.readAsText(f); }
         
-        window.onload = () => {
-            carregarNome();
-            renderizar();
-        };
+        function toggleFantasma() { modoFantasma = !modoFantasma; document.getElementById('eyeIcon').className = modoFantasma ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'; renderizar(); }
+        
+        function formatarMoeda(valor) {
+            return appConfig.moeda + " " + valor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+        function ocultarBits(v) { return modoFantasma ? appConfig.moeda + " ••••" : formatarMoeda(v); }
+        
+        function limparTerminal() { if(confirm("Resetar TUDO? Irreversível!")) { localStorage.removeItem('foton_db'); location.reload(); } }
+        function resetForm() { document.getElementById('editIndex').value = ""; document.getElementById('valor').value = ""; document.getElementById('parcelas').value = "1"; document.getElementById('parcelasPagas').value = "0"; document.getElementById('desc').value = ""; document.getElementById('data').value = new Date().toISOString().split('T')[0]; }
+        
+        window.onload = () => { carregarConfig(); renderizar(); };
     </script>
 </body>
 </html>
