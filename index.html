@@ -11,6 +11,9 @@
     <meta name="theme-color" content="#0a192f">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
         /* VARIÁVEIS DO TEMA ESCURO (PADRÃO) */
@@ -22,8 +25,7 @@
             --text-muted: #94a3b8;
             --border: #1f2937;
             --input-bg: #1f2937;
-            --input-border: #374151;
-            
+            --hover-bg: rgba(255,255,255,0.05);
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
@@ -34,21 +36,20 @@
         [data-theme="light"] {
             --bg: #f8fafc;
             --card: #ffffff;
-            --accent: #0284c7; 
+            --accent: #0284c7;
             --text: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
             --input-bg: #f1f5f9;
-            --input-border: #cbd5e1;
-            
+            --hover-bg: rgba(0,0,0,0.05);
             --success: #059669;
             --danger: #dc2626;
             --warning: #d97706;
             --reserve: #7c3aed;
         }
 
-        * { box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
+        * { box-sizing: border-box; outline: none; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
+        body { font-family: 'Ubuntu', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
 
         header {
             background: var(--bg); padding: 15px 20px; display: flex; justify-content: space-between;
@@ -61,10 +62,10 @@
             background: linear-gradient(135deg, var(--accent), #0a192f);
             display: flex; align-items: center; justify-content: center;
             font-weight: bold; color: #ffffff; border: 2px solid var(--border);
-            font-size: 1.2rem;
         }
-        [data-theme="light"] .avatar { background: linear-gradient(135deg, var(--accent), #e0f2fe); border-color: var(--border); }
         
+        [data-theme="light"] .avatar { background: linear-gradient(135deg, var(--accent), #bae6fd); }
+
         .user-info span { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; display: block; text-transform: uppercase; }
         .user-info strong { font-size: 0.9rem; color: var(--text); }
 
@@ -78,18 +79,24 @@
         .sidebar.open { right: 0; }
         .sidebar-header { margin-bottom: 25px; text-align: center; position: relative; }
         
-        .status-panel { background: rgba(125, 125, 125, 0.05); padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid var(--border); }
+        .status-panel { background: var(--hover-bg); padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid var(--border); }
         .status-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 10px; align-items: center; }
         .status-row:last-child { margin-bottom: 0; }
         .status-label { color: var(--text-muted); }
 
+        /* Estilos do Gráfico de Meta no Painel */
+        .meta-panel { margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--border); }
+        .meta-label { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 8px; color: var(--text); }
+        .meta-track { background: var(--bg); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+        .meta-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--success)); transition: width 1s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
+
         .sidebar-menu { display: flex; flex-direction: column; gap: 10px; flex: 1; }
-        .menu-item { padding: 15px; border-radius: 12px; background: rgba(125, 125, 125, 0.05); display: flex; align-items: center; gap: 15px; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent; color: var(--text); }
+        .menu-item { padding: 15px; border-radius: 12px; background: var(--hover-bg); display: flex; align-items: center; gap: 15px; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent; color: var(--text); }
         .menu-item:active { background: var(--border); }
         .menu-item i { color: var(--accent); font-size: 1.1rem; width: 25px; text-align: center; }
 
         .month-selector { display: flex; justify-content: space-between; align-items: center; padding: 20px 20px 0; }
-        .month-selector button { background: rgba(125, 125, 125, 0.05); border: 1px solid var(--border); color: var(--text); width: 35px; height: 35px; border-radius: 10px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .month-selector button { background: var(--hover-bg); border: 1px solid var(--border); color: var(--text); width: 35px; height: 35px; border-radius: 10px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .month-selector span { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; }
 
         .balance-card { padding: 15px 20px 25px; text-align: center; }
@@ -136,15 +143,15 @@
         .modal.open { bottom: 0; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; backdrop-filter: blur(3px); }
 
-        input, select { width: 100%; background: var(--input-bg); border: 1px solid var(--input-border); padding: 14px; border-radius: 12px; color: var(--text); margin-bottom: 12px; font-size: 1rem; }
+        input, select { width: 100%; background: var(--input-bg); border: 1px solid var(--input-border); padding: 14px; border-radius: 12px; color: var(--text); margin-bottom: 12px; font-family: 'Ubuntu', sans-serif; font-size: 1rem; }
         
-        .btn-confirm { background: var(--accent); color: #ffffff; width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; margin-top: 10px; cursor: pointer; }
-        .btn-delete { background: none; color: var(--danger); width: 100%; padding: 12px; border: 1px solid var(--danger); border-radius: 12px; margin-top: 15px; font-weight: 700; cursor: pointer; }
+        .btn-confirm { background: var(--accent); color: #ffffff; width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; font-family: 'Ubuntu', sans-serif; margin-top: 10px; cursor: pointer; }
+        .btn-delete { background: none; color: var(--danger); width: 100%; padding: 12px; border: 1px solid var(--danger); border-radius: 12px; margin-top: 15px; font-weight: 700; font-family: 'Ubuntu', sans-serif; cursor: pointer; }
 
         .label-mini { font-size: 0.65rem; color: var(--accent); font-weight: 800; margin-bottom: 5px; display: block; text-transform: uppercase; }
         .hidden { display: none !important; }
 
-        .bloco-parcelas, .resumo-quitacao { background: rgba(125, 125, 125, 0.05); padding: 15px; border-radius: 12px; border: 1px dashed var(--accent); margin-bottom: 15px; }
+        .bloco-parcelas, .resumo-quitacao { background: var(--hover-bg); padding: 15px; border-radius: 12px; border: 1px dashed var(--accent); margin-bottom: 15px; }
         .resumo-quitacao h4 { margin: 0 0 10px 0; font-size: 0.75rem; color: var(--accent); text-transform: uppercase; }
         .resumo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .resumo-item { font-size: 0.7rem; color: var(--text-muted); }
@@ -177,11 +184,22 @@
             <div class="status-row"><span class="status-label">Conexão</span><strong style="color: var(--success); font-size: 0.75rem;">SEGURO</strong></div>
             <div class="status-row"><span class="status-label">Dados</span><strong id="contadorRegistros" style="color: var(--text);">0</strong></div>
             <div class="status-row"><span class="status-label">Saúde</span><strong id="statusFluxo" style="color: var(--text);">ESTÁVEL</strong></div>
+            
+            <div class="meta-panel hidden" id="metaPanelInfo">
+                <div class="meta-label">
+                    <span>Meta: <strong id="metaValorDisplay">R$ 0,00</strong></span>
+                    <span id="metaProgressoDisplay" style="color: var(--success); font-weight: bold;">0%</span>
+                </div>
+                <div class="meta-track">
+                    <div class="meta-fill" id="metaFillBar"></div>
+                </div>
+            </div>
         </div>
+        
         <div class="sidebar-menu">
             <div class="menu-item" onclick="mudarNome()"><i class="fa-solid fa-user-pen"></i> <span>Mudar Nome</span></div>
+            <div class="menu-item" onclick="configurarMeta()"><i class="fa-solid fa-bullseye" style="color: var(--success);"></i> <span>Meta de Economia</span></div>
             <div class="menu-item" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i> <span>Alternar Tema</span></div>
-            
             <div class="menu-item" onclick="toggleFantasma()"><i class="fa-solid fa-ghost"></i> <span>Privacidade</span></div>
             <div class="menu-item" onclick="exportarDados()"><i class="fa-solid fa-file-export"></i> <span>Exportar CSV</span></div>
             <input type="file" id="fileInput" accept=".csv" style="display: none;" onchange="importarDados(event)">
@@ -322,11 +340,17 @@
             closeAll(); // Fecha o menu para ver a mudança
         }
 
-        // 3. FUNÇÃO DE CONFIGURAR NOME
-        function carregarNome() {
+        // 3. FUNÇÃO DE CONFIGURAR NOME E META
+        function carregarConfig() {
             let nomeSalvo = localStorage.getItem('meucaixa_username');
-            if(nomeSalvo) {
-                document.getElementById('userNameDisplay').innerText = nomeSalvo;
+            if(nomeSalvo) document.getElementById('userNameDisplay').innerText = nomeSalvo;
+            
+            let metaSalva = parseFloat(localStorage.getItem('meucaixa_meta')) || 0;
+            if (metaSalva > 0) {
+                document.getElementById('metaPanelInfo').classList.remove('hidden');
+                document.getElementById('metaValorDisplay').innerText = "R$ " + metaSalva.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+            } else {
+                document.getElementById('metaPanelInfo').classList.add('hidden');
             }
         }
 
@@ -334,7 +358,17 @@
             let novoNome = prompt("Como deseja ser chamado no MeuCaixa?");
             if (novoNome && novoNome.trim() !== "") {
                 localStorage.setItem('meucaixa_username', novoNome.trim().toUpperCase());
-                carregarNome();
+                carregarConfig();
+                closeAll();
+            }
+        }
+
+        function configurarMeta() {
+            let meta = prompt("Qual o valor que você deseja alcançar na sua Reserva este mês?");
+            if (meta !== null && !isNaN(meta)) {
+                localStorage.setItem('meucaixa_meta', meta);
+                carregarConfig();
+                renderizar();
                 closeAll();
             }
         }
@@ -466,6 +500,14 @@
             document.getElementById('fillRes').style.width = pRes + '%';
             document.getElementById('labelPercRes').innerText = pRes.toFixed(1) + '%';
             document.getElementById('contadorRegistros').innerText = registros.length;
+
+            // ATUALIZAÇÃO DA META NO PAINEL
+            let metaSalva = parseFloat(localStorage.getItem('meucaixa_meta')) || 0;
+            if (metaSalva > 0) {
+                let percMeta = Math.min((sRes / metaSalva) * 100, 100);
+                document.getElementById('metaFillBar').style.width = percMeta + '%';
+                document.getElementById('metaProgressoDisplay').innerText = percMeta.toFixed(1) + '%';
+            }
         }
 
         function openModal(idx = null) {
@@ -658,7 +700,7 @@
         }
         
         window.onload = () => {
-            carregarNome();
+            carregarConfig();
             renderizar();
         };
     </script>
