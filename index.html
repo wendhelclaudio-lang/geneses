@@ -50,35 +50,18 @@
 
         * { box-sizing: border-box; outline: none; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
         
-        /* Ajuste sutil na base da fonte para diminuir globalmente um pouco */
         body { font-family: 'Ubuntu', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; font-size: 0.95rem; }
 
-        header {
-            background: var(--bg); padding: 18px 22px; display: flex; justify-content: space-between;
-            align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
+        header { background: var(--bg); padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         
         .profile-section { display: flex; align-items: center; gap: 14px; cursor: pointer; }
-        .avatar { 
-            width: 44px; height: 44px; border-radius: 14px; 
-            background: linear-gradient(135deg, var(--accent), #0a192f);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; color: #ffffff; border: 2px solid var(--border);
-            font-size: 1.3rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-        
+        .avatar { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, var(--accent), #0a192f); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #ffffff; border: 2px solid var(--border); font-size: 1.3rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         [data-theme="light"] .avatar { background: linear-gradient(135deg, var(--accent), #bae6fd); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
         .user-info span { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; display: block; text-transform: uppercase; margin-bottom: 2px; }
         .user-info strong { font-size: 0.95rem; color: var(--text); letter-spacing: 0.5px;}
 
-        .sidebar {
-            position: fixed; top: 0; right: -100%; width: 85%; max-width: 380px; height: 100%;
-            background: var(--card); z-index: 3000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 30px 24px; border-left: 1px solid var(--accent); box-shadow: -15px 0 40px rgba(0,0,0,0.7);
-            display: flex; flex-direction: column; overflow-y: auto;
-        }
+        .sidebar { position: fixed; top: 0; right: -100%; width: 85%; max-width: 380px; height: 100%; background: var(--card); z-index: 3000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 30px 24px; border-left: 1px solid var(--accent); box-shadow: -15px 0 40px rgba(0,0,0,0.7); display: flex; flex-direction: column; overflow-y: auto; }
         [data-theme="light"] .sidebar { box-shadow: -15px 0 40px rgba(0,0,0,0.1); }
         .sidebar.open { right: 0; }
         .sidebar-header { margin-bottom: 25px; text-align: center; position: relative; }
@@ -175,7 +158,7 @@
             <div class="avatar"><i class="fa-solid fa-coins"></i></div>
             <div class="user-info">
                 <span>MEUCAIXA</span>
-                <strong id="headerUserName">WENDEL CARNEIRO</strong>
+                <strong id="userNameDisplay">WENDEL CARNEIRO</strong>
             </div>
         </div>
         <button onclick="toggleFantasma()" style="background:none; border:1px solid var(--border); color:var(--text); padding:8px 10px; border-radius:10px; cursor:pointer;">
@@ -220,7 +203,7 @@
             </div>
 
             <div class="menu-item" onclick="mudarMoeda()">
-                <div><i class="fa-solid fa-money-bill-transfer" style="color: var(--warning)"></i> <span>Moeda Principal</span></div>
+                <div><i class="fa-solid fa-money-bill-transfer" style="color: var(--warning)"></i> <span>Símbolo da Moeda</span></div>
                 <span id="currentCurrencyDisplay" style="font-size: 0.75rem; color: var(--text-muted); font-weight: bold;">R$</span>
             </div>
             
@@ -392,7 +375,7 @@
         }
 
         function carregarConfig() {
-            document.getElementById('headerUserName').innerText = appConfig.nome;
+            document.getElementById('userNameDisplay').innerText = appConfig.nome;
             document.getElementById('currentCurrencyDisplay').innerText = appConfig.moeda;
             
             if(appConfig.metaMensal > 0) {
@@ -418,7 +401,7 @@
 
         function configurarMeta() {
             let meta = prompt("Qual a sua meta de patrimônio/reserva para este mês?", appConfig.metaMensal);
-            if (meta !== null) { 
+            if (meta !== null && !isNaN(meta)) { 
                 appConfig.metaMensal = parseFloat(meta) || 0; 
                 salvarConfig(); 
                 closeAll();
@@ -442,7 +425,7 @@
         }
 
         const opcoesSubmenu = {
-            "Receita": ["💰 Salário", "🚀 Freelance", "✨ Rendimentos"],
+            "Receita": ["💰 Salário", "🚀 Freelance", "✨ Rendimentos", "🛠️ Serviço", "📦 Produto"],
             "Fixo": ["🏠 Aluguel", "⚡ Energia", "🌐 Internet", "🎬 Streamings", "🏫 Mensalidade"],
             "Variavel": ["🛒 Mercado", "🍕 Alimentação", "⛽ Combustível", "🚗 Transporte", "💊 Saúde", "🐾 Pets"],
             "Divida": ["🏢 Financiamento", "💳 Cartão", "🤝 Empréstimo", "🧾 Boleto"],
