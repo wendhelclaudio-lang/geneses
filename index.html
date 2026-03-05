@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gêneses Mobile - Operacional</title>
+    <title>Comando de Ativos Mobile</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -43,7 +43,7 @@
         .user-info span { font-size: 0.65rem; color: #94a3b8; letter-spacing: 1px; display: block; text-transform: uppercase; }
         .user-info strong { font-size: 0.9rem; color: var(--text); }
 
-        /* Painel Lateral (Sidebar) Otimizado */
+        /* Painel Lateral (Sidebar) */
         .sidebar {
             position: fixed; top: 0; right: -100%; width: 85%; max-width: 350px; height: 100%;
             background: var(--card); z-index: 3000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -54,8 +54,7 @@
         .sidebar-header { margin-bottom: 25px; text-align: center; position: relative; }
         
         .status-panel {
-            background: rgba(255,255,255,0.03); padding: 15px; border-radius: 16px; margin-bottom: 25px;
-            border: 1px solid #1f2937;
+            background: rgba(255,255,255,0.03); padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid #1f2937;
         }
         .status-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 10px; align-items: center; }
         .status-row:last-child { margin-bottom: 0; }
@@ -69,10 +68,25 @@
         .menu-item:active { background: #1f2937; }
         .menu-item i { color: var(--accent); font-size: 1.1rem; width: 25px; text-align: center; }
 
+        /* Seletor de Mês */
+        .month-selector {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 20px 0;
+        }
+        .month-selector button {
+            background: rgba(255,255,255,0.05); border: 1px solid #1f2937; color: var(--text);
+            width: 35px; height: 35px; border-radius: 10px; font-size: 1rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .month-selector button:active { background: #1f2937; }
+        .month-selector span {
+            font-size: 0.9rem; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 1px;
+        }
+
         /* Layout Principal */
-        .balance-card { padding: 25px 20px; text-align: center; }
+        .balance-card { padding: 15px 20px 25px; text-align: center; }
         .balance-card small { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; }
-        .balance-card h1 { font-size: 2.2rem; margin: 10px 0; font-weight: 800; }
+        .balance-card h1 { font-size: 2.2rem; margin: 5px 0 0; font-weight: 800; }
 
         .quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 20px; }
         .mini-card { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid #1f2937; cursor: pointer; transition: 0.2s; }
@@ -124,7 +138,7 @@
         <div class="profile-section" onclick="toggleSidebar()">
             <div class="avatar">WC</div>
             <div class="user-info">
-                <span>PROTOCOLO FÓTON</span>
+                <span>COMANDO DE ATIVOS</span>
                 <strong>WENDEL CARNEIRO</strong>
             </div>
         </div>
@@ -146,14 +160,14 @@
         <div class="status-panel">
             <div class="status-row">
                 <span class="status-label">Conexão Terminal</span>
-                <strong style="color: var(--success); font-size: 0.75rem;"><i class="fa-solid fa-circle" style="font-size: 0.5rem; vertical-align: middle;"></i> PROTEGIDO</strong>
+                <strong style="color: var(--success); font-size: 0.75rem;"><i class="fa-solid fa-circle" style="font-size: 0.5rem; vertical-align: middle;"></i> SEGURO</strong>
             </div>
             <div class="status-row">
                 <span class="status-label">Volume de Dados</span>
                 <strong id="contadorRegistros" style="color: var(--text);">0 registros</strong>
             </div>
             <div class="status-row">
-                <span class="status-label">Saúde do Fluxo</span>
+                <span class="status-label">Saúde do Mês</span>
                 <strong id="statusFluxo" style="color: var(--accent);">ESTÁVEL</strong>
             </div>
         </div>
@@ -174,12 +188,18 @@
         </div>
         
         <div style="font-size: 0.6rem; color: #4b5563; text-align: center; padding-top: 20px;">
-            ID: FOTON-2026-ALPHA<br>STATUS: ATIVO
+            ID: WENDEL-2026-ALPHA<br>STATUS: ATIVO
         </div>
     </div>
 
+    <div class="month-selector">
+        <button onclick="mudarMes(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+        <span id="mesDisplay">Mês Ano</span>
+        <button onclick="mudarMes(1)"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+
     <div class="balance-card">
-        <small>Saldo Disponível</small>
+        <small>Saldo Disponível do Mês</small>
         <h1 id="totalSaldo">R$ 0,00</h1>
     </div>
 
@@ -187,19 +207,19 @@
         <div class="mini-card" onclick="filtrarExtrato('Receita')"><i class="fa-solid fa-arrow-up" style="color:var(--success)"></i><span>Entradas</span><strong id="totalReceitas">R$ 0,00</strong></div>
         <div class="mini-card" onclick="filtrarExtrato('Gasto')"><i class="fa-solid fa-arrow-down" style="color:var(--warning)"></i><span>Gastos</span><strong id="totalGastos">R$ 0,00</strong></div>
         <div class="mini-card" onclick="filtrarExtrato('Divida')"><i class="fa-solid fa-barcode" style="color:var(--danger)"></i><span>Dívidas</span><strong id="totalDividas">R$ 0,00</strong></div>
-        <div class="mini-card" onclick="filtrarExtrato('Reserva')"><i class="fa-solid fa-vault" style="color:var(--reserve)"></i><span>Patrimônio</span><strong id="totalReserva">R$ 0,00</strong></div>
+        <div class="mini-card" onclick="filtrarExtrato('Reserva')"><i class="fa-solid fa-vault" style="color:var(--reserve)"></i><span>Patrimônio Salvo</span><strong id="totalReserva">R$ 0,00</strong></div>
     </div>
 
     <main>
         <div class="section-header">
-            <h3 id="txtExtrato">Extrato de Operações</h3>
+            <h3 id="txtExtrato">Operações do Mês</h3>
             <button id="btnVoltar" class="hidden" onclick="filtrarExtrato('Tudo')"><i class="fa-solid fa-chevron-left"></i> VOLTAR</button>
         </div>
         <div id="tabelaCorpo"></div>
     </main>
 
     <section class="bottom-charts">
-        <div class="section-header" style="margin-top:0;"><h3>Performance de Fluxo</h3></div>
+        <div class="section-header" style="margin-top:0;"><h3>Performance do Mês</h3></div>
         <div class="chart-bar-group">
             <div class="chart-label"><span>Comprometimento de Renda</span><span id="labelPercSaida">0%</span></div>
             <div class="chart-track"><div id="fillSaida" class="chart-fill" style="background:var(--danger)"></div></div>
@@ -248,6 +268,7 @@
         let registros = JSON.parse(localStorage.getItem('foton_db')) || [];
         let modoFantasma = false;
         let filtroAtual = "Tudo";
+        let dataVisualizacao = new Date();
 
         const opcoesSubmenu = {
             "Receita": ["💰 Salário", "🚀 Freelance", "✨ Outros"],
@@ -256,6 +277,17 @@
             "Divida": ["💳 Cartão", "🤝 Empréstimo", "🧾 Boleto"],
             "Reserva": ["🏦 Investimentos", "📦 Caixinha", "🛡️ Reserva Emergência"]
         };
+
+        // Lógica de Mês
+        function mudarMes(delta) {
+            dataVisualizacao.setMonth(dataVisualizacao.getMonth() + delta);
+            renderizar();
+        }
+
+        function formatarMesAno(dataObj) {
+            const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            return `${meses[dataObj.getMonth()]} ${dataObj.getFullYear()}`;
+        }
 
         // Funções de Interface UI
         function toggleSidebar() {
@@ -276,7 +308,7 @@
             const txt = document.getElementById('txtExtrato');
             if(categoria === 'Tudo') {
                 btn.classList.add('hidden');
-                txt.innerText = "Extrato de Operações";
+                txt.innerText = "Operações do Mês";
             } else {
                 btn.classList.remove('hidden');
                 txt.innerText = categoria === 'Gasto' ? "Filtro: Gastos" : "Filtro: " + categoria;
@@ -286,12 +318,22 @@
 
         // Funções de Lógica e Renderização
         function renderizar() {
+            document.getElementById('mesDisplay').innerText = formatarMesAno(dataVisualizacao);
+            const prefixoMes = `${dataVisualizacao.getFullYear()}-${String(dataVisualizacao.getMonth() + 1).padStart(2, '0')}`;
+
             const corpo = document.getElementById('tabelaCorpo');
             corpo.innerHTML = '';
             let sRec = 0, sGas = 0, sDiv = 0, sRes = 0;
+            
+            // Filtra os registros para mostrar apenas os do mês atual selecionado
             const ordenados = [...registros].sort((a, b) => new Date(b.data) - new Date(a.data));
+            const registrosDoMes = ordenados.filter(r => r.data.startsWith(prefixoMes));
 
-            ordenados.forEach(r => {
+            if(registrosDoMes.length === 0) {
+                corpo.innerHTML = '<div style="text-align:center; padding: 20px; color:#6b7280; font-size:0.8rem;">Nenhum registro encontrado neste mês.</div>';
+            }
+
+            registrosDoMes.forEach(r => {
                 const idxOriginal = registros.indexOf(r);
                 const vTotal = parseFloat(r.valor), vPago = parseFloat(r.pago), falta = vTotal - vPago;
                 
@@ -323,7 +365,7 @@
                 }
             });
 
-            // Atualização dos Painéis
+            // Atualização dos Painéis do Mês
             const saldoLivre = sRec - (sGas + sDiv);
             document.getElementById('totalReceitas').innerText = ocultarBits(sRec);
             document.getElementById('totalGastos').innerText = ocultarBits(sGas);
@@ -331,7 +373,7 @@
             document.getElementById('totalReserva').innerText = ocultarBits(sRes);
             document.getElementById('totalSaldo').innerText = ocultarBits(saldoLivre);
 
-            // Atualização Gráficos Inferiores
+            // Atualização Gráficos Inferiores (Baseado no Mês)
             const pSaida = sRec > 0 ? Math.min(((sGas + sDiv) / sRec) * 100, 100) : 0;
             const pRes = sRec > 0 ? Math.min((sRes / sRec) * 100, 100) : 0;
             document.getElementById('fillSaida').style.width = pSaida + '%';
@@ -339,8 +381,8 @@
             document.getElementById('fillRes').style.width = pRes + '%';
             document.getElementById('labelPercRes').innerText = pRes.toFixed(1) + '%';
 
-            // Atualização do Painel Lateral (Sidebar)
-            document.getElementById('contadorRegistros').innerText = registros.length + " operações";
+            // Atualização do Painel Lateral
+            document.getElementById('contadorRegistros').innerText = registros.length + " no total";
             const statusFluxoEl = document.getElementById('statusFluxo');
             if (saldoLivre > 0) {
                 statusFluxoEl.innerText = "POSITIVO";
@@ -349,8 +391,8 @@
                 statusFluxoEl.innerText = "ALERTA";
                 statusFluxoEl.style.color = "var(--danger)";
             } else {
-                statusFluxoEl.innerText = "ESTÁVEL";
-                statusFluxoEl.style.color = "var(--accent)";
+                statusFluxoEl.innerText = "ZERADO";
+                statusFluxoEl.style.color = "var(--text)";
             }
         }
 
@@ -411,7 +453,6 @@
             } 
         }
 
-        // Funções do Painel de Controle (Sidebar)
         function toggleFantasma() { 
             modoFantasma = !modoFantasma; 
             document.getElementById('eyeIcon').className = modoFantasma ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'; 
@@ -434,18 +475,8 @@
             closeAll();
         }
 
-        function otimizarTerminal() {
-            alert("Terminal otimizado para máxima velocidade de processamento.");
-            closeAll();
-        }
-
-        function limparTerminal() {
-            if(confirm("ATENÇÃO: Isso apagará TODOS os dados salvos neste dispositivo. Deseja prosseguir?")) {
-                localStorage.removeItem('foton_db');
-                location.reload();
-            }
-        }
-
+        function otimizarTerminal() { alert("Terminal otimizado para máxima velocidade."); closeAll(); }
+        function limparTerminal() { if(confirm("ATENÇÃO: Apagar TODOS os dados salvos?")) { localStorage.removeItem('foton_db'); location.reload(); } }
         function resetForm() { document.getElementById('editIndex').value = ""; document.getElementById('valor').value = ""; document.getElementById('pago').value = ""; document.getElementById('desc').value = ""; document.getElementById('data').value = new Date().toISOString().split('T')[0]; }
 
         window.onload = () => { renderizar(); };
