@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MeuCaixa - Gestão de Ativos</title>
+    <title>MeuCaixa - Comando de Ativos</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#030712">
+    <meta name="theme-color" content="#0a192f">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -24,43 +24,23 @@
             --reserve: #8b5cf6;
         }
 
-        * { box-sizing: border-box; outline: none; }
+        * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
-
-        /* --- SPLASH SCREEN: GRÁFICO DE PIZZA DINÂMICO --- */
-        #splash-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #030712; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 9999;
-            transition: all 0.8s cubic-bezier(0.65, 0, 0.35, 1);
-        }
-        .chart-container { position: relative; width: 150px; height: 150px; display: flex; justify-content: center; align-items: center; }
-        .svg-chart { transform: rotate(-90deg); }
-        .circle-bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 12; }
-        .circle-progress {
-            fill: none; stroke: var(--accent); stroke-width: 12;
-            stroke-linecap: round; stroke-dasharray: 440;
-            stroke-dashoffset: 440;
-            filter: drop-shadow(0 0 8px var(--accent));
-            animation: chartFill 2s ease-out forwards;
-        }
-        .chart-info { position: absolute; display: flex; flex-direction: column; align-items: center; }
-        .percentage { font-family: monospace; font-size: 1.5rem; font-weight: bold; color: var(--accent); }
-        .status-msg { margin-top: 40px; font-weight: 800; font-size: 0.7rem; color: #94a3b8; letter-spacing: 2px; text-transform: uppercase; }
-        @keyframes chartFill { to { stroke-dashoffset: 80; } }
-        #splash-screen.fade-out { opacity: 0; visibility: hidden; transform: scale(1.1); }
 
         header {
             background: var(--bg); padding: 15px 20px; display: flex; justify-content: space-between;
             align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #1f2937;
         }
+        
         .profile-section { display: flex; align-items: center; gap: 12px; cursor: pointer; }
         .avatar { 
             width: 40px; height: 40px; border-radius: 12px; 
             background: linear-gradient(135deg, var(--accent), #0a192f);
             display: flex; align-items: center; justify-content: center;
             font-weight: bold; color: var(--bg); border: 2px solid #1f2937;
+            font-size: 1.2rem;
         }
+        
         .user-info span { font-size: 0.65rem; color: #94a3b8; letter-spacing: 1px; display: block; text-transform: uppercase; }
         .user-info strong { font-size: 0.9rem; color: var(--text); }
 
@@ -72,8 +52,11 @@
         }
         .sidebar.open { right: 0; }
         .sidebar-header { margin-bottom: 25px; text-align: center; position: relative; }
+        
         .status-panel { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid #1f2937; }
         .status-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 10px; align-items: center; }
+        .status-row:last-child { margin-bottom: 0; }
+        .status-label { color: #94a3b8; }
 
         .sidebar-menu { display: flex; flex-direction: column; gap: 10px; flex: 1; }
         .menu-item { padding: 15px; border-radius: 12px; background: rgba(255,255,255,0.03); display: flex; align-items: center; gap: 15px; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent; }
@@ -97,6 +80,7 @@
         main { padding: 0 20px 20px; }
         .section-header { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 15px; }
         .section-header h3 { font-size: 0.9rem; color: #94a3b8; text-transform: uppercase; margin: 0; }
+        
         #btnVoltar { background: rgba(0, 242, 255, 0.1); color: var(--accent); border: 1px solid var(--accent); padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; }
 
         .submenu-divida { display: flex; gap: 10px; margin-bottom: 15px; }
@@ -110,6 +94,7 @@
         .details { flex: 1; overflow: hidden; }
         .details strong { display: block; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .details span { font-size: 0.7rem; color: #6b7280; }
+        
         .amount { text-align: right; min-width: 90px; }
         .amount strong { display: block; font-size: 0.85rem; }
         .amount .status-debt { font-size: 0.6rem; font-weight: 800; display: block; margin-top: 2px; }
@@ -127,6 +112,7 @@
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; backdrop-filter: blur(3px); }
 
         input, select { width: 100%; background: #1f2937; border: 1px solid #374151; padding: 14px; border-radius: 12px; color: white; margin-bottom: 12px; font-size: 1rem; }
+        
         .btn-confirm { background: var(--accent); color: var(--bg); width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; margin-top: 10px; }
         .btn-delete { background: none; color: var(--danger); width: 100%; padding: 12px; border: 1px solid var(--danger); border-radius: 12px; margin-top: 15px; font-weight: 700; }
 
@@ -142,22 +128,9 @@
 </head>
 <body>
 
-    <div id="splash-screen">
-        <div class="chart-container">
-            <svg class="svg-chart" width="150" height="150">
-                <circle class="circle-bg" cx="75" cy="75" r="70"></circle>
-                <circle id="progress-circle" class="circle-progress" cx="75" cy="75" r="70"></circle>
-            </svg>
-            <div class="chart-info">
-                <span class="percentage" id="count-percentage">0%</span>
-            </div>
-        </div>
-        <div class="status-msg" id="status-text">Consolidando MeuCaixa</div>
-    </div>
-
     <header>
         <div class="profile-section" onclick="toggleSidebar()">
-            <div class="avatar">WC</div>
+            <div class="avatar"><i class="fa-solid fa-coins"></i></div>
             <div class="user-info">
                 <span>MEUCAIXA</span>
                 <strong>WENDEL CARNEIRO</strong>
@@ -170,7 +143,11 @@
 
     <div class="sidebar" id="profileSidebar">
         <div style="text-align: right; margin-bottom: 10px;"><i class="fa-solid fa-xmark" style="font-size: 1.5rem; cursor: pointer; color: #94a3b8;" onclick="toggleSidebar()"></i></div>
-        <div class="sidebar-header"><div class="avatar" style="width: 65px; height: 65px; font-size: 1.5rem; margin: 0 auto 10px;">WC</div><h2 style="margin:0; font-size: 1.1rem;">Painel MeuCaixa</h2><span style="color: var(--accent); font-size: 0.75rem;">Operacional</span></div>
+        <div class="sidebar-header">
+            <div class="avatar" style="width: 65px; height: 65px; font-size: 2rem; margin: 0 auto 10px;"><i class="fa-solid fa-coins"></i></div>
+            <h2 style="margin:0; font-size: 1.1rem;">Painel MeuCaixa</h2>
+            <span style="color: var(--accent); font-size: 0.75rem;">Operacional</span>
+        </div>
         <div class="status-panel">
             <div class="status-row"><span class="status-label">Conexão</span><strong style="color: var(--success); font-size: 0.75rem;">SEGURO</strong></div>
             <div class="status-row"><span class="status-label">Dados</span><strong id="contadorRegistros">0</strong></div>
@@ -272,28 +249,11 @@
 
         const opcoesSubmenu = {
             "Receita": ["💰 Salário", "🚀 Freelance", "✨ Outros Recebíveis"],
-            "Fixo": ["🏠 Aluguel", "⚡ Energia", "🎬 Streamings"],
-            "Variavel": ["🛒 Mercado", "🍕 Alimentação", "🚗 Transporte"],
+            "Fixo": ["🏠 Aluguel", "⚡ Energia", "🌐 Internet", "🎬 Streamings"],
+            "Variavel": ["🛒 Mercado", "🍕 Alimentação", "⛽ Combustível", "🚗 Transporte"],
             "Divida": ["🏢 Financiamento", "💳 Cartão", "🤝 Empréstimo", "🧾 Boleto"],
             "Reserva": ["🏦 Investimentos", "📦 Caixinha", "🛡️ Reserva Emergência"]
         };
-
-        // LÓGICA DE ABERTURA: GRÁFICO DE PIZZA
-        window.addEventListener('load', () => {
-            const countEl = document.getElementById('count-percentage');
-            let count = 0;
-            
-            const counterInterval = setInterval(() => {
-                count++;
-                countEl.innerText = count + "%";
-                if(count >= 100) {
-                    clearInterval(counterInterval);
-                    setTimeout(() => {
-                        document.getElementById('splash-screen').classList.add('fade-out');
-                    }, 500);
-                }
-            }, 20); // Velocidade do contador
-        });
 
         function mudarMes(delta) { dataVisualizacao.setMonth(dataVisualizacao.getMonth() + delta); renderizar(); }
         function formatarMesAno(d) { const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']; return `${meses[d.getMonth()]} ${d.getFullYear()}`; }
@@ -329,7 +289,6 @@
                 const vT = parseFloat(r.valor), vP = parseFloat(r.pago), falta = vT - vP;
                 const isPago = vP >= vT;
 
-                // NOVA REGRA: Receita só entra no saldo se isPago (Confirmado) for verdadeiro
                 if(r.tipo === 'Receita') {
                     if(isPago) sRec += vT; 
                 } else if(r.tipo === 'Divida') {
@@ -352,7 +311,6 @@
                     let color = r.tipo === 'Receita' ? 'var(--success)' : (r.tipo === 'Divida' ? 'var(--danger)' : (r.tipo === 'Reserva' ? 'var(--reserve)' : 'var(--warning)'));
                     let extraInfo = r.forma ? ` • ${r.forma}` : '';
                     
-                    // STATUS TEXT CORRIGIDO
                     let statusLabel = isPago ? (r.tipo === 'Receita' ? 'RECEBIDO' : 'LIQUIDADO') : 'PENDENTE';
                     
                     corpo.innerHTML += `<div class="transaction-item" onclick="openModal(${idxO})"><div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div><div class="details"><strong>${r.desc}</strong><span>${r.data.split('-').reverse().join('/')} • ${r.tipo}${extraInfo}</span></div><div class="amount"><strong>${ocultarBits(vT)}</strong><span class="status-debt" style="color:${isPago ? 'var(--success)' : 'var(--danger)'}">${statusLabel}</span></div></div>`;
