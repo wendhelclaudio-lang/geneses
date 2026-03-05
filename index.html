@@ -91,7 +91,6 @@
         
         #btnVoltar { background: rgba(0, 242, 255, 0.1); color: var(--accent); border: 1px solid var(--accent); padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; }
 
-        /* Submenu de Dívidas */
         .submenu-divida { display: flex; gap: 10px; margin-bottom: 15px; }
         .sub-btn { flex: 1; padding: 8px; background: #111827; border: 1px solid #1f2937; border-radius: 8px; font-size: 0.65rem; font-weight: 800; color: #94a3b8; }
         .sub-btn.active { background: rgba(0, 242, 255, 0.1); border-color: var(--accent); color: var(--accent); }
@@ -129,6 +128,16 @@
         .hidden { display: none !important; }
 
         .bloco-parcelas { background: rgba(245, 158, 11, 0.05); padding: 15px; border-radius: 12px; border: 1px dashed var(--warning); margin-bottom: 15px; }
+        
+        /* Estilo para o Resumo de Quitação */
+        .resumo-quitacao {
+            background: #0f172a; padding: 15px; border-radius: 12px; margin-bottom: 20px;
+            border-left: 4px solid var(--accent);
+        }
+        .resumo-quitacao h4 { margin: 0 0 10px 0; font-size: 0.75rem; color: var(--accent); text-transform: uppercase; }
+        .resumo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .resumo-item { font-size: 0.7rem; color: #94a3b8; }
+        .resumo-item strong { color: white; display: block; font-size: 0.8rem; }
     </style>
 </head>
 <body>
@@ -214,17 +223,28 @@
 
     <div class="modal" id="modalForm">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2 id="modalTitle" style="margin:0; font-size:1.2rem;">Nova Operação</h2><i class="fa-solid fa-circle-xmark" style="font-size:1.5rem; color:#374151;" onclick="closeModal()"></i></div>
+        
+        <div id="blocoResumoQuitacao" class="resumo-quitacao hidden">
+            <h4><i class="fa-solid fa-chart-pie"></i> Resumo do Contrato</h4>
+            <div class="resumo-grid">
+                <div class="resumo-item">Valor Total Original<strong id="resumoTotal">R$ 0,00</strong></div>
+                <div class="resumo-item">Total Pago até hoje<strong id="resumoPago" style="color:var(--success)">R$ 0,00</strong></div>
+                <div class="resumo-item">Restante para Quitar<strong id="resumoRestante" style="color:var(--danger)">R$ 0,00</strong></div>
+                <div class="resumo-item">Parcelas Restantes<strong id="resumoFalta">0 parcelas</strong></div>
+            </div>
+        </div>
+
         <span class="label-mini">Tipo</span>
         <select id="tipo" onchange="atualizarSubmenu()"><option value="Receita">Receita</option><option value="Fixo">Gasto Fixo</option><option value="Variavel">Gasto Variável</option><option value="Divida">Dívida / Boleto</option><option value="Reserva">Patrimônio</option></select>
         <span class="label-mini">Categoria</span><select id="submenu" onchange="definirDescricao()"></select>
         <input type="text" id="desc" placeholder="Descrição Personalizada">
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <div><span class="label-mini">Valor Total</span><input type="number" id="valor" placeholder="0,00" step="0.01" inputmode="decimal"></div>
-            <div id="campoPago"><span class="label-mini">Já Pagou?</span><input type="number" id="pago" placeholder="0,00" step="0.01" inputmode="decimal"></div>
+            <div><span class="label-mini">Valor da Parcela</span><input type="number" id="valor" placeholder="0,00" step="0.01" inputmode="decimal"></div>
+            <div id="campoPago"><span class="label-mini">Já Pagou? (Sim/Não)</span><select id="selectPago"><option value="0">Não</option><option value="1">Sim</option></select></div>
         </div>
         <div id="blocoParcelamento" class="bloco-parcelas hidden">
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <div><span class="label-mini">Nº Parcelas</span><input type="number" id="parcelas" value="1" min="1" inputmode="numeric"></div>
+                <div><span class="label-mini">Nº Total Parcelas</span><input type="number" id="parcelas" value="1" min="1" inputmode="numeric"></div>
                 <div><span class="label-mini">Parcelas Pagas</span><input type="number" id="parcelasPagas" value="0" min="0" inputmode="numeric"></div>
             </div>
         </div>
@@ -258,7 +278,6 @@
             const btn = document.getElementById('btnVoltar');
             const txt = document.getElementById('txtExtrato');
             const sub = document.getElementById('subFiltros');
-            
             if(c === 'Tudo') { btn.classList.add('hidden'); txt.innerText = "Operações do Mês"; sub.classList.add('hidden'); } 
             else { btn.classList.remove('hidden'); txt.innerText = c === 'Gasto' ? "Filtro: Gastos" : "Filtro: " + c; sub.classList.remove('hidden'); }
             renderizar();
@@ -291,7 +310,6 @@
                 let exibir = (filtroAtual === "Tudo") || (filtroAtual === r.tipo) || (filtroAtual === "Gasto" && (r.tipo === "Fixo" || r.tipo === "Variavel"));
                 if (termoBusca !== "" && !r.desc.toLowerCase().includes(termoBusca)) exibir = false;
                 
-                // Lógica de Submenu (Pendente/Pago)
                 if (filtroAtual !== "Tudo") {
                     if (subFiltro === "Pendente" && isPago) exibir = false;
                     if (subFiltro === "Pago" && !isPago) exibir = false;
@@ -304,12 +322,11 @@
                 }
             });
 
-            const saldoLivre = sRec - (sGas + sDiv);
             document.getElementById('totalReceitas').innerText = ocultarBits(sRec);
             document.getElementById('totalGastos').innerText = ocultarBits(sGas);
             document.getElementById('totalDividas').innerText = ocultarBits(sDiv);
             document.getElementById('totalReserva').innerText = ocultarBits(sRes);
-            document.getElementById('totalSaldo').innerText = ocultarBits(saldoLivre);
+            document.getElementById('totalSaldo').innerText = ocultarBits(sRec - (sGas + sDiv));
 
             const pSaida = sRec > 0 ? Math.min(((sGas + sDiv) / sRec) * 100, 100) : 0;
             const pRes = sRec > 0 ? Math.min((sRes / sRec) * 100, 100) : 0;
@@ -323,6 +340,8 @@
         function openModal(idx = null) {
             document.getElementById('modalForm').classList.add('open');
             document.getElementById('overlay').style.display = 'block';
+            const blocoResumo = document.getElementById('blocoResumoQuitacao');
+            
             if(idx !== null) {
                 const r = registros[idx];
                 document.getElementById('modalTitle').innerText = "Editar Operação";
@@ -331,18 +350,37 @@
                 atualizarSubmenu();
                 document.getElementById('desc').value = r.desc;
                 document.getElementById('valor').value = r.valor;
-                document.getElementById('pago').value = r.pago;
+                document.getElementById('selectPago').value = (r.pago >= r.valor) ? "1" : "0";
                 document.getElementById('data').value = r.data;
                 document.getElementById('btnExcluir').classList.remove('hidden');
                 document.getElementById('blocoParcelamento').classList.add('hidden');
+
+                // Lógica de Resumo de Quitação
+                if (r.desc.includes('(') && r.desc.includes(')')) {
+                    const baseDesc = r.desc.split('(')[0].trim();
+                    const vinculados = registros.filter(reg => reg.desc.startsWith(baseDesc));
+                    const totalDívida = vinculados.reduce((acc, curr) => acc + curr.valor, 0);
+                    const totalPago = vinculados.reduce((acc, curr) => acc + curr.pago, 0);
+                    const parcelasRestantes = vinculados.filter(reg => reg.pago < reg.valor).length;
+
+                    blocoResumo.classList.remove('hidden');
+                    document.getElementById('resumoTotal').innerText = ocultarBits(totalDívida);
+                    document.getElementById('resumoPago').innerText = ocultarBits(totalPago);
+                    document.getElementById('resumoRestante').innerText = ocultarBits(totalDívida - totalPago);
+                    document.getElementById('resumoFalta').innerText = parcelasRestantes + " parcelas";
+                } else {
+                    blocoResumo.classList.add('hidden');
+                }
             } else {
                 document.getElementById('modalTitle').innerText = "Nova Operação";
                 document.getElementById('btnExcluir').classList.add('hidden');
+                blocoResumo.classList.add('hidden');
                 resetForm(); atualizarSubmenu();
             }
         }
 
         function closeModal() { document.getElementById('modalForm').classList.remove('open'); document.getElementById('overlay').style.display = 'none'; }
+        
         function atualizarSubmenu() {
             const t = document.getElementById('tipo').value;
             const sub = document.getElementById('submenu'); sub.innerHTML = '';
@@ -350,22 +388,31 @@
             document.getElementById('blocoParcelamento').classList.toggle('hidden', t !== 'Divida');
             definirDescricao();
         }
+
         function definirDescricao() { document.getElementById('desc').value = document.getElementById('submenu').value.split(' ').slice(1).join(' '); }
+        
         function salvar() {
             const t = document.getElementById('tipo').value, desc = document.getElementById('desc').value, vT = parseFloat(document.getElementById('valor').value) || 0, dBase = document.getElementById('data').value, p = parseInt(document.getElementById('parcelas').value) || 1, pP = parseInt(document.getElementById('parcelasPagas').value) || 0, editIdx = document.getElementById('editIndex').value;
+            const isPagoSim = document.getElementById('selectPago').value === "1";
+
             if(!desc || vT <= 0 || !dBase) return alert("Preencha tudo!");
-            if(editIdx !== "") { registros[editIdx] = { tipo: t, desc, valor: vT, pago: parseFloat(document.getElementById('pago').value)||0, data: dBase }; } 
-            else {
+
+            if(editIdx !== "") { 
+                registros[editIdx] = { tipo: t, desc, valor: vT, pago: isPagoSim ? vT : 0, data: dBase }; 
+            } else {
                 if (t === 'Divida' && p > 1) {
                     const vParc = vT / p; let dObj = new Date(dBase + "T12:00:00");
                     for (let i = 1; i <= p; i++) {
                         let nD = new Date(dObj.getFullYear(), dObj.getMonth() + (i - 1), dObj.getDate()).toISOString().split('T')[0];
                         registros.push({ tipo: t, desc: `${desc} (${i}/${p})`, valor: vParc, pago: (i <= pP) ? vParc : 0, data: nD });
                     }
-                } else { registros.push({ tipo: t, desc, valor: vT, pago: (t==='Receita'||t==='Reserva') ? vT : (parseFloat(document.getElementById('pago').value)||0), data: dBase }); }
+                } else { 
+                    registros.push({ tipo: t, desc, valor: vT, pago: (t==='Receita'||t==='Reserva'||isPagoSim) ? vT : 0, data: dBase }); 
+                }
             }
             localStorage.setItem('foton_db', JSON.stringify(registros)); closeAll(); renderizar();
         }
+
         function excluirRegistro() { if(confirm("Confirma exclusão?")) { registros.splice(document.getElementById('editIndex').value, 1); localStorage.setItem('foton_db', JSON.stringify(registros)); closeAll(); renderizar(); } }
         function exportarDados() { if(registros.length === 0) return; let csv = "Tipo,Descricao,Valor Total,Valor Pago,Data\n"; registros.forEach(r => { csv += `${r.tipo},${r.desc.replace(/,/g, '')},${r.valor},${r.pago},${r.data}\n`; }); const blob = new Blob([csv], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.setAttribute('href', url); a.setAttribute('download', 'Backup_Genesas.csv'); a.click(); closeAll(); }
         function importarDados(e) { const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = function(ev) { const lines = ev.target.result.split('\n'); let novos = []; for(let i=1; i<lines.length; i++){ const c = lines[i].split(','); if(c.length>=5) novos.push({ tipo: c[0], desc: c[1], valor: parseFloat(c[2]), pago: parseFloat(c[3]), data: c[4].trim() }); } if(novos.length > 0){ registros = novos; localStorage.setItem('foton_db', JSON.stringify(registros)); renderizar(); closeAll(); } }; r.readAsText(f); }
@@ -373,7 +420,7 @@
         function ocultarBits(v) { return modoFantasma ? "R$ ••••" : "R$ " + v.toLocaleString('pt-BR', {minimumFractionDigits: 2}); }
         function otimizarTerminal() { closeAll(); }
         function limparTerminal() { if(confirm("Resetar tudo?")) { localStorage.removeItem('foton_db'); location.reload(); } }
-        function resetForm() { document.getElementById('editIndex').value = ""; document.getElementById('valor').value = ""; document.getElementById('pago').value = ""; document.getElementById('parcelas').value = "1"; document.getElementById('parcelasPagas').value = "0"; document.getElementById('desc').value = ""; document.getElementById('data').value = new Date().toISOString().split('T')[0]; }
+        function resetForm() { document.getElementById('editIndex').value = ""; document.getElementById('valor').value = ""; document.getElementById('selectPago').value = "0"; document.getElementById('parcelas').value = "1"; document.getElementById('parcelasPagas').value = "0"; document.getElementById('desc').value = ""; document.getElementById('data').value = new Date().toISOString().split('T')[0]; }
         window.onload = renderizar;
     </script>
 </body>
