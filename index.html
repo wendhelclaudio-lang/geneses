@@ -62,13 +62,13 @@
 
         /* TELA DE BLOQUEIO (LOGIN REDESENHADO) */
         #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--bg) 0%, var(--card) 100%); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; transition: opacity 0.6s ease, visibility 0.6s; }
-        [data-theme="light"] #lock-screen, [data-theme="santander"] #lock-screen, [data-theme="itau"] #lock-screen, [data-theme="bradesco"] #lock-screen, [data-theme="nubank"] #lock-screen { background: rgba(255, 255, 255, 0.85); }
+        [data-theme="light"] #lock-screen, [data-theme="santander"] #lock-screen, [data-theme="itau"] #lock-screen, [data-theme="bradesco"] #lock-screen, [data-theme="nubank"] #lock-screen { background: rgba(255, 255, 255, 0.95); }
         
         .login-logo { font-size: 4.5rem; color: var(--accent); margin-bottom: 10px; filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.3)); }
         .lock-title { font-size: 2rem; margin-bottom: 5px; color: var(--text); font-weight: 800; text-align: center; letter-spacing: 1px;}
         .lock-subtitle { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 40px; text-align: center;}
         
-        /* Estilos da área de Senha Local (inicia oculta) */
+        /* Estilos do Input de Senha e Botões de Login Local */
         #loginLocalArea { display: none; width: 100%; max-width: 320px; flex-direction: column; align-items: center; }
         .lock-input { width: 100%; background: var(--input-bg); border: 2px solid var(--border); padding: 18px; border-radius: 16px; color: var(--text); font-size: 1.2rem; text-align: center; letter-spacing: 5px; margin-bottom: 15px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); transition: all 0.3s; }
         .lock-input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
@@ -427,7 +427,7 @@
     </div>
 
     <script>
-        // CONFIGURAÇÃO FIREBASE 
+        // CONFIGURAÇÃO REAL DO SEU FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyD2TXAC0o5t8vTsH2jzLqZ9QoReHU5y0Mo",
             authDomain: "meucaixa-d8d24.firebaseapp.com",
@@ -436,6 +436,8 @@
             messagingSenderId: "486750418195",
             appId: "1:486750418195:web:4c33081663486abda796e6"
         };
+
+        // INICIALIZANDO FIREBASE
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const provider = new firebase.auth.GoogleAuthProvider();
@@ -464,20 +466,25 @@
         }
 
         // ==========================================
-        // SISTEMA DE LOGIN E SEGURANÇA
+        // SISTEMA DE LOGIN E SEGURANÇA CORRIGIDO
         // ==========================================
         
-        function setupLoginScreen() {
-            const screen = document.getElementById('lock-screen');
+        function verificarStatusAutenticacao() {
+            const lockScreen = document.getElementById('lock-screen');
             const localArea = document.getElementById('loginLocalArea');
             const btnGoogle = document.getElementById('btnGoogleAuth');
             const btnGuest = document.getElementById('btnGuestMode');
             const subtitle = document.getElementById('loginSubtitle');
 
-            // Verifica se a sessão do navegador já validou a entrada
-            if (sessionStorage.getItem('isLoggedIn') === 'true') {
-                screen.classList.add('hidden');
-                return;
+            // Configura o visual da tela de bloqueio com base na existência de senha
+            if(appConfig.senhaHash && appConfig.senhaHash !== "google_auth") {
+                localArea.style.display = 'flex';
+                btnGuest.style.display = 'none';
+                subtitle.innerText = "Insira sua senha local para acessar.";
+            } else {
+                localArea.style.display = 'none';
+                btnGuest.style.display = 'flex';
+                subtitle.innerText = "Gerencie suas finanças com inteligência.";
             }
 
             // Ouve as mudanças de autenticação do Firebase no fundo
@@ -486,35 +493,41 @@
                     // Está logado no Firebase (Nuvem)
                     appConfig.nome = user.displayName;
                     appConfig.fotoPerfil = user.photoURL;
+                    appConfig.senhaHash = "google_auth"; 
+                    
                     document.getElementById('statusConexao').innerText = "GOOGLE CLOUD";
                     document.getElementById('statusConexao').style.color = "#0ea5e9";
-                    salvarConfig(false); // Salva silenciosamente
+                    salvarConfig(false);
                     
                     sessionStorage.setItem('isLoggedIn', 'true');
-                    screen.style.opacity = '0';
-                    setTimeout(() => { screen.classList.add('hidden'); }, 500);
-                } else {
-                    // Não está logado no Google. Monta a tela de acordo com as configs
-                    document.getElementById('statusConexao').innerText = "OFFLINE LOCAL";
-                    document.getElementById('statusConexao').style.color = "var(--warning)";
-
-                    if(appConfig.senhaHash) {
-                        // Tem senha configurada
-                        localArea.style.display = 'flex';
-                        btnGuest.style.display = 'none';
-                        subtitle.innerText = "Insira sua senha para acessar.";
-                    } else {
-                        // Modo livre
-                        localArea.style.display = 'none';
-                        btnGuest.style.display = 'flex';
-                        subtitle.innerText = "Gerencie suas finanças com inteligência.";
-                    }
+                    lockScreen.style.opacity = '0';
+                    setTimeout(() => { lockScreen.classList.add('hidden'); }, 500);
                     
-                    screen.classList.remove('hidden');
-                    screen.style.opacity = '1';
+                } else {
+                    // Não está no Google. Verifica se tem sessão local.
+                    if(sessionStorage.getItem('isLoggedIn') === 'true' || sessionStorage.getItem('guestMode') === 'true') {
+                        document.getElementById('statusConexao').innerText = "OFFLINE LOCAL";
+                        document.getElementById('statusConexao').style.color = "var(--warning)";
+                        lockScreen.classList.add('hidden');
+                    } else {
+                        lockScreen.classList.remove('hidden');
+                        lockScreen.style.opacity = '1';
+                    }
                 }
             });
         }
+
+        // CORREÇÃO PWA: Usa Redirect para não ser bloqueado pelo Windows/Celular
+        function iniciarLoginGoogle() {
+            document.getElementById('btnGoogleAuth').innerHTML = "Redirecionando...";
+            auth.signInWithRedirect(provider);
+        }
+
+        // Captura possíveis erros do redirecionamento
+        auth.getRedirectResult().catch((error) => {
+            alert("Falha no login Google: " + error.message);
+            document.getElementById('btnGoogleAuth').innerHTML = "Entrar com Google";
+        });
 
         function checkLogin() {
             const input = document.getElementById('inputSenha').value;
@@ -529,17 +542,11 @@
             }
         }
 
-        function iniciarLoginGoogle() {
-            auth.signInWithPopup(provider).then((result) => {
-                showToast(`Bem-vindo(a), ${result.user.displayName.split(" ")[0]}!`, "success");
-            }).catch((error) => {
-                showToast("Erro ao conectar com o Google.", "error");
-                console.error(error);
-            });
-        }
-
         function continuarSemLogin() {
-            sessionStorage.setItem('isLoggedIn', 'true');
+            sessionStorage.setItem('guestMode', 'true');
+            document.getElementById('statusConexao').innerText = "OFFLINE LOCAL";
+            document.getElementById('statusConexao').style.color = "var(--warning)";
+            
             document.getElementById('lock-screen').style.opacity = '0';
             setTimeout(() => { document.getElementById('lock-screen').classList.add('hidden'); }, 500);
             showToast("Acesso Offline Liberado", "success");
@@ -556,16 +563,17 @@
         
         function lockApp() {
             sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('guestMode');
             closeAll();
-            setupLoginScreen();
+            verificarStatusAutenticacao();
             showToast("Aplicativo bloqueado.", "success");
         }
 
         function configurarSenha() {
-            if(appConfig.senhaHash) {
-                if(confirm("Deseja remover a segurança local? O aplicativo ficará livre para acesso.")) {
+            if(appConfig.senhaHash && appConfig.senhaHash !== "google_auth") {
+                if(confirm("Deseja remover a segurança local? O aplicativo abrirá direto.")) {
                     appConfig.senhaHash = null; appConfig.telefoneRec = null;
-                    salvarConfig(); showToast("Segurança Removida", "success"); closeAll();
+                    salvarConfig(); showToast("Segurança Local Removida", "success"); closeAll();
                 }
             } else {
                 let novaSenha = prompt("Crie uma senha ou PIN para bloquear a entrada do aplicativo:");
@@ -573,7 +581,7 @@
                     let telefone = prompt("Digite seu celular com DDD (só números) para recuperar a senha caso esqueça:");
                     appConfig.senhaHash = novaSenha.trim();
                     if(telefone) appConfig.telefoneRec = telefone.replace(/\D/g, '');
-                    salvarConfig(); showToast("Segurança Configurada!", "success"); closeAll();
+                    salvarConfig(); showToast("Segurança Local Configurada!", "success"); closeAll();
                 }
             }
         }
@@ -618,8 +626,9 @@
             document.getElementById('sidebarUserName').innerText = appConfig.nome;
             document.getElementById('currentCurrencyDisplay').innerText = appConfig.moeda;
             
-            document.getElementById('statusSeguranca').innerText = appConfig.senhaHash ? "ATIVADA" : "DESATIVADA";
-            document.getElementById('statusSeguranca').style.color = appConfig.senhaHash ? "var(--success)" : "var(--warning)";
+            let hasSenhaLocal = (appConfig.senhaHash && appConfig.senhaHash !== "google_auth");
+            document.getElementById('statusSeguranca').innerText = hasSenhaLocal ? "ATIVADA" : "DESATIVADA";
+            document.getElementById('statusSeguranca').style.color = hasSenhaLocal ? "var(--success)" : "var(--warning)";
             
             let avatares = [document.getElementById('headerAvatar'), document.getElementById('sidebarAvatar'), document.getElementById('loginAvatar')];
             let iniciais = appConfig.nome.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
@@ -785,7 +794,7 @@
         
         window.onload = () => { 
             carregarConfig(); 
-            setupLoginScreen(); 
+            verificarStatusAutenticacao(); 
             renderizar(); 
         };
     </script>
