@@ -13,23 +13,46 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* VARIÁVEIS DO TEMA ESCURO (PADRÃO) */
         :root {
             --bg: #030712;
             --card: #111827;
             --accent: #00f2ff;
             --text: #f3f4f6;
+            --text-muted: #94a3b8;
+            --border: #1f2937;
+            --input-bg: #1f2937;
+            --input-border: #374151;
+            
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
             --reserve: #8b5cf6;
         }
 
-        * { box-sizing: border-box; }
+        /* VARIÁVEIS DO TEMA CLARO */
+        [data-theme="light"] {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --accent: #0284c7; 
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --input-bg: #f1f5f9;
+            --input-border: #cbd5e1;
+            
+            --success: #059669;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --reserve: #7c3aed;
+        }
+
+        * { box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
 
         header {
             background: var(--bg); padding: 15px 20px; display: flex; justify-content: space-between;
-            align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #1f2937;
+            align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border);
         }
         
         .profile-section { display: flex; align-items: center; gap: 12px; cursor: pointer; }
@@ -37,10 +60,11 @@
             width: 40px; height: 40px; border-radius: 12px; 
             background: linear-gradient(135deg, var(--accent), #0a192f);
             display: flex; align-items: center; justify-content: center;
-            font-weight: bold; color: var(--bg); border: 2px solid #1f2937;
+            font-weight: bold; color: var(--bg); border: 2px solid var(--border);
         }
+        [data-theme="light"] .avatar { background: linear-gradient(135deg, var(--accent), #e0f2fe); color: #ffffff; }
         
-        .user-info span { font-size: 0.65rem; color: #94a3b8; letter-spacing: 1px; display: block; text-transform: uppercase; }
+        .user-info span { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; display: block; text-transform: uppercase; }
         .user-info strong { font-size: 0.9rem; color: var(--text); }
 
         .sidebar {
@@ -49,78 +73,81 @@
             padding: 30px 20px; border-left: 1px solid var(--accent); box-shadow: -10px 0 30px rgba(0,0,0,0.8);
             display: flex; flex-direction: column; overflow-y: auto;
         }
+        [data-theme="light"] .sidebar { box-shadow: -10px 0 30px rgba(0,0,0,0.1); }
         .sidebar.open { right: 0; }
         .sidebar-header { margin-bottom: 25px; text-align: center; position: relative; }
         
-        .status-panel { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid #1f2937; }
+        .status-panel { background: rgba(125, 125, 125, 0.05); padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid var(--border); }
         .status-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 10px; align-items: center; }
         .status-row:last-child { margin-bottom: 0; }
-        .status-label { color: #94a3b8; }
+        .status-label { color: var(--text-muted); }
 
         .sidebar-menu { display: flex; flex-direction: column; gap: 10px; flex: 1; }
-        .menu-item { padding: 15px; border-radius: 12px; background: rgba(255,255,255,0.03); display: flex; align-items: center; gap: 15px; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent; }
-        .menu-item:active { background: #1f2937; }
+        .menu-item { padding: 15px; border-radius: 12px; background: rgba(125, 125, 125, 0.05); display: flex; align-items: center; gap: 15px; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent; color: var(--text); }
+        .menu-item:active { background: var(--border); }
         .menu-item i { color: var(--accent); font-size: 1.1rem; width: 25px; text-align: center; }
 
         .month-selector { display: flex; justify-content: space-between; align-items: center; padding: 20px 20px 0; }
-        .month-selector button { background: rgba(255,255,255,0.05); border: 1px solid #1f2937; color: var(--text); width: 35px; height: 35px; border-radius: 10px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .month-selector button { background: rgba(125, 125, 125, 0.05); border: 1px solid var(--border); color: var(--text); width: 35px; height: 35px; border-radius: 10px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .month-selector span { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; }
 
         .balance-card { padding: 15px 20px 25px; text-align: center; }
-        .balance-card small { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; }
-        .balance-card h1 { font-size: 2.2rem; margin: 5px 0 0; font-weight: 800; }
+        .balance-card small { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; }
+        .balance-card h1 { font-size: 2.2rem; margin: 5px 0 0; font-weight: 800; color: var(--text); }
 
         .quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 20px; }
-        .mini-card { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid #1f2937; cursor: pointer; transition: 0.2s; }
+        .mini-card { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); cursor: pointer; transition: 0.2s; }
         .mini-card i { font-size: 0.8rem; margin-bottom: 5px; }
-        .mini-card span { display: block; font-size: 0.65rem; color: #94a3b8; }
-        .mini-card strong { font-size: 0.9rem; }
+        .mini-card span { display: block; font-size: 0.65rem; color: var(--text-muted); }
+        .mini-card strong { font-size: 0.9rem; color: var(--text); }
 
         main { padding: 0 20px 20px; }
         .section-header { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 15px; }
-        .section-header h3 { font-size: 0.9rem; color: #94a3b8; text-transform: uppercase; margin: 0; }
+        .section-header h3 { font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; margin: 0; }
         
         #btnVoltar { background: rgba(0, 242, 255, 0.1); color: var(--accent); border: 1px solid var(--accent); padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; }
+        [data-theme="light"] #btnVoltar { background: #e0f2fe; }
 
         .submenu-divida { display: flex; gap: 10px; margin-bottom: 15px; }
-        .sub-btn { flex: 1; padding: 8px; background: #111827; border: 1px solid #1f2937; border-radius: 8px; font-size: 0.65rem; font-weight: 800; color: #94a3b8; }
+        .sub-btn { flex: 1; padding: 8px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; font-size: 0.65rem; font-weight: 800; color: var(--text-muted); }
         .sub-btn.active { background: rgba(0, 242, 255, 0.1); border-color: var(--accent); color: var(--accent); }
+        [data-theme="light"] .sub-btn.active { background: #e0f2fe; }
 
-        .transaction-item { background: var(--card); padding: 15px; border-radius: 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; border: 1px solid #1f2937; }
-        .icon-box { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #1f2937; min-width: 40px; }
+        .transaction-item { background: var(--card); padding: 15px; border-radius: 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); }
+        .icon-box { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--bg); min-width: 40px; border: 1px solid var(--border); }
         .details { flex: 1; overflow: hidden; }
-        .details strong { display: block; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .details span { font-size: 0.7rem; color: #6b7280; }
+        .details strong { display: block; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+        .details span { font-size: 0.7rem; color: var(--text-muted); }
         
         .amount { text-align: right; min-width: 90px; }
-        .amount strong { display: block; font-size: 0.85rem; }
+        .amount strong { display: block; font-size: 0.85rem; color: var(--text); }
         .amount .status-debt { font-size: 0.6rem; font-weight: 800; display: block; margin-top: 2px; }
 
-        .bottom-charts { padding: 20px; background: #070b14; border-top: 1px solid #1f2937; margin-bottom: 100px; }
+        .bottom-charts { padding: 20px; background: var(--card); border-top: 1px solid var(--border); margin-bottom: 100px; }
         .chart-bar-group { margin-bottom: 15px; }
-        .chart-label { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 5px; color: #94a3b8; }
-        .chart-track { background: #1f2937; height: 6px; border-radius: 10px; overflow: hidden; }
+        .chart-label { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 5px; color: var(--text-muted); }
+        .chart-track { background: var(--bg); height: 6px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
         .chart-fill { height: 100%; width: 0%; transition: 1s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
 
-        .fab { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; border-radius: 20px; background: var(--accent); color: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 10px 20px rgba(0, 242, 255, 0.3); border: none; z-index: 1000; }
+        .fab { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; border-radius: 20px; background: var(--accent); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); border: none; z-index: 1000; }
 
-        .modal { position: fixed; bottom: -100%; left: 0; width: 100%; height: 92%; background: var(--card); border-radius: 30px 30px 0 0; z-index: 2000; padding: 25px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; }
+        .modal { position: fixed; bottom: -100%; left: 0; width: 100%; height: 92%; background: var(--card); border-radius: 30px 30px 0 0; z-index: 2000; padding: 25px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; border-top: 1px solid var(--border); }
         .modal.open { bottom: 0; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; backdrop-filter: blur(3px); }
 
-        input, select { width: 100%; background: #1f2937; border: 1px solid #374151; padding: 14px; border-radius: 12px; color: white; margin-bottom: 12px; font-size: 1rem; }
+        input, select { width: 100%; background: var(--input-bg); border: 1px solid var(--input-border); padding: 14px; border-radius: 12px; color: var(--text); margin-bottom: 12px; font-size: 1rem; }
         
-        .btn-confirm { background: var(--accent); color: var(--bg); width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; margin-top: 10px; }
+        .btn-confirm { background: var(--accent); color: #ffffff; width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; margin-top: 10px; }
         .btn-delete { background: none; color: var(--danger); width: 100%; padding: 12px; border: 1px solid var(--danger); border-radius: 12px; margin-top: 15px; font-weight: 700; }
 
         .label-mini { font-size: 0.65rem; color: var(--accent); font-weight: 800; margin-bottom: 5px; display: block; text-transform: uppercase; }
         .hidden { display: none !important; }
 
-        .bloco-parcelas, .resumo-quitacao { background: rgba(0, 242, 255, 0.05); padding: 15px; border-radius: 12px; border: 1px dashed var(--accent); margin-bottom: 15px; }
+        .bloco-parcelas, .resumo-quitacao { background: rgba(125, 125, 125, 0.05); padding: 15px; border-radius: 12px; border: 1px dashed var(--accent); margin-bottom: 15px; }
         .resumo-quitacao h4 { margin: 0 0 10px 0; font-size: 0.75rem; color: var(--accent); text-transform: uppercase; }
         .resumo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .resumo-item { font-size: 0.7rem; color: #94a3b8; }
-        .resumo-item strong { color: white; display: block; font-size: 0.8rem; }
+        .resumo-item { font-size: 0.7rem; color: var(--text-muted); }
+        .resumo-item strong { color: var(--text); display: block; font-size: 0.8rem; }
     </style>
 </head>
 <body>
@@ -133,25 +160,27 @@
                 <strong>WENDEL CARNEIRO</strong>
             </div>
         </div>
-        <button onclick="toggleFantasma()" style="background:none; border:1px solid #1f2937; color:white; padding:8px; border-radius:10px;">
+        <button onclick="toggleFantasma()" style="background:none; border:1px solid var(--border); color:var(--text); padding:8px; border-radius:10px;">
             <i id="eyeIcon" class="fa-solid fa-eye"></i>
         </button>
     </header>
 
     <div class="sidebar" id="profileSidebar">
-        <div style="text-align: right; margin-bottom: 10px;"><i class="fa-solid fa-xmark" style="font-size: 1.5rem; cursor: pointer; color: #94a3b8;" onclick="toggleSidebar()"></i></div>
-        <div class="sidebar-header"><div class="avatar" style="width: 65px; height: 65px; font-size: 1.5rem; margin: 0 auto 10px;">WC</div><h2 style="margin:0; font-size: 1.1rem;">Painel de Comando</h2><span style="color: var(--accent); font-size: 0.75rem;">Operacional</span></div>
+        <div style="text-align: right; margin-bottom: 10px;"><i class="fa-solid fa-xmark" style="font-size: 1.5rem; cursor: pointer; color: var(--text-muted);" onclick="toggleSidebar()"></i></div>
+        <div class="sidebar-header"><div class="avatar" style="width: 65px; height: 65px; font-size: 1.5rem; margin: 0 auto 10px;">WC</div><h2 style="margin:0; font-size: 1.1rem; color: var(--text);">Painel de Comando</h2><span style="color: var(--accent); font-size: 0.75rem;">Operacional</span></div>
         <div class="status-panel">
             <div class="status-row"><span class="status-label">Conexão</span><strong style="color: var(--success); font-size: 0.75rem;">SEGURO</strong></div>
-            <div class="status-row"><span class="status-label">Dados</span><strong id="contadorRegistros">0</strong></div>
-            <div class="status-row"><span class="status-label">Saúde</span><strong id="statusFluxo">ESTÁVEL</strong></div>
+            <div class="status-row"><span class="status-label">Dados</span><strong id="contadorRegistros" style="color: var(--text);">0</strong></div>
+            <div class="status-row"><span class="status-label">Saúde</span><strong id="statusFluxo" style="color: var(--text);">ESTÁVEL</strong></div>
         </div>
         <div class="sidebar-menu">
+            <div class="menu-item" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i> <span>Alternar Tema</span></div>
+            
             <div class="menu-item" onclick="toggleFantasma()"><i class="fa-solid fa-ghost"></i> <span>Privacidade</span></div>
             <div class="menu-item" onclick="exportarDados()"><i class="fa-solid fa-file-export"></i> <span>Exportar CSV</span></div>
             <input type="file" id="fileInput" accept=".csv" style="display: none;" onchange="importarDados(event)">
             <div class="menu-item" onclick="document.getElementById('fileInput').click()"><i class="fa-solid fa-file-import"></i> <span>Importar Backup</span></div>
-            <div class="menu-item" style="color: var(--danger);" onclick="limparTerminal()"><i class="fa-solid fa-trash"></i> <span>Resetar</span></div>
+            <div class="menu-item" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.2);" onclick="limparTerminal()"><i class="fa-solid fa-trash" style="color: var(--danger);"></i> <span>Resetar</span></div>
         </div>
     </div>
 
@@ -202,7 +231,7 @@
     <div class="overlay" id="overlay" onclick="closeAll()"></div>
 
     <div class="modal" id="modalForm">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2 id="modalTitle" style="margin:0; font-size:1.2rem;">Nova Operação</h2><i class="fa-solid fa-circle-xmark" style="font-size:1.5rem; color:#374151;" onclick="closeModal()"></i></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2 id="modalTitle" style="margin:0; font-size:1.2rem; color: var(--text);">Nova Operação</h2><i class="fa-solid fa-circle-xmark" style="font-size:1.5rem; color:var(--text-muted);" onclick="closeModal()"></i></div>
         
         <div id="blocoResumoGeral" class="resumo-quitacao hidden">
             <h4 id="resumoTitulo">Resumo</h4>
@@ -239,10 +268,27 @@
         let registros = JSON.parse(localStorage.getItem('foton_db')) || [];
         let modoFantasma = false, filtroAtual = "Tudo", subFiltro = "Pendente", dataVisualizacao = new Date();
 
+        // Lógica de Tema
+        function checkTheme() {
+            const savedTheme = localStorage.getItem('meucaixa_theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+        }
+        checkTheme();
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('meucaixa_theme', newTheme);
+            renderizar();
+        }
+
         const opcoesSubmenu = {
             "Receita": ["💰 Salário", "🚀 Freelance", "✨ Outros Recebíveis"],
-            "Fixo": ["🏠 Aluguel", "⚡ Energia", "🎬 Streamings"],
-            "Variavel": ["🛒 Mercado", "🍕 Alimentação", "🚗 Transporte"],
+            "Fixo": ["🏠 Aluguel", "⚡ Energia", "🌐 Internet", "🎬 Streamings"],
+            "Variavel": ["🛒 Mercado", "🍕 Alimentação", "⛽ Combustível", "🚗 Transporte"],
             "Divida": ["🏢 Financiamento", "💳 Cartão", "🤝 Empréstimo", "🧾 Boleto"],
             "Reserva": ["🏦 Investimentos", "📦 Caixinha", "🛡️ Reserva Emergência"]
         };
@@ -303,7 +349,7 @@
                     
                     let statusLabel = isPago ? (r.tipo === 'Receita' ? 'RECEBIDO' : 'LIQUIDADO') : 'PENDENTE';
                     
-                    corpo.innerHTML += `<div class="transaction-item" onclick="openModal(${idxO})"><div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div><div class="details"><strong>${r.desc}</strong><span>${r.data.split('-').reverse().join('/')} • ${r.tipo}${extraInfo}</span></div><div class="amount"><strong>${ocultarBits(vT)}</strong><span class="status-debt" style="color:${isPago ? 'var(--success)' : 'var(--danger)'}">${statusLabel}</span></div></div>`;
+                    corpo.innerHTML += `<div class="transaction-item" onclick="openModal(${idxO})"><div class="icon-box" style="color:${color}; background: var(--bg); border: 1px solid var(--border);"><i class="fa-solid ${icon}"></i></div><div class="details"><strong style="color: var(--text);">${r.desc}</strong><span style="color: var(--text-muted);">${r.data.split('-').reverse().join('/')} • ${r.tipo}${extraInfo}</span></div><div class="amount"><strong style="color: var(--text);">${ocultarBits(vT)}</strong><span class="status-debt" style="color:${isPago ? 'var(--success)' : 'var(--danger)'}">${statusLabel}</span></div></div>`;
                 }
             });
 
