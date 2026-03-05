@@ -27,11 +27,11 @@
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
 
+        /* Header e Avatar */
         header {
             background: var(--bg); padding: 15px 20px; display: flex; justify-content: space-between;
             align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #1f2937;
         }
-        
         .profile-section { display: flex; align-items: center; gap: 12px; cursor: pointer; }
         .avatar { 
             width: 40px; height: 40px; border-radius: 12px; 
@@ -39,7 +39,6 @@
             display: flex; align-items: center; justify-content: center;
             font-weight: bold; color: var(--bg); border: 2px solid #1f2937;
         }
-        
         .user-info span { font-size: 0.65rem; color: #94a3b8; letter-spacing: 1px; display: block; text-transform: uppercase; }
         .user-info strong { font-size: 0.9rem; color: var(--text); }
 
@@ -48,14 +47,12 @@
             position: fixed; top: 0; right: -100%; width: 85%; max-width: 350px; height: 100%;
             background: var(--card); z-index: 3000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             padding: 30px 20px; border-left: 1px solid var(--accent); box-shadow: -10px 0 30px rgba(0,0,0,0.8);
-            display: flex; flex-direction: column;
+            display: flex; flex-direction: column; overflow-y: auto;
         }
         .sidebar.open { right: 0; }
         .sidebar-header { margin-bottom: 25px; text-align: center; position: relative; }
         
-        .status-panel {
-            background: rgba(255,255,255,0.03); padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid #1f2937;
-        }
+        .status-panel { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid #1f2937; }
         .status-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 10px; align-items: center; }
         .status-row:last-child { margin-bottom: 0; }
         .status-label { color: #94a3b8; }
@@ -69,19 +66,14 @@
         .menu-item i { color: var(--accent); font-size: 1.1rem; width: 25px; text-align: center; }
 
         /* Seletor de Mês */
-        .month-selector {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 20px 0;
-        }
+        .month-selector { display: flex; justify-content: space-between; align-items: center; padding: 20px 20px 0; }
         .month-selector button {
             background: rgba(255,255,255,0.05); border: 1px solid #1f2937; color: var(--text);
             width: 35px; height: 35px; border-radius: 10px; font-size: 1rem; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
         }
         .month-selector button:active { background: #1f2937; }
-        .month-selector span {
-            font-size: 0.9rem; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 1px;
-        }
+        .month-selector span { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; }
 
         /* Layout Principal */
         .balance-card { padding: 15px 20px 25px; text-align: center; }
@@ -100,6 +92,10 @@
         .section-header h3 { font-size: 0.9rem; color: #94a3b8; text-transform: uppercase; margin: 0; }
         
         #btnVoltar { background: rgba(0, 242, 255, 0.1); color: var(--accent); border: 1px solid var(--accent); padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; }
+
+        /* Barra de Pesquisa */
+        .search-bar { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid #1f2937; padding: 12px 15px; border-radius: 12px; color: white; margin-bottom: 15px; font-size: 0.9rem; outline: none; }
+        .search-bar:focus { border-color: var(--accent); }
 
         .transaction-item { background: var(--card); padding: 15px; border-radius: 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; border: 1px solid #1f2937; }
         .icon-box { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #1f2937; min-width: 40px; }
@@ -179,16 +175,18 @@
             <div class="menu-item" onclick="exportarDados()">
                 <i class="fa-solid fa-file-export"></i> <span>Exportar Backup (CSV)</span>
             </div>
+            
+            <input type="file" id="fileInput" accept=".csv" style="display: none;" onchange="importarDados(event)">
+            <div class="menu-item" onclick="document.getElementById('fileInput').click()">
+                <i class="fa-solid fa-file-import"></i> <span>Importar Backup</span>
+            </div>
+            
             <div class="menu-item" onclick="otimizarTerminal()">
                 <i class="fa-solid fa-bolt"></i> <span>Otimizar Performance</span>
             </div>
             <div class="menu-item" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.2);" onclick="limparTerminal()">
                 <i class="fa-solid fa-trash" style="color: var(--danger);"></i> <span>Resetar Sistema</span>
             </div>
-        </div>
-        
-        <div style="font-size: 0.6rem; color: #4b5563; text-align: center; padding-top: 20px;">
-            ID: WENDEL-2026-ALPHA<br>STATUS: ATIVO
         </div>
     </div>
 
@@ -215,6 +213,9 @@
             <h3 id="txtExtrato">Operações do Mês</h3>
             <button id="btnVoltar" class="hidden" onclick="filtrarExtrato('Tudo')"><i class="fa-solid fa-chevron-left"></i> VOLTAR</button>
         </div>
+        
+        <input type="text" id="inputPesquisa" class="search-bar" placeholder="🔍 Buscar lançamento (ex: Aluguel)" onkeyup="renderizar()">
+        
         <div id="tabelaCorpo"></div>
     </main>
 
@@ -253,12 +254,18 @@
         <input type="text" id="desc" placeholder="Descrição Personalizada">
         
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <div><span class="label-mini">Valor Total</span><input type="number" id="valor" placeholder="0,00" step="0.01" inputmode="decimal"></div>
-            <div id="campoPago"><span class="label-mini">Valor Pago</span><input type="number" id="pago" placeholder="0,00" step="0.01" inputmode="decimal"></div>
+            <div><span class="label-mini">Valor Total da Compra</span><input type="number" id="valor" placeholder="0,00" step="0.01" inputmode="decimal"></div>
+            <div id="campoPago"><span class="label-mini">Já Pagou Algum Valor?</span><input type="number" id="pago" placeholder="0,00" step="0.01" inputmode="decimal"></div>
         </div>
 
-        <span class="label-mini">Data</span>
+        <div id="campoParcelas" style="margin-bottom: 12px;">
+            <span class="label-mini" style="color:var(--warning)">Repetir / Parcelar em quantos meses?</span>
+            <input type="number" id="parcelas" value="1" min="1" inputmode="numeric" placeholder="Ex: 5">
+        </div>
+
+        <span class="label-mini">Data (Primeiro Vencimento)</span>
         <input type="date" id="data">
+        
         <input type="hidden" id="editIndex">
         <button class="btn-confirm" onclick="salvar()">SALVAR OPERAÇÃO</button>
         <button id="btnExcluir" class="btn-delete hidden" onclick="excluirRegistro()">EXCLUIR REGISTRO</button>
@@ -320,12 +327,12 @@
         function renderizar() {
             document.getElementById('mesDisplay').innerText = formatarMesAno(dataVisualizacao);
             const prefixoMes = `${dataVisualizacao.getFullYear()}-${String(dataVisualizacao.getMonth() + 1).padStart(2, '0')}`;
+            const termoBusca = document.getElementById('inputPesquisa').value.toLowerCase();
 
             const corpo = document.getElementById('tabelaCorpo');
             corpo.innerHTML = '';
             let sRec = 0, sGas = 0, sDiv = 0, sRes = 0;
             
-            // Filtra os registros para mostrar apenas os do mês atual selecionado
             const ordenados = [...registros].sort((a, b) => new Date(b.data) - new Date(a.data));
             const registrosDoMes = ordenados.filter(r => r.data.startsWith(prefixoMes));
 
@@ -345,6 +352,9 @@
                 let exibir = (filtroAtual === "Tudo") || 
                              (filtroAtual === r.tipo) || 
                              (filtroAtual === "Gasto" && (r.tipo === "Fixo" || r.tipo === "Variavel"));
+                
+                // Aplica a Barra de Pesquisa
+                if (termoBusca !== "" && !r.desc.toLowerCase().includes(termoBusca)) exibir = false;
 
                 if(exibir) {
                     let icon = r.tipo === 'Receita' ? 'fa-arrow-up' : (r.tipo === 'Divida' ? 'fa-barcode' : (r.tipo === 'Reserva' ? 'fa-vault' : 'fa-cart-shopping'));
@@ -396,7 +406,7 @@
             }
         }
 
-        // Funções do Modal
+        // Funções do Modal e Lógica de Salvar com Parcelas
         function openModal(idx = null) {
             document.getElementById('modalForm').classList.add('open');
             document.getElementById('overlay').style.display = 'block';
@@ -411,9 +421,11 @@
                 document.getElementById('pago').value = r.pago;
                 document.getElementById('data').value = r.data;
                 document.getElementById('btnExcluir').classList.remove('hidden');
+                document.getElementById('campoParcelas').classList.add('hidden'); // Oculta parcelas ao editar
             } else {
                 document.getElementById('modalTitle').innerText = "Nova Operação";
                 document.getElementById('btnExcluir').classList.add('hidden');
+                document.getElementById('campoParcelas').classList.remove('hidden');
                 resetForm();
                 atualizarSubmenu();
             }
@@ -434,13 +446,43 @@
         function definirDescricao() { document.getElementById('desc').value = document.getElementById('submenu').value.split(' ').slice(1).join(' '); }
         
         function salvar() {
-            const tipo = document.getElementById('tipo').value, desc = document.getElementById('desc').value, valor = parseFloat(document.getElementById('valor').value) || 0, data = document.getElementById('data').value;
+            const tipo = document.getElementById('tipo').value;
+            const desc = document.getElementById('desc').value;
+            const valorTotal = parseFloat(document.getElementById('valor').value) || 0;
+            const dataBase = document.getElementById('data').value;
             let pago = parseFloat(document.getElementById('pago').value) || 0;
-            if(!desc || valor <= 0 || !data) return alert("Preencha as informações corretamente.");
-            if(tipo === 'Receita' || tipo === 'Reserva') pago = valor;
+            let parcelas = parseInt(document.getElementById('parcelas').value) || 1;
             const editIdx = document.getElementById('editIndex').value;
-            const obj = { tipo, desc, valor, pago, data };
-            if(editIdx === "") registros.push(obj); else registros[editIdx] = obj;
+
+            if(!desc || valorTotal <= 0 || !dataBase) return alert("Preencha as informações corretamente.");
+            if(tipo === 'Receita' || tipo === 'Reserva') pago = valorTotal;
+
+            if (editIdx !== "") {
+                // Se for edição, salva apenas o item atual
+                registros[editIdx] = { tipo, desc, valor: valorTotal, pago, data: dataBase };
+            } else {
+                // Se for Novo Registro, verifica se tem parcelas
+                if (parcelas > 1) {
+                    const valorParcela = valorTotal / parcelas;
+                    // Corrige o fuso horário para evitar bugs no avanço de mês
+                    let dataObj = new Date(dataBase + "T12:00:00"); 
+                    
+                    for (let i = 1; i <= parcelas; i++) {
+                        let novaData = new Date(dataObj.getFullYear(), dataObj.getMonth() + (i - 1), dataObj.getDate());
+                        let dataFormatada = novaData.toISOString().split('T')[0];
+                        let descParcela = `${desc} (${i}/${parcelas})`;
+                        
+                        // Considera o valor pago apenas na primeira parcela se a pessoa colocou algo no ato
+                        let pagoParcela = (i === 1) ? Math.min(pago, valorParcela) : 0; 
+                        if (tipo === 'Receita' || tipo === 'Reserva') pagoParcela = valorParcela;
+                        
+                        registros.push({ tipo, desc: descParcela, valor: valorParcela, pago: pagoParcela, data: dataFormatada });
+                    }
+                } else {
+                    registros.push({ tipo, desc, valor: valorTotal, pago, data: dataBase });
+                }
+            }
+            
             localStorage.setItem('foton_db', JSON.stringify(registros));
             closeAll(); renderizar();
         }
@@ -453,31 +495,62 @@
             } 
         }
 
-        function toggleFantasma() { 
-            modoFantasma = !modoFantasma; 
-            document.getElementById('eyeIcon').className = modoFantasma ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'; 
-            renderizar(); 
-        }
-        
-        function ocultarBits(v) { return modoFantasma ? "R$ ••••" : "R$ " + v.toLocaleString('pt-BR', {minimumFractionDigits: 2}); }
-        
+        // Funções de Backup e Segurança
         function exportarDados() {
             if(registros.length === 0) return alert("Nenhum dado para exportar.");
             let csvContent = "data:text/csv;charset=utf-8,Tipo,Descricao,Valor Total,Valor Pago,Data\n";
-            registros.forEach(r => { csvContent += `${r.tipo},${r.desc},${r.valor},${r.pago},${r.data}\n`; });
+            registros.forEach(r => { csvContent += `${r.tipo},${r.desc.replace(/,/g, '')},${r.valor},${r.pago},${r.data}\n`; });
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "backup_foton.csv");
+            link.setAttribute("download", "Backup_Gêneses.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             closeAll();
         }
 
-        function otimizarTerminal() { alert("Terminal otimizado para máxima velocidade."); closeAll(); }
+        function importarDados(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const lines = e.target.result.split('\n');
+                let novosRegistros = [];
+                for (let i = 1; i < lines.length; i++) {
+                    if (lines[i].trim() === '') continue;
+                    const cols = lines[i].split(',');
+                    if (cols.length >= 5) {
+                        novosRegistros.push({
+                            tipo: cols[0], desc: cols[1], valor: parseFloat(cols[2]), pago: parseFloat(cols[3]), data: cols[4].trim()
+                        });
+                    }
+                }
+                if (novosRegistros.length > 0) {
+                    if(confirm(`Encontrados ${novosRegistros.length} registros no backup. Deseja aplicar e substituir seus dados atuais?`)) {
+                        registros = novosRegistros;
+                        localStorage.setItem('foton_db', JSON.stringify(registros));
+                        renderizar(); closeAll(); alert("Backup Restaurado com Sucesso!");
+                    }
+                } else { alert("Arquivo inválido ou corrompido."); }
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // Reseta o input de arquivo
+        }
+
+        function toggleFantasma() { modoFantasma = !modoFantasma; document.getElementById('eyeIcon').className = modoFantasma ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'; renderizar(); }
+        function ocultarBits(v) { return modoFantasma ? "R$ ••••" : "R$ " + v.toLocaleString('pt-BR', {minimumFractionDigits: 2}); }
+        function otimizarTerminal() { alert("Processamento Otimizado."); closeAll(); }
         function limparTerminal() { if(confirm("ATENÇÃO: Apagar TODOS os dados salvos?")) { localStorage.removeItem('foton_db'); location.reload(); } }
-        function resetForm() { document.getElementById('editIndex').value = ""; document.getElementById('valor').value = ""; document.getElementById('pago').value = ""; document.getElementById('desc').value = ""; document.getElementById('data').value = new Date().toISOString().split('T')[0]; }
+        
+        function resetForm() { 
+            document.getElementById('editIndex').value = ""; 
+            document.getElementById('valor').value = ""; 
+            document.getElementById('pago').value = ""; 
+            document.getElementById('parcelas').value = "1";
+            document.getElementById('desc').value = ""; 
+            document.getElementById('data').value = new Date().toISOString().split('T')[0]; 
+        }
 
         window.onload = () => { renderizar(); };
     </script>
