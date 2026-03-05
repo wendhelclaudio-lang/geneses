@@ -33,13 +33,24 @@
         .balance-card h1 { font-size: 2.2rem; margin: 10px 0; font-weight: 800; }
 
         .quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 20px; }
-        .mini-card { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid #1f2937; }
+        .mini-card { 
+            background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid #1f2937; 
+            cursor: pointer; transition: 0.2s;
+        }
+        .mini-card:active { transform: scale(0.95); background: #1f2937; }
         .mini-card i { font-size: 0.8rem; margin-bottom: 5px; }
         .mini-card span { display: block; font-size: 0.65rem; color: #94a3b8; }
         .mini-card strong { font-size: 0.9rem; }
 
         main { padding: 0 20px 20px; }
-        .section-header h3 { font-size: 0.9rem; color: #94a3b8; text-transform: uppercase; margin: 20px 0 15px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 15px; }
+        .section-header h3 { font-size: 0.9rem; color: #94a3b8; text-transform: uppercase; margin: 0; }
+        
+        /* Botão Voltar Dinâmico */
+        #btnVoltar { 
+            background: rgba(0, 242, 255, 0.1); color: var(--accent); border: 1px solid var(--accent);
+            padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer;
+        }
 
         .transaction-item {
             background: var(--card); padding: 15px; border-radius: 18px; margin-bottom: 10px;
@@ -54,7 +65,6 @@
         .amount strong { display: block; font-size: 0.85rem; }
         .amount .status-debt { font-size: 0.6rem; font-weight: 800; display: block; margin-top: 2px; }
 
-        /* Gráficos na Base */
         .bottom-charts { padding: 20px; background: #070b14; border-top: 1px solid #1f2937; margin-bottom: 100px; }
         .chart-bar-group { margin-bottom: 15px; }
         .chart-label { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 5px; color: #94a3b8; }
@@ -84,7 +94,7 @@
         .btn-delete { background: none; color: var(--danger); width: 100%; padding: 12px; border: 1px solid var(--danger); border-radius: 12px; margin-top: 15px; font-weight: 700; }
 
         .label-mini { font-size: 0.65rem; color: var(--accent); font-weight: 800; margin-bottom: 5px; display: block; text-transform: uppercase; }
-        .hidden { display: none; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -105,25 +115,26 @@
     </div>
 
     <div class="quick-stats">
-        <div class="mini-card"><i class="fa-solid fa-arrow-up" style="color:var(--success)"></i><span>Entradas</span><strong id="totalReceitas">R$ 0,00</strong></div>
-        <div class="mini-card"><i class="fa-solid fa-arrow-down" style="color:var(--warning)"></i><span>Gastos</span><strong id="totalGastos">R$ 0,00</strong></div>
-        <div class="mini-card"><i class="fa-solid fa-barcode" style="color:var(--danger)"></i><span>Dívidas</span><strong id="totalDividas">R$ 0,00</strong></div>
-        <div class="mini-card"><i class="fa-solid fa-vault" style="color:var(--reserve)"></i><span>Patrimônio</span><strong id="totalReserva">R$ 0,00</strong></div>
+        <div class="mini-card" onclick="filtrarExtrato('Receita')"><i class="fa-solid fa-arrow-up" style="color:var(--success)"></i><span>Entradas</span><strong id="totalReceitas">R$ 0,00</strong></div>
+        <div class="mini-card" onclick="filtrarExtrato('Gasto')"><i class="fa-solid fa-arrow-down" style="color:var(--warning)"></i><span>Gastos</span><strong id="totalGastos">R$ 0,00</strong></div>
+        <div class="mini-card" onclick="filtrarExtrato('Divida')"><i class="fa-solid fa-barcode" style="color:var(--danger)"></i><span>Dívidas</span><strong id="totalDividas">R$ 0,00</strong></div>
+        <div class="mini-card" onclick="filtrarExtrato('Reserva')"><i class="fa-solid fa-vault" style="color:var(--reserve)"></i><span>Patrimônio</span><strong id="totalReserva">R$ 0,00</strong></div>
     </div>
 
     <main>
-        <div class="section-header"><h3>Extrato Biótico</h3></div>
+        <div class="section-header">
+            <h3 id="txtExtrato">Extrato Biótico</h3>
+            <button id="btnVoltar" class="hidden" onclick="filtrarExtrato('Tudo')"><i class="fa-solid fa-chevron-left"></i> VOLTAR</button>
+        </div>
         <div id="tabelaCorpo"></div>
     </main>
 
     <section class="bottom-charts">
         <div class="section-header" style="margin-top:0;"><h3>Performance de Fluxo</h3></div>
-        
         <div class="chart-bar-group">
             <div class="chart-label"><span>Comprometimento de Renda</span><span id="labelPercSaida">0%</span></div>
             <div class="chart-track"><div id="fillSaida" class="chart-fill" style="background:var(--danger)"></div></div>
         </div>
-
         <div class="chart-bar-group">
             <div class="chart-label"><span>Taxa de Acúmulo (Patrimônio)</span><span id="labelPercRes">0%</span></div>
             <div class="chart-track"><div id="fillRes" class="chart-fill" style="background:var(--reserve)"></div></div>
@@ -167,6 +178,7 @@
     <script>
         let registros = JSON.parse(localStorage.getItem('foton_db')) || [];
         let modoFantasma = false;
+        let filtroAtual = "Tudo";
 
         const opcoesSubmenu = {
             "Receita": ["💰 Salário", "🚀 Freelance", "✨ Outros"],
@@ -175,6 +187,21 @@
             "Divida": ["💳 Cartão", "🤝 Empréstimo", "🧾 Boleto"],
             "Reserva": ["₿ Cripto", "📊 Investimentos", "📦 Caixinha"]
         };
+
+        function filtrarExtrato(categoria) {
+            filtroAtual = categoria;
+            const btn = document.getElementById('btnVoltar');
+            const txt = document.getElementById('txtExtrato');
+            
+            if(categoria === 'Tudo') {
+                btn.classList.add('hidden');
+                txt.innerText = "Extrato Biótico";
+            } else {
+                btn.classList.remove('hidden');
+                txt.innerText = categoria === 'Gasto' ? "Filtro: Gastos" : "Filtro: " + categoria + "s";
+            }
+            renderizar();
+        }
 
         function renderizar() {
             const corpo = document.getElementById('tabelaCorpo');
@@ -188,45 +215,61 @@
                 const vTotal = parseFloat(r.valor), vPago = parseFloat(r.pago), falta = vTotal - vPago;
                 let icon = 'fa-receipt', color = '#00f2ff';
 
-                if(r.tipo === 'Receita') { sRec += vTotal; icon='fa-arrow-up'; color='var(--success)'; }
-                else if(r.tipo === 'Divida') { sDiv += falta; icon='fa-barcode'; color='var(--danger)'; }
-                else if(r.tipo === 'Reserva') { sRes += vTotal; icon='fa-vault'; color='var(--reserve)'; }
-                else { sGas += vPago; icon='fa-cart-shopping'; color='var(--warning)'; }
+                // Lógica de Soma Geral
+                if(r.tipo === 'Receita') sRec += vTotal;
+                else if(r.tipo === 'Divida') sDiv += falta;
+                else if(r.tipo === 'Reserva') sRes += vTotal;
+                else sGas += vPago;
 
-                const statusColor = vPago >= vTotal ? 'var(--success)' : 'var(--danger)';
-                const statusText = vPago >= vTotal ? 'LIQUIDADO' : `FALTA: ${ocultarBits(falta)}`;
+                // Lógica de Filtro para Exibição
+                let exibir = false;
+                if(filtroAtual === "Tudo") exibir = true;
+                else if(filtroAtual === "Receita" && r.tipo === "Receita") exibir = true;
+                else if(filtroAtual === "Divida" && r.tipo === "Divida") exibir = true;
+                else if(filtroAtual === "Reserva" && r.tipo === "Reserva") exibir = true;
+                else if(filtroAtual === "Gasto" && (r.tipo === "Fixo" || r.tipo === "Variavel")) exibir = true;
 
-                corpo.innerHTML += `
-                    <div class="transaction-item" onclick="openModal(${idxOriginal})">
-                        <div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div>
-                        <div class="details">
-                            <strong>${r.desc}</strong>
-                            <span>${r.data.split('-').reverse().join('/')} • ${r.tipo}</span>
-                        </div>
-                        <div class="amount">
-                            <strong>${ocultarBits(vTotal)}</strong>
-                            <span class="status-debt" style="color:${statusColor}">${statusText}</span>
-                        </div>
-                    </div>`;
+                if(exibir) {
+                    if(r.tipo === 'Receita') { icon='fa-arrow-up'; color='var(--success)'; }
+                    else if(r.tipo === 'Divida') { icon='fa-barcode'; color='var(--danger)'; }
+                    else if(r.tipo === 'Reserva') { icon='fa-vault'; color='var(--reserve)'; }
+                    else { icon='fa-cart-shopping'; color='var(--warning)'; }
+
+                    const statusColor = vPago >= vTotal ? 'var(--success)' : 'var(--danger)';
+                    const statusText = vPago >= vTotal ? 'LIQUIDADO' : `FALTA: ${ocultarBits(falta)}`;
+
+                    corpo.innerHTML += `
+                        <div class="transaction-item" onclick="openModal(${idxOriginal})">
+                            <div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div>
+                            <div class="details">
+                                <strong>${r.desc}</strong>
+                                <span>${r.data.split('-').reverse().join('/')} • ${r.tipo}</span>
+                            </div>
+                            <div class="amount">
+                                <strong>${ocultarBits(vTotal)}</strong>
+                                <span class="status-debt" style="color:${statusColor}">${statusText}</span>
+                            </div>
+                        </div>`;
+                }
             });
 
+            // Atualização do Dashboard
             document.getElementById('totalReceitas').innerText = ocultarBits(sRec);
             document.getElementById('totalGastos').innerText = ocultarBits(sGas);
             document.getElementById('totalDividas').innerText = ocultarBits(sDiv);
             document.getElementById('totalReserva').innerText = ocultarBits(sRes);
             document.getElementById('totalSaldo').innerText = ocultarBits(sRec - (sGas + sDiv));
 
-            // Lógica dos Gráficos de Barra (na base)
+            // Atualização dos Gráficos Inferiores
             const percSaida = sRec > 0 ? Math.min(( (sGas + sDiv) / sRec) * 100, 100) : 0;
             const percRes = sRec > 0 ? Math.min((sRes / sRec) * 100, 100) : 0;
-
             document.getElementById('fillSaida').style.width = percSaida + '%';
             document.getElementById('labelPercSaida').innerText = percSaida.toFixed(1) + '%';
-            
             document.getElementById('fillRes').style.width = percRes + '%';
             document.getElementById('labelPercRes').innerText = percRes.toFixed(1) + '%';
         }
 
+        // Funções do Modal e Controle
         function openModal(idx = null) {
             document.getElementById('modalForm').classList.add('open');
             document.getElementById('overlay').style.display = 'block';
@@ -273,7 +316,7 @@
             const data = document.getElementById('data').value;
             let pago = parseFloat(document.getElementById('pago').value) || 0;
             const editIdx = document.getElementById('editIndex').value;
-            if(!desc || valor <= 0 || !data) return alert("Erro!");
+            if(!desc || valor <= 0 || !data) return alert("Dados incompletos!");
             if(tipo === 'Receita' || tipo === 'Reserva') pago = valor;
             const obj = { tipo, desc, valor, pago, data };
             if(editIdx === "") registros.push(obj);
