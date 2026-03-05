@@ -34,7 +34,7 @@
         [data-theme="light"] {
             --bg: #f8fafc;
             --card: #ffffff;
-            --accent: #0284c7; /* Azul mais escuro para contraste */
+            --accent: #0284c7; 
             --text: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
@@ -113,8 +113,6 @@
         .sub-btn { flex: 1; padding: 8px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; font-size: 0.65rem; font-weight: 800; color: var(--text-muted); }
         .sub-btn.active { background: rgba(0, 242, 255, 0.1); border-color: var(--accent); color: var(--accent); }
         [data-theme="light"] .sub-btn.active { background: #e0f2fe; }
-
-        .search-bar { width: 100%; background: rgba(125, 125, 125, 0.05); border: 1px solid var(--border); padding: 12px 15px; border-radius: 12px; color: var(--text); margin-bottom: 15px; font-size: 0.9rem; outline: none; }
 
         .transaction-item { background: var(--card); padding: 15px; border-radius: 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); }
         .icon-box { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--bg); min-width: 40px; border: 1px solid var(--border); }
@@ -219,7 +217,6 @@
             <button class="sub-btn" id="btnPago" onclick="setSubFiltro('Pago')">LIQUIDADAS</button>
         </div>
         
-        <input type="text" id="inputPesquisa" class="search-bar" placeholder="🔍 Buscar lançamento" onkeyup="renderizar()">
         <div id="tabelaCorpo"></div>
     </main>
 
@@ -289,7 +286,7 @@
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('meucaixa_theme', newTheme);
-            renderizar(); // Atualiza cores se necessário
+            renderizar();
         }
 
         const opcoesSubmenu = {
@@ -322,7 +319,6 @@
         function renderizar() {
             document.getElementById('mesDisplay').innerText = formatarMesAno(dataVisualizacao);
             const prefixoMes = `${dataVisualizacao.getFullYear()}-${String(dataVisualizacao.getMonth() + 1).padStart(2, '0')}`;
-            const termoBusca = document.getElementById('inputPesquisa').value.toLowerCase();
             const corpo = document.getElementById('tabelaCorpo'); corpo.innerHTML = '';
             let sRec=0, sGas=0, sDiv=0, sRes=0;
             
@@ -345,7 +341,6 @@
                 }
 
                 let exibir = (filtroAtual === "Tudo") || (filtroAtual === r.tipo) || (filtroAtual === "Gasto" && (r.tipo === "Fixo" || r.tipo === "Variavel"));
-                if (termoBusca !== "" && !r.desc.toLowerCase().includes(termoBusca)) exibir = false;
                 if (filtroAtual !== "Tudo") {
                     if (subFiltro === "Pendente" && isPago) exibir = false;
                     if (subFiltro === "Pago" && !isPago) exibir = false;
@@ -458,9 +453,35 @@
         function importarDados(e) { const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = function(ev) { const lines = ev.target.result.split('\n'); let novos = []; for(let i=1; i<lines.length; i++){ const c = lines[i].split(','); if(c.length>=5) novos.push({ tipo: c[0], desc: c[1], valor: parseFloat(c[2]), pago: parseFloat(c[3]), data: c[4].trim(), forma: c[5]?.trim()||null }); } if(novos.length > 0){ registros = novos; localStorage.setItem('foton_db', JSON.stringify(registros)); renderizar(); closeAll(); } }; r.readAsText(f); }
         function toggleFantasma() { modoFantasma = !modoFantasma; document.getElementById('eyeIcon').className = modoFantasma ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'; renderizar(); }
         function ocultarBits(v) { return modoFantasma ? "R$ ••••" : "R$ " + v.toLocaleString('pt-BR', {minimumFractionDigits: 2}); }
+        function otimizarTerminal() { closeAll(); }
         function limparTerminal() { if(confirm("Resetar tudo?")) { localStorage.removeItem('foton_db'); location.reload(); } }
         function resetForm() { document.getElementById('editIndex').value = ""; document.getElementById('valor').value = ""; document.getElementById('parcelas').value = "1"; document.getElementById('parcelasPagas').value = "0"; document.getElementById('desc').value = ""; document.getElementById('data').value = new Date().toISOString().split('T')[0]; }
         window.onload = renderizar;
+        
+        // ATIVAÇÃO DO PWA (Para instalar no telemóvel)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                .then(reg => console.log('PWA registado!'))
+                .catch(err => console.log('Erro no PWA:', err));
+            });
+        }
     </script>
 </body>
 </html>
+
+No meu caixa
+O status não está funcionado se eu coloco um status na divida como pago ou não pago ele sempre fica no status como pendente , na entrada de receita quando eu marco recebido ele fica como pedencte e na reserva o mesmo corrja esse erro 
+Mantenha o codigo na estrutura original 
+E tire a Opção de Tema claro e escuro eu não quero isso 
+quero meu menu lateral da mesma forma que tava na estrutural original com as mesmas opções 
+
+Na area de Patrimônio mude o icone de mais do patrimonio do painel para o o icone do mesmo card do patrimonio 
+
+Aonde tem
+<span>MEUCAIXA</span>
+ <strong>WENDEL CARNEIRO</strong>
+mude o wendel carneiro pela opçao do usuario colocar o nome 
+coloque a opçao nas configuraçoes para ele criar o nome dele que vai aparecer ai
+A fonte em todo site tem que ser da fonte 
+Ubuntu do googol font
