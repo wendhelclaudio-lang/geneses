@@ -4,69 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MeuCaixa - Comando de Ativos</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0a192f">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700;800&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
 
     <style>
-        :root { --bg: #030712; --card: #111827; --accent: #00f2ff; --text: #f3f4f6; --text-muted: #94a3b8; --border: #1f2937; --input-bg: #1f2937; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --reserve: #8b5cf6; }
-        * { box-sizing: border-box; outline: none; transition: background-color 0.3s, color 0.3s; }
-        body { font-family: 'Ubuntu', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
-        
-        /* TELA DE LOGIN ESTILO PREMIUM */
-        #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--bg) 0%, var(--card) 100%); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; transition: opacity 0.6s ease; }
-        .login-logo { font-size: 4.5rem; color: var(--accent); margin-bottom: 10px; filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.3)); }
-        .lock-title { font-size: 2rem; margin-bottom: 5px; color: var(--text); font-weight: 800; text-align: center; }
-        .lock-subtitle { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 40px; text-align: center; }
-        
-        .btn-action { width: 100%; max-width: 320px; padding: 18px; border-radius: 16px; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 12px; cursor: pointer; border: none; margin-bottom: 15px; font-size: 1rem; transition: transform 0.2s; }
-        .btn-action:active { transform: scale(0.97); }
-        .btn-google { background: #ffffff; color: #444; border: 1px solid #ddd; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .btn-guest { background: transparent; color: var(--text); border: 2px solid var(--border); }
-        
-        header { background: var(--bg); padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
-        .avatar { width: 44px; height: 44px; border-radius: 14px; background: var(--accent); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; background-size: cover; background-position: center; border: 2px solid var(--border); }
+        :root { --bg: #030712; --card: #111827; --accent: #00f2ff; --text: #f3f4f6; --text-muted: #94a3b8; --border: #1f2937; }
+        body { font-family: 'Ubuntu', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        #lock-screen { text-align: center; padding: 30px; width: 100%; max-width: 400px; transition: opacity 0.5s; }
+        .login-logo { font-size: 4rem; color: var(--accent); margin-bottom: 20px; }
+        .btn { width: 100%; padding: 18px; border-radius: 16px; border: none; font-weight: 700; cursor: pointer; margin-bottom: 15px; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; }
+        .btn-google { background: #fff; color: #444; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .btn-guest { background: transparent; color: #fff; border: 2px solid var(--border); }
         .hidden { display: none !important; }
-        
-        #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100000; width: 90%; max-width: 350px;}
-        .toast { background: var(--card); color: var(--text); padding: 16px 20px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 10px; border-left: 5px solid var(--accent); animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        #main-app { padding: 40px; text-align: center; }
+        .user-photo { width: 80px; height: 80px; border-radius: 20px; margin-bottom: 15px; border: 2px solid var(--accent); }
     </style>
 </head>
 <body>
-    <div id="toast-container"></div>
 
     <div id="lock-screen">
         <i class="fa-solid fa-coins login-logo"></i>
-        <h2 class="lock-title">MeuCaixa</h2>
-        <p class="lock-subtitle">Gerencie suas finanças com inteligência.</p>
+        <h2 style="margin-bottom:5px; font-size: 2rem;">MeuCaixa</h2>
+        <p style="color:var(--text-muted); margin-bottom:40px;">Seu controle financeiro na nuvem.</p>
         
-        <button class="btn-action btn-google" onclick="iniciarLoginGoogle()" id="btnGoogleAuth">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
+        <button class="btn btn-google" onclick="loginGoogle()" id="btnG">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"> 
             Entrar com Google
         </button>
-        <button class="btn-action btn-guest" onclick="continuarSemLogin()">Continuar Offline</button>
+        
+        <button class="btn btn-guest" onclick="entrarOffline()">Continuar Offline</button>
     </div>
 
-    <header id="mainHeader" class="hidden">
-        <div style="display:flex; align-items:center; gap:14px;">
-            <div class="avatar" id="headerAvatar">WC</div>
-            <div>
-                <span style="font-size:0.65rem; color:var(--text-muted); display:block; text-transform:uppercase;">MeuCaixa</span>
-                <strong id="userNameDisp">WENDEL</strong>
-            </div>
-        </div>
-        <button onclick="fazerLogout()" style="background:none; border:1px solid var(--border); color:var(--text); padding:8px 12px; border-radius:10px; cursor:pointer; font-size:0.8rem; font-weight:bold;">SAIR</button>
-    </header>
+    <div id="main-app" class="hidden">
+        <img id="uFoto" class="user-photo" src="">
+        <h1 style="font-size: 1.5rem;">Olá, <span id="uNome"></span>!</h1>
+        <p style="color: var(--text-muted);">Seu acesso está liberado.</p>
+        <br>
+        <button class="btn btn-guest" onclick="logout()" style="max-width: 200px; margin: 0 auto;">Sair do App</button>
+    </div>
 
     <script>
-        // CONFIGURAÇÃO EXTRAÍDA DA TUA IMAGEM (apiKey CORRIGIDA)
+        // CONFIGURAÇÃO EXTRAÍDA DA SUA FOTO (CHAVE REAL AQUI)
         const firebaseConfig = {
-            apiKey: "AIzaSyD2TXAC0o5t8vTsH2jzLqZ9QoReHU5y0Mo", 
+            apiKey: "AIzaSyD2TXAC0o5t8vTsH2jzLqZ9QoReHU5y0Mo",
             authDomain: "meucaixa-d8d24.firebaseapp.com",
             projectId: "meucaixa-d8d24",
             storageBucket: "meucaixa-d8d24.firebasestorage.app",
@@ -74,59 +57,58 @@
             appId: "1:486750418195:web:4c33081663486abda796e6"
         };
 
+        // Inicia o Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const provider = new firebase.auth.GoogleAuthProvider();
 
-        // MODO REDIRECT: Único que funciona em Aplicativos Instalados (PWA)
-        function iniciarLoginGoogle() {
-            document.getElementById('btnGoogleAuth').innerText = "Redirecionando...";
+        // Função de Login (Modo Redirecionamento para PWAs)
+        function loginGoogle() {
+            document.getElementById('btnG').innerText = "Redirecionando...";
             auth.signInWithRedirect(provider);
         }
 
-        // Captura o resultado quando o Google volta para o site
+        // Verifica o resultado quando volta da página do Google
         auth.getRedirectResult().then((result) => {
-            if (result.user) {
-                entrarNoApp(result.user);
+            if (result.user) { 
+                abrirPainel(result.user); 
             }
-        }).catch((error) => {
-            console.error("Erro no retorno:", error);
-            if(error.code !== 'auth/api-key-not-valid') {
-                alert("Erro ao conectar: " + error.message);
+        }).catch((e) => {
+            console.error(e);
+            if(e.code === "auth/api-key-not-valid") {
+                alert("Erro: A chave de API ainda parece inválida. Verifique o Passo 1.");
+            } else {
+                alert("Erro no Login: " + e.message);
             }
         });
 
-        // Monitora se o usuário já estava logado
+        // Mantém o usuário logado se ele atualizar a página
         auth.onAuthStateChanged((user) => {
             if (user) {
-                entrarNoApp(user);
-            } else if (sessionStorage.getItem('isLoggedIn') === 'true') {
-                document.getElementById('lock-screen').classList.add('hidden');
-                document.getElementById('mainHeader').classList.remove('hidden');
+                abrirPainel(user);
             }
         });
 
-        function entrarNoApp(user) {
-            document.getElementById('userNameDisp').innerText = user.displayName.toUpperCase();
-            if(user.photoURL) {
-                document.getElementById('headerAvatar').style.backgroundImage = `url(${user.photoURL})`;
-                document.getElementById('headerAvatar').innerText = "";
-            }
-            sessionStorage.setItem('isLoggedIn', 'true');
+        function abrirPainel(user) {
+            document.getElementById('uNome').innerText = user.displayName;
+            document.getElementById('uFoto').src = user.photoURL;
             document.getElementById('lock-screen').classList.add('hidden');
-            document.getElementById('mainHeader').classList.remove('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            sessionStorage.setItem('isLoggedIn', 'true');
         }
 
-        function continuarSemLogin() {
-            sessionStorage.setItem('isLoggedIn', 'true');
+        function entrarOffline() {
+            alert("Modo Offline ativado.");
             document.getElementById('lock-screen').classList.add('hidden');
-            document.getElementById('mainHeader').classList.remove('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('uNome').innerText = "Visitante";
         }
 
-        function fazerLogout() {
-            auth.signOut();
-            sessionStorage.removeItem('isLoggedIn');
-            location.reload();
+        function logout() {
+            auth.signOut().then(() => {
+                sessionStorage.removeItem('isLoggedIn');
+                location.reload();
+            });
         }
     </script>
 </body>
