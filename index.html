@@ -60,7 +60,7 @@
         * { box-sizing: border-box; outline: none; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
         body { font-family: 'Ubuntu', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; font-size: 0.95rem; }
 
-        /* TELA DE BLOQUEIO (LOGIN REDESENHADO) */
+        /* TELA DE BLOQUEIO (LOGIN) */
         #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--bg) 0%, var(--card) 100%); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; transition: opacity 0.6s ease, visibility 0.6s; }
         [data-theme="light"] #lock-screen, [data-theme="santander"] #lock-screen, [data-theme="itau"] #lock-screen, [data-theme="bradesco"] #lock-screen, [data-theme="nubank"] #lock-screen { background: rgba(255, 255, 255, 0.95); }
         
@@ -68,18 +68,16 @@
         .lock-title { font-size: 2rem; margin-bottom: 5px; color: var(--text); font-weight: 800; text-align: center; letter-spacing: 1px;}
         .lock-subtitle { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 40px; text-align: center;}
         
-        /* Estilos do Input de Senha e Botões de Login Local */
         #loginLocalArea { display: none; width: 100%; max-width: 320px; flex-direction: column; align-items: center; }
         .lock-input { width: 100%; background: var(--input-bg); border: 2px solid var(--border); padding: 18px; border-radius: 16px; color: var(--text); font-size: 1.2rem; text-align: center; letter-spacing: 5px; margin-bottom: 15px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); transition: all 0.3s; }
         .lock-input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
         .btn-forgot { background: none; border: none; color: var(--text-muted); font-family: 'Ubuntu'; font-size: 0.85rem; cursor: pointer; margin-bottom: 20px; font-weight: 500; text-decoration: underline;}
         
-        /* Estilo dos Botões Principais */
         .btn-action { width: 100%; max-width: 320px; padding: 16px; border-radius: 14px; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 12px; cursor: pointer; font-size: 1rem; margin-bottom: 15px; transition: transform 0.2s, opacity 0.2s; border: none;}
         .btn-action:active { transform: scale(0.97); opacity: 0.9; }
         
         .btn-google { background: #ffffff; color: #444; border: 1px solid #ddd; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .btn-google svg { width: 22px; height: 22px; }
+        .btn-google i { color: #EA4335; font-size: 1.2rem; }
         .btn-confirm { background: var(--accent); color: #fff; box-shadow: 0 5px 15px rgba(0, 242, 255, 0.2); }
         .btn-guest { background: transparent; color: var(--text); border: 2px solid var(--border); }
         .btn-guest:hover { background: var(--hover-bg); }
@@ -205,17 +203,11 @@
         </div>
 
         <button class="btn-action btn-google" onclick="iniciarLoginGoogle()" id="btnGoogleAuth">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
-                <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
-                <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
-                <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
-            </svg>
-            Entrar com Google
+            <i class="fa-brands fa-google"></i> Entrar com Google
         </button>
         
         <button class="btn-action btn-guest" onclick="continuarSemLogin()" id="btnGuestMode">
-            Continuar Offline (Sem Login)
+            Continuar Offline
         </button>
     </div>
 
@@ -241,7 +233,7 @@
         </div>
         <div class="status-panel">
             <div class="status-row"><span class="status-label">Conexão</span><strong id="statusConexao" style="color: var(--warning); font-size: 0.75rem;">OFFLINE LOCAL</strong></div>
-            <div class="status-row"><span class="status-label">Senha / PIN</span><strong id="statusSeguranca" style="color: var(--warning); font-size: 0.75rem;">DESATIVADA</strong></div>
+            <div class="status-row"><span class="status-label">Segurança</span><strong id="statusSeguranca" style="color: var(--warning); font-size: 0.75rem;">DESATIVADA</strong></div>
             <div class="status-row"><span class="status-label">Registros</span><strong id="contadorRegistros" style="color: var(--text);">0</strong></div>
             
             <div class="meta-panel hidden" id="metaPanelInfo">
@@ -254,10 +246,6 @@
         </div>
         
         <div class="sidebar-menu">
-            <div class="menu-item" onclick="iniciarLoginGoogle()">
-                <div><i class="fa-brands fa-google" style="color: #4CAF50"></i> <span>Conectar Nuvem (Google)</span></div>
-            </div>
-
             <div class="menu-item" onclick="configurarSenha()">
                 <div><i class="fa-solid fa-lock" style="color: var(--warning)"></i> <span>Configurar Senha Local</span></div>
             </div>
@@ -311,7 +299,7 @@
             </div>
             
             <div class="menu-item" style="border-color: rgba(239, 68, 68, 0.2); margin-top: 15px;" onclick="fazerLogout()">
-                <div><i class="fa-solid fa-right-from-bracket" style="color: var(--danger);"></i> <span style="color: var(--danger);">Sair (Logout)</span></div>
+                <div><i class="fa-solid fa-right-from-bracket" style="color: var(--danger);"></i> <span style="color: var(--danger);">Sair e Bloquear</span></div>
             </div>
         </div>
     </div>
@@ -422,12 +410,12 @@
         <input type="date" id="data">
         
         <input type="hidden" id="editIndex">
-        <button class="btn-action btn-confirm" style="margin-top: 15px;" onclick="salvar()">SALVAR OPERAÇÃO</button>
-        <button class="btn-action btn-delete hidden" id="btnExcluir" onclick="excluirRegistro()">EXCLUIR REGISTRO</button>
+        <button class="btn-confirm" onclick="salvar()" style="width: 100%; margin-top: 15px;">SALVAR OPERAÇÃO</button>
+        <button class="btn-delete hidden" id="btnExcluir" onclick="excluirRegistro()" style="width: 100%;">EXCLUIR REGISTRO</button>
     </div>
 
     <script>
-        // CONFIGURAÇÃO REAL DO SEU FIREBASE
+        // CONFIGURAÇÃO FIREBASE 
         const firebaseConfig = {
             apiKey: "AIzaSyD2TXAC0o5t8vTsH2jzLqZ9QoReHU5y0Mo",
             authDomain: "meucaixa-d8d24.firebaseapp.com",
@@ -436,8 +424,6 @@
             messagingSenderId: "486750418195",
             appId: "1:486750418195:web:4c33081663486abda796e6"
         };
-
-        // INICIALIZANDO FIREBASE
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const provider = new firebase.auth.GoogleAuthProvider();
@@ -466,8 +452,29 @@
         }
 
         // ==========================================
-        // SISTEMA DE LOGIN E SEGURANÇA CORRIGIDO
+        // SISTEMA DE LOGIN E SEGURANÇA
         // ==========================================
+
+        // 1. Lida com o retorno do Redirecionamento do Google (Para PWA/Celular)
+        auth.getRedirectResult().then((result) => {
+            if (result && result.user) {
+                let user = result.user;
+                appConfig.nome = user.displayName || "Usuário";
+                appConfig.fotoPerfil = user.photoURL || "";
+                appConfig.senhaHash = "google_auth";
+                
+                document.getElementById('statusConexao').innerText = "GOOGLE CLOUD";
+                document.getElementById('statusConexao').style.color = "#0ea5e9";
+                
+                sessionStorage.setItem('isLoggedIn', 'true');
+                salvarConfig(false);
+                document.getElementById('lock-screen').classList.add('hidden');
+                showToast(`Bem-vindo(a), ${appConfig.nome.split(" ")[0]}!`, "success");
+            }
+        }).catch((error) => {
+            alert("Erro na autenticação com o Google: " + error.message);
+            document.getElementById('btnGoogleAuth').innerHTML = '<i class="fa-brands fa-google"></i> Entrar com Google';
+        });
         
         function verificarStatusAutenticacao() {
             const lockScreen = document.getElementById('lock-screen');
@@ -476,7 +483,6 @@
             const btnGuest = document.getElementById('btnGuestMode');
             const subtitle = document.getElementById('loginSubtitle');
 
-            // Configura o visual da tela de bloqueio com base na existência de senha
             if(appConfig.senhaHash && appConfig.senhaHash !== "google_auth") {
                 localArea.style.display = 'flex';
                 btnGuest.style.display = 'none';
@@ -487,24 +493,18 @@
                 subtitle.innerText = "Gerencie suas finanças com inteligência.";
             }
 
-            // Ouve as mudanças de autenticação do Firebase no fundo
             auth.onAuthStateChanged((user) => {
                 if (user) {
-                    // Está logado no Firebase (Nuvem)
-                    appConfig.nome = user.displayName;
-                    appConfig.fotoPerfil = user.photoURL;
-                    appConfig.senhaHash = "google_auth"; 
-                    
+                    appConfig.nome = user.displayName || "Usuário";
+                    appConfig.fotoPerfil = user.photoURL || "";
+                    appConfig.senhaHash = "google_auth";
                     document.getElementById('statusConexao').innerText = "GOOGLE CLOUD";
                     document.getElementById('statusConexao').style.color = "#0ea5e9";
                     salvarConfig(false);
-                    
                     sessionStorage.setItem('isLoggedIn', 'true');
                     lockScreen.style.opacity = '0';
                     setTimeout(() => { lockScreen.classList.add('hidden'); }, 500);
-                    
                 } else {
-                    // Não está no Google. Verifica se tem sessão local.
                     if(sessionStorage.getItem('isLoggedIn') === 'true' || sessionStorage.getItem('guestMode') === 'true') {
                         document.getElementById('statusConexao').innerText = "OFFLINE LOCAL";
                         document.getElementById('statusConexao').style.color = "var(--warning)";
@@ -517,17 +517,24 @@
             });
         }
 
-        // CORREÇÃO PWA: Usa Redirect para não ser bloqueado pelo Windows/Celular
         function iniciarLoginGoogle() {
-            document.getElementById('btnGoogleAuth').innerHTML = "Redirecionando...";
-            auth.signInWithRedirect(provider);
+            const btn = document.getElementById('btnGoogleAuth');
+            btn.innerHTML = "Conectando...";
+            
+            auth.signInWithPopup(provider).then((result) => {
+                btn.innerHTML = '<i class="fa-brands fa-google"></i> Entrar com Google';
+            }).catch((error) => {
+                if (error.code === 'auth/popup-blocked') {
+                    btn.innerHTML = "Redirecionando...";
+                    auth.signInWithRedirect(provider);
+                } else if (error.code === 'auth/popup-closed-by-user') {
+                    btn.innerHTML = '<i class="fa-brands fa-google"></i> Entrar com Google';
+                } else {
+                    alert("Erro Firebase: " + error.message);
+                    btn.innerHTML = '<i class="fa-brands fa-google"></i> Entrar com Google';
+                }
+            });
         }
-
-        // Captura possíveis erros do redirecionamento
-        auth.getRedirectResult().catch((error) => {
-            alert("Falha no login Google: " + error.message);
-            document.getElementById('btnGoogleAuth').innerHTML = "Entrar com Google";
-        });
 
         function checkLogin() {
             const input = document.getElementById('inputSenha').value;
@@ -553,12 +560,8 @@
         }
 
         function fazerLogout() {
-            // Desloga do Google se estiver conectado
-            if (auth.currentUser) {
-                auth.signOut().then(() => { lockApp(); });
-            } else {
-                lockApp();
-            }
+            if (auth.currentUser) { auth.signOut().then(() => { lockApp(); }); } 
+            else { lockApp(); }
         }
         
         function lockApp() {
@@ -574,6 +577,7 @@
                 if(confirm("Deseja remover a segurança local? O aplicativo abrirá direto.")) {
                     appConfig.senhaHash = null; appConfig.telefoneRec = null;
                     salvarConfig(); showToast("Segurança Local Removida", "success"); closeAll();
+                    verificarStatusAutenticacao();
                 }
             } else {
                 let novaSenha = prompt("Crie uma senha ou PIN para bloquear a entrada do aplicativo:");
@@ -582,18 +586,17 @@
                     appConfig.senhaHash = novaSenha.trim();
                     if(telefone) appConfig.telefoneRec = telefone.replace(/\D/g, '');
                     salvarConfig(); showToast("Segurança Local Configurada!", "success"); closeAll();
+                    verificarStatusAutenticacao();
                 }
             }
         }
 
         function recuperarSenha() {
             if(!appConfig.telefoneRec) return showToast("Nenhum telefone cadastrado para recuperação.", "error");
-            
             let telConfirm = prompt("Confirme o seu número de celular (com DDD) para receber o SMS:");
             if(telConfirm && telConfirm.replace(/\D/g, '') === appConfig.telefoneRec) {
                 let codigoGerado = Math.floor(100000 + Math.random() * 900000).toString();
                 alert(`[SISTEMA DE RECUPERAÇÃO]\n\nO MeuCaixa detectou o pedido. Seu código gerado é: ${codigoGerado}`);
-                
                 let inputCodigo = prompt("Digite o código de 6 dígitos recebido:");
                 if(inputCodigo === codigoGerado) {
                     let novaSenha = prompt("Código correto! Digite sua NOVA senha:");
