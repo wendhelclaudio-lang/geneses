@@ -4,166 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MeuCaixa - Comando de Ativos</title>
-    
     <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0a192f">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700;800&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
 
     <style>
-        /* VARIÁVEIS DE TEMAS */
-        :root {
-            --bg: #030712; --card: #111827; --accent: #00f2ff; --text: #f3f4f6;
-            --text-muted: #94a3b8; --border: #1f2937; --input-bg: #1f2937;
-            --hover-bg: rgba(255,255,255,0.05); --success: #10b981; --danger: #ef4444;
-            --warning: #f59e0b; --reserve: #8b5cf6;
-        }
-        [data-theme="light"] { --bg: #f8fafc; --card: #ffffff; --accent: #0284c7; --text: #0f172a; --text-muted: #64748b; --border: #e2e8f0; --input-bg: #f1f5f9; --hover-bg: rgba(0,0,0,0.05); --success: #059669; --danger: #dc2626; --warning: #d97706; --reserve: #7c3aed; }
-        [data-theme="nubank"] { --bg: #f0f1f5; --card: #ffffff; --accent: #820ad1; --text: #111111; --text-muted: #757575; --border: #e0e0e0; --input-bg: #f5f5f5; --success: #00a868; --danger: #e92929; --warning: #ff9800; --reserve: #820ad1; }
-        [data-theme="santander"] { --bg: #f5f5f5; --card: #ffffff; --accent: #ec0000; --text: #222222; --text-muted: #666666; --border: #cccccc; --input-bg: #eeeeee; --success: #107c10; --danger: #cc0000; --warning: #ff7300; --reserve: #444444; }
-        [data-theme="itau"] { --bg: #f0f1f3; --card: #ffffff; --accent: #ec7000; --text: #002959; --text-muted: #6c7a89; --border: #dcdde1; --input-bg: #f5f6f8; --success: #008f39; --danger: #da291c; --warning: #ec7000; --reserve: #002959; }
-        [data-theme="bradesco"] { --bg: #ffffff; --card: #f9f9f9; --accent: #cc092f; --text: #333333; --text-muted: #777777; --border: #e6e6e6; --input-bg: #ffffff; --success: #008000; --danger: #cc092f; --warning: #f2a900; --reserve: #444444; }
-
-        * { box-sizing: border-box; outline: none; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
-        body { font-family: 'Ubuntu', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; font-size: 0.95rem; }
-
-        /* TELA DE LOGIN */
-        #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--bg) 0%, var(--card) 100%); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; transition: opacity 0.6s ease; }
-        .login-logo { font-size: 4.5rem; color: var(--accent); margin-bottom: 10px; filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.3)); }
-        .lock-title { font-size: 2rem; margin-bottom: 5px; color: var(--text); font-weight: 800; text-align: center; }
-        .lock-subtitle { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 40px; text-align: center;}
-        
-        #loginLocalArea { display: none; width: 100%; max-width: 320px; flex-direction: column; align-items: center; }
-        .lock-input { width: 100%; background: var(--input-bg); border: 2px solid var(--border); padding: 18px; border-radius: 16px; color: var(--text); font-size: 1.2rem; text-align: center; letter-spacing: 5px; margin-bottom: 15px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
-
-        .btn-action { width: 100%; max-width: 320px; padding: 18px; border-radius: 16px; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 12px; cursor: pointer; border: none; margin-bottom: 15px; font-size: 1rem; transition: transform 0.2s; }
-        .btn-action:active { transform: scale(0.97); }
-        .btn-google { background: #ffffff; color: #444; border: 1px solid #ddd; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .btn-google svg { width: 22px; height: 22px; }
-        .btn-confirm { background: var(--accent); color: #fff; }
-        .btn-guest { background: transparent; color: var(--text); border: 2px solid var(--border); }
-
-        /* HEADER E COMPONENTES */
-        header { background: var(--bg); padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
-        .profile-section { display: flex; align-items: center; gap: 14px; cursor: pointer; }
-        .avatar { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, var(--accent), #0a192f); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #ffffff; border: 2px solid var(--border); font-size: 1.3rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); overflow: hidden; background-size: cover; background-position: center; }
-        .user-info span { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px; display: block; text-transform: uppercase; margin-bottom: 2px; }
-        .user-info strong { font-size: 0.95rem; color: var(--text); letter-spacing: 0.5px;}
-
-        .sidebar { position: fixed; top: 0; right: -100%; width: 85%; max-width: 380px; height: 100%; background: var(--card); z-index: 3000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 30px 24px; border-left: 1px solid var(--accent); box-shadow: -15px 0 40px rgba(0,0,0,0.7); display: flex; flex-direction: column; overflow-y: auto; }
-        .sidebar.open { right: 0; }
-        .menu-item { padding: 14px 18px; border-radius: 12px; background: var(--hover-bg); display: flex; align-items: center; justify-content: space-between; gap: 15px; font-size: 0.85rem; cursor: pointer; color: var(--text); margin-bottom: 10px;}
-
-        .balance-card { padding: 18px 22px 25px; text-align: center; }
-        .balance-card h1 { font-size: 2.5rem; margin: 8px 0 0; font-weight: 800; color: var(--text); }
-
-        .quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 0 22px 22px; }
-        .mini-card { background: var(--card); padding: 16px; border-radius: 16px; border: 1px solid var(--border); }
-        .mini-card strong { font-size: 0.95rem; color: var(--text); display: block; margin-top: 5px;}
-
-        .transaction-item { background: var(--card); padding: 16px; border-radius: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 14px; border: 1px solid var(--border); }
-        .icon-box { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; background: var(--bg); font-size: 1.05rem; }
-
-        .fab { position: fixed; bottom: 30px; right: 22px; width: 60px; height: 60px; border-radius: 20px; background: var(--accent); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border: none; z-index: 1000; cursor: pointer; }
-        .modal { position: fixed; bottom: -100%; left: 0; width: 100%; height: 92%; background: var(--card); border-radius: 35px 35px 0 0; z-index: 2000; padding: 25px 22px; transition: 0.4s; overflow-y: auto; border-top: 1px solid var(--border); }
-        .modal.open { bottom: 0; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; backdrop-filter: blur(4px); }
-        
-        #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100000; width: 90%; max-width: 350px;}
-        .toast { background: var(--card); color: var(--text); padding: 16px 20px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 10px; border-left: 5px solid var(--accent); animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        input, select { width: 100%; background: var(--input-bg); border: 1px solid var(--border); padding: 14px; border-radius: 12px; color: var(--text); margin-bottom: 14px; }
+        :root { --bg: #030712; --card: #111827; --accent: #00f2ff; --text: #f3f4f6; --text-muted: #94a3b8; --border: #1f2937; }
+        body { font-family: 'Ubuntu', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        #lock-screen { position: fixed; inset: 0; background: linear-gradient(135deg, var(--bg), var(--card)); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; transition: opacity 0.5s; }
+        .login-logo { font-size: 4rem; color: var(--accent); margin-bottom: 20px; }
+        .btn { width: 100%; max-width: 320px; padding: 18px; border-radius: 16px; border: none; font-weight: 700; cursor: pointer; margin-bottom: 15px; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .btn-google { background: #fff; color: #444; }
+        .btn-guest { background: transparent; color: #fff; border: 1px solid var(--border); }
+        header { background: var(--bg); padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+        .avatar { width: 44px; height: 44px; border-radius: 14px; background: var(--accent); background-size: cover; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div id="toast-container"></div>
-
     <div id="lock-screen">
         <i class="fa-solid fa-coins login-logo"></i>
-        <h2 class="lock-title">MeuCaixa</h2>
-        <p class="lock-subtitle" id="loginSubtitle">Gerencie suas finanças com inteligência.</p>
+        <h2 style="font-size:2rem; margin-bottom:5px;">MeuCaixa</h2>
+        <p style="color:var(--text-muted); margin-bottom:40px;">Gerencie suas finanças na nuvem.</p>
         
-        <div id="loginLocalArea">
-            <input type="password" id="inputSenha" class="lock-input" placeholder="PIN" inputmode="numeric" onkeypress="if(event.key === 'Enter') checkLogin()">
-            <button class="btn-action btn-confirm" onclick="checkLogin()">ENTRAR</button>
-            <div style="margin: 10px 0 20px 0; width: 100%; display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 0.8rem;">
-                <div style="flex: 1; height: 1px; background: var(--border);"></div> OU <div style="flex: 1; height: 1px; background: var(--border);"></div>
-            </div>
-        </div>
-
-        <button class="btn-action btn-google" onclick="iniciarLoginGoogle()" id="btnGoogleAuth">
-            <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
+        <button class="btn btn-google" onclick="loginGoogle()" id="btnG">
+            <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
             Entrar com Google
         </button>
-        <button class="btn-action btn-guest" onclick="continuarSemLogin()" id="btnGuestMode">Continuar Offline</button>
+        <button class="btn btn-guest" onclick="entrarOffline()">Continuar Offline</button>
     </div>
 
-    <header>
-        <div class="profile-section" onclick="toggleSidebar()">
-            <div class="avatar" id="headerAvatar">WC</div>
-            <div class="user-info"><span>MEUCAIXA</span><strong id="headerUserName">WENDEL CARNEIRO</strong></div>
+    <header id="appHeader" class="hidden">
+        <div style="display:flex; align-items:center; gap:14px;">
+            <div class="avatar" id="uFoto">WC</div>
+            <div><span style="font-size:0.6rem; color:var(--text-muted); display:block;">MEUCAIXA</span><strong id="uNome">WENDEL</strong></div>
         </div>
-        <button onclick="toggleFantasma()" style="background:none; border:1px solid var(--border); color:var(--text); padding:8px 10px; border-radius:10px; cursor:pointer;"><i id="eyeIcon" class="fa-solid fa-eye"></i></button>
+        <button onclick="logout()" style="background:none; border:1px solid var(--border); color:var(--text); padding:8px 12px; border-radius:10px; cursor:pointer;">SAIR</button>
     </header>
 
-    <div class="sidebar" id="profileSidebar">
-        <div style="text-align: right;"><i class="fa-solid fa-xmark" style="font-size: 1.4rem; cursor: pointer;" onclick="toggleSidebar()"></i></div>
-        <div class="sidebar-header">
-            <div class="avatar" id="sidebarAvatar" style="width: 70px; height: 70px; font-size: 2rem; margin: 0 auto 12px;">WC</div>
-            <h2 id="sidebarUserName" style="margin:0; font-size: 1.15rem; color: var(--text);">WENDEL CARNEIRO</h2>
-            <span id="statusConexao" style="color: var(--accent); font-size: 0.75rem;">OFFLINE LOCAL</span>
-        </div>
-        <div style="margin-top: 30px;">
-            <div class="menu-item" onclick="mudarNome()"><div><i class="fa-solid fa-user-pen"></i> <span>Mudar Nome</span></div></div>
-            <div class="menu-item" onclick="mudarTemaUI()"><div><i class="fa-solid fa-palette"></i> <span>Mudar Tema</span></div></div>
-            <div class="menu-item" onclick="fazerLogout()" style="margin-top: 20px; border-color: rgba(239, 68, 68, 0.3);">
-                <div><i class="fa-solid fa-right-from-bracket" style="color: var(--danger);"></i> <span style="color: var(--danger);">Sair da Conta</span></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="month-selector">
-        <button onclick="mudarMes(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-        <span id="mesDisplay">Mês Ano</span>
-        <button onclick="mudarMes(1)"><i class="fa-solid fa-chevron-right"></i></button>
-    </div>
-
-    <div class="balance-card">
-        <small>Saldo Disponível</small>
-        <h1 id="totalSaldo">R$ 0,00</h1>
-    </div>
-
-    <div class="quick-stats">
-        <div class="mini-card" onclick="renderizar('Receita')"><span>Entradas</span><strong id="totalReceitas" style="color:var(--success)">R$ 0,00</strong></div>
-        <div class="mini-card" onclick="renderizar('Gasto')"><span>Gastos</span><strong id="totalGastos" style="color:var(--warning)">R$ 0,00</strong></div>
-    </div>
-
-    <main id="tabelaCorpo"></main>
-
-    <button class="fab" onclick="openModal()"><i class="fa-solid fa-plus"></i></button>
-    <div class="overlay" id="overlay" onclick="closeAll()"></div>
-
-    <div class="modal" id="modalForm">
-        <h2 id="modalTitle">Nova Operação</h2>
-        <select id="tipo"><option value="Receita">Receita</option><option value="Fixo">Gasto Fixo</option><option value="Variavel">Gasto Variável</option><option value="Divida">Dívida</option></select>
-        <input type="text" id="desc" placeholder="Descrição"><input type="number" id="valor" placeholder="0,00" step="0.01"><input type="date" id="data">
-        <input type="hidden" id="editIndex">
-        <button class="btn-confirm" onclick="salvar()">SALVAR</button>
-        <button id="btnExcluir" class="btn-delete hidden" onclick="excluirRegistro()">EXCLUIR</button>
-    </div>
-
     <script>
+        // CONFIGURAÇÃO EXTRAÍDA DO SEU PRINT - FIREBASE REAL
         const firebaseConfig = {
             apiKey: "AIzaSyD2TXAC0o5t8vTsH2jzLqZ9QoReHU5y0Mo",
             authDomain: "meucaixa-d8d24.firebaseapp.com",
@@ -172,127 +57,55 @@
             messagingSenderId: "486750418195",
             appId: "1:486750418195:web:4c33081663486abda796e6"
         };
+
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const provider = new firebase.auth.GoogleAuthProvider();
 
-        let registros = JSON.parse(localStorage.getItem('foton_db')) || [];
-        let modoFantasma = false, dataVisualizacao = new Date();
-        let appConfig = JSON.parse(localStorage.getItem('meucaixa_config')) || { nome: "WENDEL CARNEIRO", moeda: "R$", fotoPerfil: null, senhaHash: null };
+        // MODO REDIRECT: Não abre janelas, por isso não trava no App instalado
+        function loginGoogle() {
+            document.getElementById('btnG').innerText = "Redirecionando...";
+            auth.signInWithRedirect(provider);
+        }
 
-        // 1. Verificação de Sessão e Login
-        function verificarStatusAutenticacao() {
-            const lockScreen = document.getElementById('lock-screen');
-            const localArea = document.getElementById('loginLocalArea');
-            const btnGuest = document.getElementById('btnGuestMode');
-            const subtitle = document.getElementById('loginSubtitle');
+        // Lida com o retorno do Google
+        auth.getRedirectResult().then((result) => {
+            if (result.user) entrarApp(result.user);
+        }).catch((e) => { 
+            if(e.code !== "auth/api-key-not-valid") alert("Erro: " + e.message); 
+        });
 
-            // Se tem senha local configurada
-            if(appConfig.senhaHash && appConfig.senhaHash !== "google_auth") {
-                localArea.style.display = 'flex';
-                btnGuest.style.display = 'none';
-                subtitle.innerText = "Insira sua senha local para acessar.";
+        // Mantém logado ao atualizar
+        auth.onAuthStateChanged((user) => {
+            if (user) entrarApp(user);
+            else if (sessionStorage.getItem('isLoggedIn') === 'true') {
+                document.getElementById('lock-screen').classList.add('hidden');
+                document.getElementById('appHeader').classList.remove('hidden');
             }
+        });
 
-            // Ouve Firebase
-            auth.onAuthStateChanged((user) => {
-                if (user) {
-                    appConfig.nome = user.displayName;
-                    appConfig.fotoPerfil = user.photoURL;
-                    document.getElementById('statusConexao').innerText = "GOOGLE CLOUD";
-                    salvarConfig(false);
-                    sessionStorage.setItem('isLoggedIn', 'true');
-                    lockScreen.classList.add('hidden');
-                    renderizar();
-                } else if(sessionStorage.getItem('isLoggedIn') === 'true') {
-                    lockScreen.classList.add('hidden');
-                    renderizar();
-                } else {
-                    lockScreen.classList.remove('hidden');
-                    lockScreen.style.opacity = '1';
-                }
-            });
+        function entrarApp(user) {
+            document.getElementById('uNome').innerText = user.displayName.toUpperCase();
+            if(user.photoURL) {
+                document.getElementById('uFoto').style.backgroundImage = `url(${user.photoURL})`;
+                document.getElementById('uFoto').innerText = "";
+            }
+            sessionStorage.setItem('isLoggedIn', 'true');
+            document.getElementById('lock-screen').classList.add('hidden');
+            document.getElementById('appHeader').classList.remove('hidden');
         }
 
-        // 2. Funções de Login
-        function iniciarLoginGoogle() { auth.signInWithRedirect(provider); }
-        auth.getRedirectResult().catch(e => { if(e.code !== 'auth/api-key-not-valid') alert("Erro Google: " + e.message); });
+        function entrarOffline() {
+            sessionStorage.setItem('isLoggedIn', 'true');
+            location.reload();
+        }
 
-        function checkLogin() {
-            if(document.getElementById('inputSenha').value === appConfig.senhaHash) {
-                sessionStorage.setItem('isLoggedIn', 'true');
+        function logout() {
+            auth.signOut().then(() => {
+                sessionStorage.removeItem('isLoggedIn');
                 location.reload();
-            } else { alert("Senha Incorreta"); }
-        }
-
-        function continuarSemLogin() { sessionStorage.setItem('isLoggedIn', 'true'); location.reload(); }
-        function fazerLogout() { auth.signOut().then(() => { sessionStorage.removeItem('isLoggedIn'); location.reload(); }); }
-
-        // 3. Lógica do App
-        function renderizar(filtro = "Tudo") {
-            document.getElementById('headerUserName').innerText = appConfig.nome;
-            document.getElementById('sidebarUserName').innerText = appConfig.nome;
-            document.getElementById('mesDisplay').innerText = dataVisualizacao.toLocaleDateString('pt-BR', {month:'long', year:'numeric'}).toUpperCase();
-            
-            const avatares = [document.getElementById('headerAvatar'), document.getElementById('sidebarAvatar')];
-            avatares.forEach(av => {
-                if(appConfig.fotoPerfil) { av.style.backgroundImage = `url(${appConfig.fotoPerfil})`; av.innerText = ""; }
-                else { av.style.backgroundImage = "none"; av.innerText = appConfig.nome.substring(0,2).toUpperCase(); }
             });
-
-            const prefixo = `${dataVisualizacao.getFullYear()}-${String(dataVisualizacao.getMonth() + 1).padStart(2, '0')}`;
-            const corpo = document.getElementById('tabelaCorpo'); corpo.innerHTML = '';
-            let sRec=0, sGas=0;
-
-            registros.filter(r => r.data.startsWith(prefixo)).forEach((r) => {
-                const v = parseFloat(r.valor);
-                if(r.tipo === 'Receita') sRec += v; else sGas += v;
-                if(filtro === "Tudo" || r.tipo === filtro || (filtro === "Gasto" && r.tipo !== "Receita")) {
-                    corpo.innerHTML += `<div class="transaction-item" onclick="openModal(${registros.indexOf(r)})"><div class="icon-box" style="color:${r.tipo==='Receita'?'var(--success)':'var(--warning)'}"><i class="fa-solid ${r.tipo==='Receita'?'fa-arrow-up':'fa-arrow-down'}"></i></div><div style="flex:1"><strong>${r.desc}</strong><br><small>${r.data}</small></div><div><strong>${ocultarBits(v)}</strong></div></div>`;
-                }
-            });
-            document.getElementById('totalReceitas').innerText = ocultarBits(sRec);
-            document.getElementById('totalGastos').innerText = ocultarBits(sGas);
-            document.getElementById('totalSaldo').innerText = ocultarBits(sRec - sGas);
         }
-
-        function salvar() {
-            const t=document.getElementById('tipo').value, d=document.getElementById('desc').value, v=document.getElementById('valor').value, dt=document.getElementById('data').value, idx=document.getElementById('editIndex').value;
-            if(!d || !v || !dt) return;
-            const obj = { tipo: t, desc: d, valor: v, data: dt };
-            if(idx !== "") registros[idx] = obj; else registros.push(obj);
-            localStorage.setItem('foton_db', JSON.stringify(registros));
-            closeAll(); renderizar();
-        }
-
-        function excluirRegistro() { if(confirm("Excluir?")) { registros.splice(document.getElementById('editIndex').value, 1); localStorage.setItem('foton_db', JSON.stringify(registros)); closeAll(); renderizar(); } }
-        function openModal(idx = null) {
-            document.getElementById('modalForm').classList.add('open');
-            document.getElementById('overlay').style.display = 'block';
-            if(idx !== null) {
-                const r = registros[idx]; document.getElementById('editIndex').value = idx;
-                document.getElementById('tipo').value = r.tipo; document.getElementById('desc').value = r.desc;
-                document.getElementById('valor').value = r.valor; document.getElementById('data').value = r.data;
-                document.getElementById('btnExcluir').classList.remove('hidden');
-            } else { resetForm(); }
-        }
-
-        function closeAll() { document.getElementById('modalForm').classList.remove('open'); document.getElementById('profileSidebar').classList.remove('open'); document.getElementById('overlay').style.display = 'none'; }
-        function toggleSidebar() { document.getElementById('profileSidebar').classList.toggle('open'); document.getElementById('overlay').style.display = document.getElementById('profileSidebar').classList.contains('open') ? 'block' : 'none'; }
-        function mudarMes(delta) { dataVisualizacao.setMonth(dataVisualizacao.getMonth() + delta); renderizar(); }
-        function showToast(m, t) { const c=document.getElementById('toast-container'); const n=document.createElement('div'); n.className=`toast ${t}`; n.innerText=m; c.appendChild(n); setTimeout(()=>n.remove(),3000); }
-        function ocultarBits(v) { return modoFantasma ? "R$ ••••" : "R$ " + parseFloat(v).toLocaleString('pt-BR', {minimumFractionDigits:2}); }
-        function toggleFantasma() { modoFantasma = !modoFantasma; document.getElementById('eyeIcon').className = modoFantasma ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'; renderizar(); }
-        function salvarConfig(r=true) { localStorage.setItem('meucaixa_config', JSON.stringify(appConfig)); if(r) renderizar(); }
-        function mudarTemaUI() { const t=prompt("Temas: dark, light, nubank, santander, itau, bradesco"); if(t){ document.documentElement.setAttribute('data-theme', t); localStorage.setItem('meucaixa_theme', t); } }
-        function mudarNome() { const n=prompt("Nome:"); if(n){ appConfig.nome=n; salvarConfig(); } }
-        function resetForm() { document.getElementById('editIndex').value=""; document.getElementById('desc').value=""; document.getElementById('valor').value=""; document.getElementById('data').value=new Date().toISOString().split('T')[0]; document.getElementById('btnExcluir').classList.add('hidden'); }
-        function exportarDados() { let csv="Tipo,Descricao,Valor,Data\n"; registros.forEach(r=>csv+=`${r.tipo},${r.desc},${r.valor},${r.data}\n`); const blob=new Blob([csv], {type:'text/csv'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='MeuCaixa_Backup.csv'; a.click(); }
-
-        window.onload = () => { 
-            const t = localStorage.getItem('meucaixa_theme'); if(t) document.documentElement.setAttribute('data-theme', t);
-            verificarStatusAutenticacao(); 
-        };
     </script>
 </body>
 </html>
