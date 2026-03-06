@@ -1,707 +1,454 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>MeuCaixa - Finanças</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gêneses Mobile - Operacional</title>
     
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="theme-color" content="#0a192f" />
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0a192f">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
-            /* Tema Dark Padrão Refinado */
-            --bg: #0f111a;
-            --bg-glass: rgba(15, 17, 26, 0.85);
-            --card: #1e2235;
-            --card-hover: #262b42;
-            --accent: #38bdf8;
-            --accent-soft: rgba(56, 189, 248, 0.15);
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --input-bg: #0f111a;
-            
-            /* Status Colors */
+            --bg: #030712;
+            --card: #111827;
+            --accent: #00f2ff;
+            --text: #f3f4f6;
             --success: #10b981;
-            --success-soft: rgba(16, 185, 129, 0.15);
             --danger: #ef4444;
-            --danger-soft: rgba(239, 68, 68, 0.15);
             --warning: #f59e0b;
             --reserve: #8b5cf6;
-            
-            /* UI Elements */
-            --radius-sm: 12px;
-            --radius-md: 20px;
-            --radius-lg: 30px;
-            --shadow: 0 8px 30px rgba(0,0,0,0.25);
         }
 
-        [data-theme="light"] {
-            --bg: #f1f5f9;
-            --bg-glass: rgba(241, 245, 249, 0.9);
-            --card: #ffffff;
-            --card-hover: #f8fafc;
-            --accent: #0284c7;
-            --accent-soft: rgba(2, 132, 199, 0.1);
-            --text: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --input-bg: #f8fafc;
-            --shadow: 0 8px 25px rgba(0,0,0,0.05);
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
+
+        header {
+            background: var(--bg); padding: 15px 20px; display: flex; justify-content: space-between;
+            align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #1f2937;
         }
-
-        /* Resets */
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg); color: var(--text); overflow-x: hidden; transition: background-color 0.3s; }
-        button, input, select { outline: none; border: none; font-family: inherit; }
-        .hidden { display: none !important; }
-
-        /* Utilitários */
-        .glass-header { position: sticky; top: 0; z-index: 100; background: var(--bg-glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
         
-        /* Lock Screen (Teclado Numérico) */
-        #lock-screen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; padding-top: 15vh; transition: opacity 0.4s; }
-        .pin-display { display: flex; gap: 15px; margin: 30px 0 50px; }
-        .pin-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); transition: all 0.2s; }
-        .pin-dot.filled { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 280px; }
-        .num-btn { width: 70px; height: 70px; border-radius: 50%; background: var(--card); color: var(--text); font-size: 1.5rem; font-weight: 600; box-shadow: var(--shadow); cursor: pointer; transition: transform 0.1s; display: flex; justify-content: center; align-items: center; }
-        .num-btn:active { transform: scale(0.9); background: var(--card-hover); }
-        .num-action { font-size: 1.1rem; color: var(--text-muted); }
-
-        /* Header Info */
-        .user-badge { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-        .avatar { width: 42px; height: 42px; border-radius: 14px; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; overflow: hidden; background-size: cover; background-position: center; }
-        .greeting span { display: block; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
-        .greeting strong { font-size: 0.95rem; }
-
-        /* Resumo Principal */
-        .dashboard-header { padding: 25px 20px 10px; text-align: center; }
-        .month-nav { display: flex; justify-content: space-between; align-items: center; background: var(--card); padding: 8px; border-radius: var(--radius-lg); border: 1px solid var(--border); max-width: 250px; margin: 0 auto 20px; }
-        .month-nav button { width: 35px; height: 35px; border-radius: 50%; background: transparent; color: var(--text); cursor: pointer; }
-        .month-nav button:hover { background: var(--hover-bg); }
-        .month-nav span { font-weight: 600; font-size: 0.9rem; text-transform: uppercase; color: var(--accent); }
+        .profile-section { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .avatar { 
+            width: 40px; height: 40px; border-radius: 12px; 
+            background: linear-gradient(135deg, var(--accent), #0a192f);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; color: var(--bg); border: 2px solid #1f2937;
+        }
         
-        .main-balance { margin-bottom: 25px; }
-        .main-balance h1 { font-size: 2.8rem; font-weight: 700; margin: 5px 0; letter-spacing: -1px; }
-        .main-balance small { color: var(--text-muted); font-size: 0.8rem; }
+        .user-info span { font-size: 0.65rem; color: #94a3b8; letter-spacing: 1px; display: block; text-transform: uppercase; }
+        .user-info strong { font-size: 0.9rem; color: var(--text); }
 
-        /* Gráfico CSS (Donut) */
-        .chart-container { width: 120px; height: 120px; border-radius: 50%; background: conic-gradient(var(--danger) 0% 0%, var(--warning) 0% 0%, var(--success) 0% 100%); position: relative; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 20px rgba(0,0,0,0.1); }
-        .chart-center { width: 90px; height: 90px; background: var(--bg); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .chart-center span { font-size: 0.65rem; color: var(--text-muted); }
-        .chart-center strong { font-size: 0.9rem; }
-
-        /* Cards Estatísticas */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 25px; }
-        .stat-card { background: var(--card); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border); box-shadow: var(--shadow); position: relative; overflow: hidden; }
-        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; }
-        .stat-card.income::before { background: var(--success); }
-        .stat-card.expense::before { background: var(--danger); }
-        .stat-card i { font-size: 1.1rem; margin-bottom: 10px; color: var(--text-muted); }
-        .stat-card .val { font-size: 1.1rem; font-weight: 700; display: block; margin-top: 4px; }
-        
-        /* Lista de Transações */
-        .list-section { padding: 0 20px 100px; }
-        .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .filter-pills { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
-        .filter-pills::-webkit-scrollbar { display: none; }
-        .pill { white-space: nowrap; padding: 8px 16px; border-radius: 20px; background: var(--card); border: 1px solid var(--border); color: var(--text-muted); font-size: 0.8rem; font-weight: 500; cursor: pointer; }
-        .pill.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
-
-        .transaction { background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: var(--radius-sm); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .t-info { display: flex; align-items: center; gap: 12px; }
-        .t-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--bg); display: flex; align-items: center; justify-content: center; }
-        .t-desc { font-weight: 600; font-size: 0.95rem; }
-        .t-cat { font-size: 0.75rem; color: var(--text-muted); margin-top: 3px; }
-        .t-val { text-align: right; }
-        .t-val strong { display: block; font-size: 0.95rem; }
-        .t-val span { font-size: 0.7rem; font-weight: 600; }
-
-        /* FAB & Modal */
-        .fab { position: fixed; bottom: 25px; right: 20px; width: 60px; height: 60px; border-radius: 20px; background: var(--accent); color: #fff; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 20px rgba(56, 189, 248, 0.4); cursor: pointer; z-index: 900; }
-        
-        .modal { position: fixed; bottom: -100%; left: 0; width: 100%; height: 90%; background: var(--card); border-radius: 30px 30px 0 0; z-index: 2000; padding: 25px; transition: bottom 0.3s cubic-bezier(0.1, 0.8, 0.3, 1); overflow-y: auto; border-top: 1px solid var(--border); }
-        .modal.open { bottom: 0; }
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); display: none; z-index: 1500; }
-        
-        /* Form Elements */
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px; font-weight: 500; }
-        .form-control { width: 100%; background: var(--input-bg); border: 1px solid var(--border); padding: 14px; border-radius: var(--radius-sm); color: var(--text); font-size: 1rem; }
-        .form-control:focus { border-color: var(--accent); }
-        
-        .btn-primary { width: 100%; padding: 16px; border-radius: var(--radius-sm); background: var(--accent); color: #fff; font-weight: 600; font-size: 1rem; margin-top: 10px; cursor: pointer; }
-        .btn-danger { background: transparent; border: 1px solid var(--danger); color: var(--danger); width: 100%; padding: 14px; border-radius: var(--radius-sm); margin-top: 10px; font-weight: 600; }
-
-        /* Sidebar Customizada */
-        .sidebar { position: fixed; top: 0; right: -100%; width: 85%; max-width: 320px; height: 100%; background: var(--bg); z-index: 3000; transition: right 0.3s; padding: 20px; border-left: 1px solid var(--border); overflow-y: auto; }
+        /* Painel Lateral (Sidebar) Otimizado */
+        .sidebar {
+            position: fixed; top: 0; right: -100%; width: 85%; max-width: 350px; height: 100%;
+            background: var(--card); z-index: 3000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 30px 20px; border-left: 1px solid var(--accent); box-shadow: -10px 0 30px rgba(0,0,0,0.8);
+            display: flex; flex-direction: column;
+        }
         .sidebar.open { right: 0; }
-        .sidebar-close { text-align: right; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; margin-bottom: 20px; }
+        .sidebar-header { margin-bottom: 25px; text-align: center; position: relative; }
         
-        .menu-list { display: flex; flex-direction: column; gap: 8px; }
-        .menu-item { display: flex; align-items: center; gap: 15px; padding: 14px; border-radius: var(--radius-sm); background: var(--card); color: var(--text); font-size: 0.9rem; font-weight: 500; cursor: pointer; border: 1px solid transparent; }
-        .menu-item i { color: var(--accent); font-size: 1.2rem; width: 24px; text-align: center; }
-        .menu-item:hover { border-color: var(--border); }
+        .status-panel {
+            background: rgba(255,255,255,0.03); padding: 15px; border-radius: 16px; margin-bottom: 25px;
+            border: 1px solid #1f2937;
+        }
+        .status-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 10px; align-items: center; }
+        .status-row:last-child { margin-bottom: 0; }
+        .status-label { color: #94a3b8; }
+
+        .sidebar-menu { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+        .menu-item { 
+            padding: 15px; border-radius: 12px; background: rgba(255,255,255,0.03);
+            display: flex; align-items: center; gap: 15px; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent;
+        }
+        .menu-item:active { background: #1f2937; }
+        .menu-item i { color: var(--accent); font-size: 1.1rem; width: 25px; text-align: center; }
+
+        /* Layout Principal */
+        .balance-card { padding: 25px 20px; text-align: center; }
+        .balance-card small { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; }
+        .balance-card h1 { font-size: 2.2rem; margin: 10px 0; font-weight: 800; }
+
+        .quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 20px; }
+        .mini-card { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid #1f2937; cursor: pointer; transition: 0.2s; }
+        .mini-card:active { transform: scale(0.95); background: #1f2937; }
+        .mini-card i { font-size: 0.8rem; margin-bottom: 5px; }
+        .mini-card span { display: block; font-size: 0.65rem; color: #94a3b8; }
+        .mini-card strong { font-size: 0.9rem; }
+
+        main { padding: 0 20px 20px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 15px; }
+        .section-header h3 { font-size: 0.9rem; color: #94a3b8; text-transform: uppercase; margin: 0; }
         
-        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 99999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: 90%; max-width: 350px; }
-        .toast { background: var(--card); color: var(--text); padding: 14px 20px; border-radius: 12px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 12px; font-size: 0.9rem; border-left: 4px solid var(--accent); }
+        #btnVoltar { background: rgba(0, 242, 255, 0.1); color: var(--accent); border: 1px solid var(--accent); padding: 5px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; }
+
+        .transaction-item { background: var(--card); padding: 15px; border-radius: 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; border: 1px solid #1f2937; }
+        .icon-box { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #1f2937; min-width: 40px; }
+        .details { flex: 1; overflow: hidden; }
+        .details strong { display: block; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .details span { font-size: 0.7rem; color: #6b7280; }
+        
+        .amount { text-align: right; min-width: 90px; }
+        .amount strong { display: block; font-size: 0.85rem; }
+        .amount .status-debt { font-size: 0.6rem; font-weight: 800; display: block; margin-top: 2px; }
+
+        .bottom-charts { padding: 20px; background: #070b14; border-top: 1px solid #1f2937; margin-bottom: 100px; }
+        .chart-bar-group { margin-bottom: 15px; }
+        .chart-label { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 5px; color: #94a3b8; }
+        .chart-track { background: #1f2937; height: 6px; border-radius: 10px; overflow: hidden; }
+        .chart-fill { height: 100%; width: 0%; transition: 1s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
+
+        .fab { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; border-radius: 20px; background: var(--accent); color: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 10px 20px rgba(0, 242, 255, 0.3); border: none; z-index: 1000; }
+
+        .modal { position: fixed; bottom: -100%; left: 0; width: 100%; height: 92%; background: var(--card); border-radius: 30px 30px 0 0; z-index: 2000; padding: 25px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; }
+        .modal.open { bottom: 0; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; backdrop-filter: blur(3px); }
+
+        input, select { width: 100%; background: #1f2937; border: 1px solid #374151; padding: 14px; border-radius: 12px; color: white; margin-bottom: 12px; font-size: 1rem; }
+        
+        .btn-confirm { background: var(--accent); color: var(--bg); width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; margin-top: 10px; }
+        .btn-delete { background: none; color: var(--danger); width: 100%; padding: 12px; border: 1px solid var(--danger); border-radius: 12px; margin-top: 15px; font-weight: 700; }
+
+        .label-mini { font-size: 0.65rem; color: var(--accent); font-weight: 800; margin-bottom: 5px; display: block; text-transform: uppercase; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div id="toast-container"></div>
-
-    <div id="lock-screen" class="hidden">
-        <div class="avatar" style="width: 80px; height: 80px; font-size: 2rem; margin-bottom: 20px;" id="loginAvatar">MC</div>
-        <h2 style="font-weight: 600; margin-bottom: 5px;">Bem-vindo de volta</h2>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">Digite seu PIN de acesso</p>
-        
-        <div class="pin-display" id="pinDisplay">
-            <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
-        </div>
-
-        <div class="numpad" id="numpad">
-            <div class="num-btn" onclick="addPin('1')">1</div>
-            <div class="num-btn" onclick="addPin('2')">2</div>
-            <div class="num-btn" onclick="addPin('3')">3</div>
-            <div class="num-btn" onclick="addPin('4')">4</div>
-            <div class="num-btn" onclick="addPin('5')">5</div>
-            <div class="num-btn" onclick="addPin('6')">6</div>
-            <div class="num-btn" onclick="addPin('7')">7</div>
-            <div class="num-btn" onclick="addPin('8')">8</div>
-            <div class="num-btn" onclick="addPin('9')">9</div>
-            <div class="num-btn num-action" onclick="recuperarSenha()"><i class="fa-solid fa-key"></i></div>
-            <div class="num-btn" onclick="addPin('0')">0</div>
-            <div class="num-btn num-action" onclick="delPin()"><i class="fa-solid fa-delete-left"></i></div>
-        </div>
-    </div>
-
-    <header class="glass-header">
-        <div class="user-badge" onclick="toggleSidebar()">
-            <div class="avatar" id="headerAvatar">MC</div>
-            <div class="greeting">
-                <span>Controle Pessoal</span>
-                <strong id="headerName">Usuário</strong>
+    <header>
+        <div class="profile-section" onclick="toggleSidebar()">
+            <div class="avatar">WC</div>
+            <div class="user-info">
+                <span>PROTOCOLO FÓTON</span>
+                <strong>WENDEL CARNEIRO</strong>
             </div>
         </div>
-        <div style="display:flex; gap:15px;">
-            <button onclick="toggleFantasma()" style="background:none; color:var(--text); font-size:1.1rem;"><i id="eyeIcon" class="fa-solid fa-eye"></i></button>
-        </div>
+        <button onclick="toggleFantasma()" style="background:none; border:1px solid #1f2937; color:white; padding:8px; border-radius:10px;">
+            <i id="eyeIcon" class="fa-solid fa-eye"></i>
+        </button>
     </header>
 
-    <section class="dashboard-header">
-        <div class="month-nav">
-            <button onclick="mudarMes(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-            <span id="mesDisplay">Mês Ano</span>
-            <button onclick="mudarMes(1)"><i class="fa-solid fa-chevron-right"></i></button>
+    <div class="sidebar" id="profileSidebar">
+        <div style="text-align: right; margin-bottom: 10px;">
+            <i class="fa-solid fa-xmark" style="font-size: 1.5rem; cursor: pointer; color: #94a3b8;" onclick="toggleSidebar()"></i>
+        </div>
+        <div class="sidebar-header">
+            <div class="avatar" style="width: 65px; height: 65px; font-size: 1.5rem; margin: 0 auto 10px;">WC</div>
+            <h2 style="margin:0; font-size: 1.1rem;">Painel de Comando</h2>
+            <span style="color: var(--accent); font-size: 0.75rem;">Operacional</span>
         </div>
 
-        <div class="main-balance">
-            <small>Saldo Disponível</small>
-            <h1 id="totalSaldo">R$ 0,00</h1>
-        </div>
-
-        <div class="chart-container" id="donutChart">
-            <div class="chart-center">
-                <span>Gastos</span>
-                <strong id="chartPerc">0%</strong>
+        <div class="status-panel">
+            <div class="status-row">
+                <span class="status-label">Conexão Terminal</span>
+                <strong style="color: var(--success); font-size: 0.75rem;"><i class="fa-solid fa-circle" style="font-size: 0.5rem; vertical-align: middle;"></i> PROTEGIDO</strong>
+            </div>
+            <div class="status-row">
+                <span class="status-label">Volume de Dados</span>
+                <strong id="contadorRegistros" style="color: var(--text);">0 registros</strong>
+            </div>
+            <div class="status-row">
+                <span class="status-label">Saúde do Fluxo</span>
+                <strong id="statusFluxo" style="color: var(--accent);">ESTÁVEL</strong>
             </div>
         </div>
-    </section>
-
-    <section class="stats-grid">
-        <div class="stat-card income">
-            <i class="fa-solid fa-arrow-trend-up"></i>
-            <small style="color:var(--text-muted)">Receitas</small>
-            <span class="val" id="totalReceitas">R$ 0,00</span>
-        </div>
-        <div class="stat-card expense">
-            <i class="fa-solid fa-cart-shopping"></i>
-            <small style="color:var(--text-muted)">Despesas</small>
-            <span class="val" id="totalGastos">R$ 0,00</span>
-        </div>
-    </section>
-
-    <section class="list-section">
-        <div class="list-header">
-            <h3>Movimentações</h3>
+        
+        <div class="sidebar-menu">
+            <div class="menu-item" onclick="toggleFantasma()">
+                <i class="fa-solid fa-ghost"></i> <span>Modo Privacidade</span>
+            </div>
+            <div class="menu-item" onclick="exportarDados()">
+                <i class="fa-solid fa-file-export"></i> <span>Exportar Backup (CSV)</span>
+            </div>
+            <div class="menu-item" onclick="otimizarTerminal()">
+                <i class="fa-solid fa-bolt"></i> <span>Otimizar Performance</span>
+            </div>
+            <div class="menu-item" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.2);" onclick="limparTerminal()">
+                <i class="fa-solid fa-trash" style="color: var(--danger);"></i> <span>Resetar Sistema</span>
+            </div>
         </div>
         
-        <div class="filter-pills">
-            <div class="pill active" onclick="filtrar('Tudo', this)">Todos</div>
-            <div class="pill" onclick="filtrar('Receita', this)">Receitas</div>
-            <div class="pill" onclick="filtrar('Despesa', this)">Despesas</div>
-            <div class="pill" onclick="filtrar('Divida', this)">Dívidas</div>
-            <div class="pill" onclick="filtrar('Reserva', this)">Reserva</div>
-        </div>
-
-        <div id="listaCorpo" style="margin-top: 15px;"></div>
-    </section>
-
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-close" onclick="closeSidebar()"><i class="fa-solid fa-xmark"></i></div>
-        
-        <div style="margin-bottom: 25px; padding:15px; background:var(--card); border-radius:var(--radius-sm); border:1px solid var(--border);">
-            <small style="color:var(--text-muted)">Balanço Anual Acumulado</small>
-            <h3 id="saldoAnual" style="margin-top:5px; color:var(--accent);">R$ 0,00</h3>
-        </div>
-
-        <div class="menu-list">
-            <div class="menu-item" onclick="configurarSenha()"><i class="fa-solid fa-lock"></i> Configurar PIN</div>
-            <div class="menu-item" onclick="mudarNome()"><i class="fa-solid fa-user-pen"></i> Alterar Nome</div>
-            <div class="menu-item" onclick="mudarMoeda()"><i class="fa-solid fa-coins"></i> Símbolo da Moeda (<span id="txtMoeda">R$</span>)</div>
-            
-            <hr style="border-color: var(--border); margin: 10px 0;">
-            
-            <div class="menu-item" onclick="mudarTema('dark')"><i class="fa-solid fa-moon"></i> Tema Escuro</div>
-            <div class="menu-item" onclick="mudarTema('light')"><i class="fa-solid fa-sun"></i> Tema Claro</div>
-            <div class="menu-item" onclick="mudarTema('nubank')"><i class="fa-solid fa-building-columns"></i> Tema Nubank</div>
-            
-            <hr style="border-color: var(--border); margin: 10px 0;">
-
-            <div class="menu-item" onclick="exportarBackup()"><i class="fa-solid fa-download"></i> Fazer Backup</div>
-            <input type="file" id="importInput" accept=".json" style="display:none;" onchange="importarBackup(event)" />
-            <div class="menu-item" onclick="document.getElementById('importInput').click()"><i class="fa-solid fa-upload"></i> Restaurar Backup</div>
-            <div class="menu-item" style="color:var(--danger)" onclick="zerarTudo()"><i class="fa-solid fa-trash" style="color:var(--danger)"></i> Apagar Tudo</div>
+        <div style="font-size: 0.6rem; color: #4b5563; text-align: center; padding-top: 20px;">
+            ID: FOTON-2026-ALPHA<br>STATUS: ATIVO
         </div>
     </div>
 
-    <button class="fab" onclick="abrirModal()"><i class="fa-solid fa-plus"></i></button>
-    <div class="overlay" id="overlay" onclick="fecharModal()"></div>
+    <div class="balance-card">
+        <small>Saldo Disponível</small>
+        <h1 id="totalSaldo">R$ 0,00</h1>
+    </div>
 
-    <div class="modal" id="modalTransacao">
-        <div style="display:flex; justify-content:space-between; margin-bottom: 20px;">
-            <h3 id="modalTitulo">Nova Transação</h3>
-            <i class="fa-solid fa-xmark" style="font-size:1.5rem; color:var(--text-muted); cursor:pointer;" onclick="fecharModal()"></i>
+    <div class="quick-stats">
+        <div class="mini-card" onclick="filtrarExtrato('Receita')"><i class="fa-solid fa-arrow-up" style="color:var(--success)"></i><span>Entradas</span><strong id="totalReceitas">R$ 0,00</strong></div>
+        <div class="mini-card" onclick="filtrarExtrato('Gasto')"><i class="fa-solid fa-arrow-down" style="color:var(--warning)"></i><span>Gastos</span><strong id="totalGastos">R$ 0,00</strong></div>
+        <div class="mini-card" onclick="filtrarExtrato('Divida')"><i class="fa-solid fa-barcode" style="color:var(--danger)"></i><span>Dívidas</span><strong id="totalDividas">R$ 0,00</strong></div>
+        <div class="mini-card" onclick="filtrarExtrato('Reserva')"><i class="fa-solid fa-vault" style="color:var(--reserve)"></i><span>Patrimônio</span><strong id="totalReserva">R$ 0,00</strong></div>
+    </div>
+
+    <main>
+        <div class="section-header">
+            <h3 id="txtExtrato">Extrato de Operações</h3>
+            <button id="btnVoltar" class="hidden" onclick="filtrarExtrato('Tudo')"><i class="fa-solid fa-chevron-left"></i> VOLTAR</button>
+        </div>
+        <div id="tabelaCorpo"></div>
+    </main>
+
+    <section class="bottom-charts">
+        <div class="section-header" style="margin-top:0;"><h3>Performance de Fluxo</h3></div>
+        <div class="chart-bar-group">
+            <div class="chart-label"><span>Comprometimento de Renda</span><span id="labelPercSaida">0%</span></div>
+            <div class="chart-track"><div id="fillSaida" class="chart-fill" style="background:var(--danger)"></div></div>
+        </div>
+        <div class="chart-bar-group">
+            <div class="chart-label"><span>Taxa de Acúmulo (Patrimônio)</span><span id="labelPercRes">0%</span></div>
+            <div class="chart-track"><div id="fillRes" class="chart-fill" style="background:var(--reserve)"></div></div>
+        </div>
+    </section>
+
+    <button class="fab" onclick="openModal()"><i class="fa-solid fa-plus"></i></button>
+    <div class="overlay" id="overlay" onclick="closeAll()"></div>
+
+    <div class="modal" id="modalForm">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 id="modalTitle" style="margin:0; font-size:1.2rem;">Nova Operação</h2>
+            <i class="fa-solid fa-circle-xmark" style="font-size:1.5rem; color:#374151;" onclick="closeModal()"></i>
+        </div>
+        
+        <span class="label-mini">Tipo</span>
+        <select id="tipo" onchange="atualizarSubmenu()">
+            <option value="Receita">Receita</option>
+            <option value="Fixo">Gasto Fixo</option>
+            <option value="Variavel">Gasto Variável</option>
+            <option value="Divida">Dívida / Boleto</option>
+            <option value="Reserva">Patrimônio</option>
+        </select>
+
+        <span class="label-mini">Categoria</span>
+        <select id="submenu" onchange="definirDescricao()"></select>
+        <input type="text" id="desc" placeholder="Descrição Personalizada">
+        
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div><span class="label-mini">Valor Total</span><input type="number" id="valor" placeholder="0,00" step="0.01" inputmode="decimal"></div>
+            <div id="campoPago"><span class="label-mini">Valor Pago</span><input type="number" id="pago" placeholder="0,00" step="0.01" inputmode="decimal"></div>
         </div>
 
-        <input type="hidden" id="editId" />
-
-        <div class="form-group">
-            <label>Tipo de Operação</label>
-            <select class="form-control" id="inputTipo" onchange="atualizarCategorias()">
-                <option value="Receita">Receita</option>
-                <option value="Despesa">Despesa Única</option>
-                <option value="Divida">Despesa Fixa / Parcelada (Dívida)</option>
-                <option value="Reserva">Investimento / Reserva</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Categoria</label>
-            <select class="form-control" id="inputCat" onchange="autoPreencherDesc()"></select>
-        </div>
-
-        <div class="form-group">
-            <label>Descrição</label>
-            <input type="text" class="form-control" id="inputDesc" placeholder="Ex: Salário do mês" />
-        </div>
-
-        <div style="display:flex; gap:10px;">
-            <div class="form-group" style="flex:1;">
-                <label>Valor</label>
-                <input type="number" class="form-control" id="inputValor" placeholder="0.00" step="0.01" />
-            </div>
-            <div class="form-group" style="width:100px;">
-                <label>Status</label>
-                <select class="form-control" id="inputStatus">
-                    <option value="pago">Pago</option>
-                    <option value="pendente">Pendente</option>
-                </select>
-            </div>
-        </div>
-
-        <div id="blocoParcelas" class="hidden" style="display:flex; gap:10px;">
-            <div class="form-group" style="flex:1;">
-                <label>Nº de Parcelas</label>
-                <input type="number" class="form-control" id="inputParcelas" value="1" min="1" />
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label>Data</label>
-            <input type="date" class="form-control" id="inputData" />
-        </div>
-
-        <button class="btn-primary" onclick="salvarTransacao()">SALVAR</button>
-        <button class="btn-danger hidden" id="btnExcluir" onclick="excluirTransacao()">EXCLUIR</button>
+        <span class="label-mini">Data</span>
+        <input type="date" id="data">
+        <input type="hidden" id="editIndex">
+        <button class="btn-confirm" onclick="salvar()">SALVAR OPERAÇÃO</button>
+        <button id="btnExcluir" class="btn-delete hidden" onclick="excluirRegistro()">EXCLUIR REGISTRO</button>
     </div>
 
     <script>
-        /* CONFIGURAÇÕES GERAIS */
-        const DB_KEY = 'meucaixa_v2_dados';
-        const CONFIG_KEY = 'meucaixa_v2_config';
-        
-        let appData = JSON.parse(localStorage.getItem(DB_KEY)) || [];
-        let config = JSON.parse(localStorage.getItem(CONFIG_KEY)) || {
-            nome: "Usuário", moeda: "R$", pin: null, hint: null
+        let registros = JSON.parse(localStorage.getItem('foton_db')) || [];
+        let modoFantasma = false;
+        let filtroAtual = "Tudo";
+
+        const opcoesSubmenu = {
+            "Receita": ["💰 Salário", "🚀 Freelance", "✨ Outros"],
+            "Fixo": ["🏠 Aluguel", "⚡ Energia", "🌐 Internet", "🎬 Streamings"],
+            "Variavel": ["🛒 Mercado", "🍕 Alimentação", "⛽ Combustível", "🚗 Transporte"],
+            "Divida": ["💳 Cartão", "🤝 Empréstimo", "🧾 Boleto"],
+            "Reserva": ["🏦 Investimentos", "📦 Caixinha", "🛡️ Reserva Emergência"]
         };
 
-        let dataAtual = new Date();
-        let filtroAtivo = "Tudo";
-        let modoOculto = false;
-        let currentPin = "";
-
-        const categorias = {
-            Receita: ["💸 Salário", "🧑‍💻 Serviços", "📈 Rendimentos", "🎁 Outros"],
-            Despesa: ["🛒 Mercado", "🍔 Alimentação", "⛽ Transporte", "💊 Saúde", "🛍️ Compras", "🎲 Lazer"],
-            Divida: ["🏠 Aluguel", "💡 Contas (Água/Luz)", "💳 Cartão de Crédito", "🏦 Financiamento"],
-            Reserva: ["📈 Tesouro Direto", "🪙 Cripto", "💼 Poupança", "🛟 Reserva Emergência"]
-        };
-
-        /* FUNÇÕES DE INICIALIZAÇÃO */
-        window.onload = () => {
-            aplicarConfiguracoes();
-            checarSeguranca();
-            document.getElementById('inputData').value = dataLocalFormatada();
-        };
-
-        function dataLocalFormatada(d = new Date()) {
-            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        // Funções de Interface UI
+        function toggleSidebar() {
+            const sidebar = document.getElementById('profileSidebar');
+            sidebar.classList.toggle('open');
+            document.getElementById('overlay').style.display = sidebar.classList.contains('open') ? 'block' : 'none';
         }
 
-        function aplicarConfiguracoes() {
-            document.getElementById('headerName').innerText = config.nome;
-            document.getElementById('sidebarUserName') ? document.getElementById('sidebarUserName').innerText = config.nome : null;
-            document.getElementById('headerAvatar').innerText = config.nome.substring(0, 2).toUpperCase();
-            document.getElementById('txtMoeda').innerText = config.moeda;
-            
-            const tema = localStorage.getItem('meucaixa_theme') || 'dark';
-            document.documentElement.setAttribute('data-theme', tema);
-            
-            atualizarInterface();
-        }
-
-        /* SEGURANÇA (PIN) */
-        function checarSeguranca() {
-            const isAuthed = sessionStorage.getItem('mc_auth');
-            if (config.pin && !isAuthed) {
-                document.getElementById('lock-screen').classList.remove('hidden');
-                document.getElementById('loginAvatar').innerText = config.nome.substring(0, 2).toUpperCase();
-            } else {
-                document.getElementById('lock-screen').classList.add('hidden');
-            }
-        }
-
-        function updatePinUI() {
-            const dots = document.querySelectorAll('.pin-dot');
-            dots.forEach((dot, index) => {
-                if (index < currentPin.length) dot.classList.add('filled');
-                else dot.classList.remove('filled');
-            });
-        }
-
-        function addPin(num) {
-            if (currentPin.length < 4) {
-                currentPin += num;
-                updatePinUI();
-                if (currentPin.length === 4) setTimeout(validarPin, 200);
-            }
-        }
-
-        function delPin() {
-            currentPin = currentPin.slice(0, -1);
-            updatePinUI();
-        }
-
-        function validarPin() {
-            if (currentPin === config.pin) {
-                sessionStorage.setItem('mc_auth', 'true');
-                document.getElementById('lock-screen').style.opacity = '0';
-                setTimeout(() => document.getElementById('lock-screen').classList.add('hidden'), 400);
-            } else {
-                mostrarAviso("PIN Incorreto", "error");
-                currentPin = "";
-                updatePinUI();
-            }
-        }
-
-        function configurarSenha() {
-            if (config.pin) {
-                if(confirm("Deseja remover o PIN atual?")) {
-                    config.pin = null; config.hint = null;
-                    sessionStorage.removeItem('mc_auth');
-                    salvarConfig(); mostrarAviso("PIN removido"); closeSidebar();
-                }
-                return;
-            }
-            const novoPin = prompt("Digite um PIN numérico de 4 dígitos:");
-            if(novoPin && novoPin.length === 4 && !isNaN(novoPin)) {
-                const hint = prompt("Digite uma dica para recuperar o PIN (Ex: Nome do cachorro):");
-                config.pin = novoPin; config.hint = hint;
-                sessionStorage.setItem('mc_auth', 'true');
-                salvarConfig(); mostrarAviso("Segurança ativada"); closeSidebar();
-            } else {
-                mostrarAviso("O PIN deve ter exatos 4 números", "error");
-            }
-        }
-
-        function recuperarSenha() {
-            if(!config.hint) return mostrarAviso("Nenhuma dica configurada", "error");
-            alert(`Sua dica de segurança é: ${config.hint}`);
-        }
-
-        /* NAVEGAÇÃO E DADOS */
-        function mudarMes(delta) {
-            dataAtual.setMonth(dataAtual.getMonth() + delta);
-            atualizarInterface();
-        }
-
-        function formatarValor(val) {
-            if(modoOculto) return `${config.moeda} ••••`;
-            return `${config.moeda} ${(Number(val)||0).toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-        }
-
-        function toggleFantasma() {
-            modoOculto = !modoOculto;
-            document.getElementById('eyeIcon').className = modoOculto ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
-            atualizarInterface();
-        }
-
-        function filtrar(tipo, btn) {
-            filtroAtivo = tipo;
-            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-            btn.classList.add('active');
-            atualizarInterface();
-        }
-
-        function atualizarInterface() {
-            const prefixo = `${dataAtual.getFullYear()}-${String(dataAtual.getMonth() + 1).padStart(2, '0')}`;
-            const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
-            document.getElementById('mesDisplay').innerText = `${nomesMeses[dataAtual.getMonth()]} ${dataAtual.getFullYear()}`;
-
-            let tRec = 0, tDes = 0, tDiv = 0, tRes = 0;
-            let balancoAno = 0;
-
-            // Limpa lista
-            const lista = document.getElementById('listaCorpo');
-            lista.innerHTML = '';
-
-            // Processa dados
-            const ordenados = [...appData].sort((a,b) => new Date(b.data) - new Date(a.data));
-            
-            // Calcula Balanço do Ano
-            const prefixoAno = `${dataAtual.getFullYear()}`;
-            appData.filter(r => r.data.startsWith(prefixoAno)).forEach(r => {
-                const v = Number(r.valor);
-                if(r.tipo === 'Receita' && r.status === 'pago') balancoAno += v;
-                if(r.tipo === 'Despesa' || r.tipo === 'Divida') balancoAno -= v;
-            });
-            document.getElementById('saldoAnual').innerText = formatarValor(balancoAno);
-
-            // Filtra o mês atual
-            const dadosMes = ordenados.filter(r => r.data.startsWith(prefixo));
-            
-            dadosMes.forEach((item, indexOriginalFake) => {
-                // Encontrar index real no appData
-                const realIndex = appData.findIndex(i => i.id === item.id);
-                const valor = Number(item.valor);
-
-                // Somatórios
-                if(item.tipo === 'Receita' && item.status === 'pago') tRec += valor;
-                if(item.tipo === 'Despesa') tDes += valor;
-                if(item.tipo === 'Divida') tDiv += valor;
-                if(item.tipo === 'Reserva') tRes += valor;
-
-                // Renderiza Lista
-                if(filtroAtivo !== 'Tudo' && item.tipo !== filtroAtivo) return;
-
-                let icon = "fa-dollar-sign", color = "var(--text)";
-                if(item.tipo === 'Receita') { icon = "fa-arrow-trend-up"; color = "var(--success)"; }
-                if(item.tipo === 'Despesa') { icon = "fa-cart-shopping"; color = "var(--warning)"; }
-                if(item.tipo === 'Divida') { icon = "fa-file-invoice"; color = "var(--danger)"; }
-                if(item.tipo === 'Reserva') { icon = "fa-piggy-bank"; color = "var(--reserve)"; }
-
-                lista.innerHTML += `
-                    <div class="transaction" onclick="abrirModal('${item.id}')">
-                        <div class="t-info">
-                            <div class="t-icon" style="color: ${color}"><i class="fa-solid ${icon}"></i></div>
-                            <div>
-                                <div class="t-desc">${item.desc}</div>
-                                <div class="t-cat">${item.data.split('-').reverse().join('/')} • ${item.status === 'pago' ? 'Feito' : 'Aguardando'}</div>
-                            </div>
-                        </div>
-                        <div class="t-val">
-                            <strong>${formatarValor(valor)}</strong>
-                        </div>
-                    </div>
-                `;
-            });
-
-            if(lista.innerHTML === '') lista.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-muted)">Nenhuma movimentação.</div>';
-
-            const despesasGerais = tDes + tDiv;
-            const saldo = tRec - despesasGerais;
-
-            document.getElementById('totalSaldo').innerText = formatarValor(saldo);
-            document.getElementById('totalReceitas').innerText = formatarValor(tRec);
-            document.getElementById('totalGastos').innerText = formatarValor(despesasGerais);
-
-            // Atualiza Gráfico Donut
-            let percGasto = tRec > 0 ? (despesasGerais / tRec) * 100 : (despesasGerais > 0 ? 100 : 0);
-            if(percGasto > 100) percGasto = 100;
-            document.getElementById('chartPerc').innerText = `${Math.round(percGasto)}%`;
-            document.getElementById('donutChart').style.background = `conic-gradient(var(--danger) 0% ${percGasto}%, var(--card) ${percGasto}% 100%)`;
-        }
-
-        /* MODAL E FORMULÁRIO */
-        function abrirModal(id = null) {
-            document.getElementById('modalTransacao').classList.add('open');
-            document.getElementById('overlay').style.display = 'block';
-            
-            if(id) {
-                document.getElementById('modalTitulo').innerText = "Editar";
-                const item = appData.find(i => i.id === id);
-                document.getElementById('editId').value = id;
-                document.getElementById('inputTipo').value = item.tipo;
-                atualizarCategorias();
-                document.getElementById('inputCat').value = item.categoria || '';
-                document.getElementById('inputDesc').value = item.desc;
-                document.getElementById('inputValor').value = item.valor;
-                document.getElementById('inputStatus').value = item.status;
-                document.getElementById('inputData').value = item.data;
-                document.getElementById('blocoParcelas').classList.add('hidden');
-                document.getElementById('btnExcluir').classList.remove('hidden');
-            } else {
-                document.getElementById('modalTitulo').innerText = "Nova Transação";
-                document.getElementById('editId').value = "";
-                document.getElementById('inputTipo').value = "Despesa";
-                atualizarCategorias();
-                document.getElementById('inputDesc').value = "";
-                document.getElementById('inputValor').value = "";
-                document.getElementById('inputData').value = dataLocalFormatada();
-                document.getElementById('btnExcluir').classList.add('hidden');
-            }
-        }
-
-        function fecharModal() {
-            document.getElementById('modalTransacao').classList.remove('open');
+        function closeAll() {
+            closeModal();
+            document.getElementById('profileSidebar').classList.remove('open');
             document.getElementById('overlay').style.display = 'none';
         }
 
-        function atualizarCategorias() {
-            const tipo = document.getElementById('inputTipo').value;
-            const sel = document.getElementById('inputCat');
-            sel.innerHTML = '';
-            (categorias[tipo] || []).forEach(cat => {
-                sel.innerHTML += `<option value="${cat}">${cat}</option>`;
-            });
-            document.getElementById('blocoParcelas').classList.toggle('hidden', tipo !== 'Divida');
-            autoPreencherDesc();
-        }
-
-        function autoPreencherDesc() {
-            const val = document.getElementById('inputCat').value;
-            document.getElementById('inputDesc').value = val.substring(val.indexOf(' ') + 1);
-        }
-
-        function salvarTransacao() {
-            const idEdit = document.getElementById('editId').value;
-            const tipo = document.getElementById('inputTipo').value;
-            const cat = document.getElementById('inputCat').value;
-            const desc = document.getElementById('inputDesc').value;
-            const valor = Number(document.getElementById('inputValor').value);
-            const status = document.getElementById('inputStatus').value;
-            const dt = document.getElementById('inputData').value;
-            const parcelas = Number(document.getElementById('inputParcelas').value) || 1;
-
-            if(!desc || valor <= 0 || !dt) return mostrarAviso("Preencha corretamente!", "error");
-
-            if(idEdit) {
-                // Edição
-                const index = appData.findIndex(i => i.id === idEdit);
-                appData[index] = { ...appData[index], tipo, categoria: cat, desc, valor, status, data: dt };
+        function filtrarExtrato(categoria) {
+            filtroAtual = categoria;
+            const btn = document.getElementById('btnVoltar');
+            const txt = document.getElementById('txtExtrato');
+            if(categoria === 'Tudo') {
+                btn.classList.add('hidden');
+                txt.innerText = "Extrato de Operações";
             } else {
-                // Novo
-                if(tipo === 'Divida' && parcelas > 1) {
-                    const vParc = valor / parcelas;
-                    let dObj = new Date(dt + 'T12:00:00');
-                    for(let i=1; i<=parcelas; i++) {
-                        const dr = new Date(dObj.getFullYear(), dObj.getMonth() + (i-1), dObj.getDate());
-                        appData.push({ id: Date.now().toString()+i, tipo, categoria: cat, desc: `${desc} (${i}/${parcelas})`, valor: Number(vParc.toFixed(2)), status: i===1?status:'pendente', data: dataLocalFormatada(dr) });
-                    }
-                } else {
-                    appData.push({ id: Date.now().toString(), tipo, categoria: cat, desc, valor, status, data: dt });
+                btn.classList.remove('hidden');
+                txt.innerText = categoria === 'Gasto' ? "Filtro: Gastos" : "Filtro: " + categoria;
+            }
+            renderizar();
+        }
+
+        // Funções de Lógica e Renderização
+        function renderizar() {
+            const corpo = document.getElementById('tabelaCorpo');
+            corpo.innerHTML = '';
+            let sRec = 0, sGas = 0, sDiv = 0, sRes = 0;
+            const ordenados = [...registros].sort((a, b) => new Date(b.data) - new Date(a.data));
+
+            ordenados.forEach(r => {
+                const idxOriginal = registros.indexOf(r);
+                const vTotal = parseFloat(r.valor), vPago = parseFloat(r.pago), falta = vTotal - vPago;
+                
+                if(r.tipo === 'Receita') sRec += vTotal;
+                else if(r.tipo === 'Divida') sDiv += falta;
+                else if(r.tipo === 'Reserva') sRes += vTotal;
+                else sGas += vPago;
+
+                let exibir = (filtroAtual === "Tudo") || 
+                             (filtroAtual === r.tipo) || 
+                             (filtroAtual === "Gasto" && (r.tipo === "Fixo" || r.tipo === "Variavel"));
+
+                if(exibir) {
+                    let icon = r.tipo === 'Receita' ? 'fa-arrow-up' : (r.tipo === 'Divida' ? 'fa-barcode' : (r.tipo === 'Reserva' ? 'fa-vault' : 'fa-cart-shopping'));
+                    let color = r.tipo === 'Receita' ? 'var(--success)' : (r.tipo === 'Divida' ? 'var(--danger)' : (r.tipo === 'Reserva' ? 'var(--reserve)' : 'var(--warning)'));
+                    
+                    corpo.innerHTML += `
+                        <div class="transaction-item" onclick="openModal(${idxOriginal})">
+                            <div class="icon-box" style="color:${color}"><i class="fa-solid ${icon}"></i></div>
+                            <div class="details">
+                                <strong>${r.desc}</strong>
+                                <span>${r.data.split('-').reverse().join('/')} • ${r.tipo}</span>
+                            </div>
+                            <div class="amount">
+                                <strong>${ocultarBits(vTotal)}</strong>
+                                <span class="status-debt" style="color:${vPago >= vTotal ? 'var(--success)' : 'var(--danger)'}">${vPago >= vTotal ? 'LIQUIDADO' : 'FALTA: '+ocultarBits(falta)}</span>
+                            </div>
+                        </div>`;
                 }
-            }
+            });
 
-            salvarDados(); fecharModal(); atualizarInterface(); mostrarAviso("Salvo!");
-        }
+            // Atualização dos Painéis
+            const saldoLivre = sRec - (sGas + sDiv);
+            document.getElementById('totalReceitas').innerText = ocultarBits(sRec);
+            document.getElementById('totalGastos').innerText = ocultarBits(sGas);
+            document.getElementById('totalDividas').innerText = ocultarBits(sDiv);
+            document.getElementById('totalReserva').innerText = ocultarBits(sRes);
+            document.getElementById('totalSaldo').innerText = ocultarBits(saldoLivre);
 
-        function excluirTransacao() {
-            const id = document.getElementById('editId').value;
-            const item = appData.find(i => i.id === id);
-            
-            if(item.desc.includes('(') && confirm("Este item parece ser uma parcela. Deseja excluir TODAS as ocorrências com este nome?")) {
-                const baseName = item.desc.split('(')[0].trim();
-                appData = appData.filter(i => !i.desc.startsWith(baseName));
+            // Atualização Gráficos Inferiores
+            const pSaida = sRec > 0 ? Math.min(((sGas + sDiv) / sRec) * 100, 100) : 0;
+            const pRes = sRec > 0 ? Math.min((sRes / sRec) * 100, 100) : 0;
+            document.getElementById('fillSaida').style.width = pSaida + '%';
+            document.getElementById('labelPercSaida').innerText = pSaida.toFixed(1) + '%';
+            document.getElementById('fillRes').style.width = pRes + '%';
+            document.getElementById('labelPercRes').innerText = pRes.toFixed(1) + '%';
+
+            // Atualização do Painel Lateral (Sidebar)
+            document.getElementById('contadorRegistros').innerText = registros.length + " operações";
+            const statusFluxoEl = document.getElementById('statusFluxo');
+            if (saldoLivre > 0) {
+                statusFluxoEl.innerText = "POSITIVO";
+                statusFluxoEl.style.color = "var(--success)";
+            } else if (saldoLivre < 0) {
+                statusFluxoEl.innerText = "ALERTA";
+                statusFluxoEl.style.color = "var(--danger)";
             } else {
-                appData = appData.filter(i => i.id !== id);
+                statusFluxoEl.innerText = "ESTÁVEL";
+                statusFluxoEl.style.color = "var(--accent)";
             }
-            
-            salvarDados(); fecharModal(); atualizarInterface(); mostrarAviso("Excluído!");
         }
 
-        /* MENU LATERAL E OPÇÕES */
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
-        function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); }
+        // Funções do Modal
+        function openModal(idx = null) {
+            document.getElementById('modalForm').classList.add('open');
+            document.getElementById('overlay').style.display = 'block';
+            if(idx !== null) {
+                const r = registros[idx];
+                document.getElementById('modalTitle').innerText = "Editar";
+                document.getElementById('editIndex').value = idx;
+                document.getElementById('tipo').value = r.tipo;
+                atualizarSubmenu();
+                document.getElementById('desc').value = r.desc;
+                document.getElementById('valor').value = r.valor;
+                document.getElementById('pago').value = r.pago;
+                document.getElementById('data').value = r.data;
+                document.getElementById('btnExcluir').classList.remove('hidden');
+            } else {
+                document.getElementById('modalTitle').innerText = "Nova Operação";
+                document.getElementById('btnExcluir').classList.add('hidden');
+                resetForm();
+                atualizarSubmenu();
+            }
+        }
+
+        function closeModal() { document.getElementById('modalForm').classList.remove('open'); document.getElementById('overlay').style.display = 'none'; }
         
-        function mudarNome() {
-            const n = prompt("Novo nome:");
-            if(n) { config.nome = n; salvarConfig(); closeSidebar(); }
-        }
-        function mudarMoeda() {
-            const ops = ["R$", "$", "€"];
-            config.moeda = ops[(ops.indexOf(config.moeda) + 1) % ops.length];
-            salvarConfig(); closeSidebar();
-        }
-        function mudarTema(t) {
-            localStorage.setItem('meucaixa_theme', t);
-            document.documentElement.setAttribute('data-theme', t);
-            closeSidebar();
+        function atualizarSubmenu() {
+            const tipo = document.getElementById('tipo').value;
+            const sub = document.getElementById('submenu');
+            sub.innerHTML = '';
+            opcoesSubmenu[tipo].forEach(opt => sub.innerHTML += `<option value="${opt}">${opt}</option>`);
+            const fieldPago = document.getElementById('campoPago');
+            if(tipo === 'Receita' || tipo === 'Reserva') fieldPago.classList.add('hidden');
+            else fieldPago.classList.remove('hidden');
         }
 
-        function exportarBackup() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({config, data: appData}));
-            const a = document.createElement('a'); a.href = dataStr; a.download = "MeuCaixa_Backup.json"; a.click();
-            closeSidebar();
-        }
-        function importarBackup(e) {
-            const file = e.target.files[0]; if(!file) return;
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                try {
-                    const res = JSON.parse(ev.target.result);
-                    appData = res.data || []; config = res.config || config;
-                    salvarDados(); salvarConfig(); mostrarAviso("Importado!"); closeSidebar();
-                } catch { mostrarAviso("Erro ao ler arquivo", "error"); }
-            }; reader.readAsText(file);
+        function definirDescricao() { document.getElementById('desc').value = document.getElementById('submenu').value.split(' ').slice(1).join(' '); }
+        
+        function salvar() {
+            const tipo = document.getElementById('tipo').value, desc = document.getElementById('desc').value, valor = parseFloat(document.getElementById('valor').value) || 0, data = document.getElementById('data').value;
+            let pago = parseFloat(document.getElementById('pago').value) || 0;
+            if(!desc || valor <= 0 || !data) return alert("Preencha as informações corretamente.");
+            if(tipo === 'Receita' || tipo === 'Reserva') pago = valor;
+            const editIdx = document.getElementById('editIndex').value;
+            const obj = { tipo, desc, valor, pago, data };
+            if(editIdx === "") registros.push(obj); else registros[editIdx] = obj;
+            localStorage.setItem('foton_db', JSON.stringify(registros));
+            closeAll(); renderizar();
         }
 
-        function zerarTudo() {
-            if(confirm("Apagar TUDO?")) { appData = []; salvarDados(); atualizarInterface(); closeSidebar(); }
+        function excluirRegistro() { 
+            if(confirm("Confirma a exclusão deste registro?")) { 
+                registros.splice(document.getElementById('editIndex').value, 1); 
+                localStorage.setItem('foton_db', JSON.stringify(registros)); 
+                closeAll(); renderizar(); 
+            } 
         }
 
-        function salvarDados() { localStorage.setItem(DB_KEY, JSON.stringify(appData)); }
-        function salvarConfig() { localStorage.setItem(CONFIG_KEY, JSON.stringify(config)); aplicarConfiguracoes(); }
-
-        function mostrarAviso(msg, tipo="success") {
-            const box = document.getElementById('toast-container');
-            const div = document.createElement('div');
-            div.className = `toast`;
-            div.style.borderLeftColor = tipo === 'error' ? 'var(--danger)' : 'var(--success)';
-            div.innerHTML = `<i class="fa-solid ${tipo==='error'?'fa-circle-xmark':'fa-check'}"></i> ${msg}`;
-            box.appendChild(div);
-            setTimeout(() => { div.style.opacity = '0'; setTimeout(()=>div.remove(), 300); }, 2500);
+        // Funções do Painel de Controle (Sidebar)
+        function toggleFantasma() { 
+            modoFantasma = !modoFantasma; 
+            document.getElementById('eyeIcon').className = modoFantasma ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'; 
+            renderizar(); 
         }
+        
+        function ocultarBits(v) { return modoFantasma ? "R$ ••••" : "R$ " + v.toLocaleString('pt-BR', {minimumFractionDigits: 2}); }
+        
+        function exportarDados() {
+            if(registros.length === 0) return alert("Nenhum dado para exportar.");
+            let csvContent = "data:text/csv;charset=utf-8,Tipo,Descricao,Valor Total,Valor Pago,Data\n";
+            registros.forEach(r => { csvContent += `${r.tipo},${r.desc},${r.valor},${r.pago},${r.data}\n`; });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "backup_foton.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            closeAll();
+        }
+
+        function otimizarTerminal() {
+            alert("Terminal otimizado para máxima velocidade de processamento.");
+            closeAll();
+        }
+
+        function limparTerminal() {
+            if(confirm("ATENÇÃO: Isso apagará TODOS os dados salvos neste dispositivo. Deseja prosseguir?")) {
+                localStorage.removeItem('foton_db');
+                location.reload();
+            }
+        }
+
+        function resetForm() { document.getElementById('editIndex').value = ""; document.getElementById('valor').value = ""; document.getElementById('pago').value = ""; document.getElementById('desc').value = ""; document.getElementById('data').value = new Date().toISOString().split('T')[0]; }
+
+        window.onload = () => { renderizar(); };
     </script>
 </body>
 </html>
